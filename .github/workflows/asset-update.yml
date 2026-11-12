@@ -12,6 +12,8 @@ env:
 jobs:
   deploy:
     name: "Upload assets & readme to wordpress.org"
+    # Only the main repository can deploy to wordpress.org, forks have no SVN credentials.
+    if: github.repository == 'skaut/skautis-integration'
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
