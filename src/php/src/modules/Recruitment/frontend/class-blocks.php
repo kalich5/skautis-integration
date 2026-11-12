@@ -123,8 +123,8 @@ final class Blocks {
 			return '';
 		}
 		$message = '' === Recruitment_Data::get_unit_number()
-			? __( 'Fill in the registration number of the unit in the SkautIS settings, on the "Recruitment and map" tab.', 'skautis-integration' )
-			: __( 'No recruitment information could be loaded from SkautIS. See the SkautIS settings, the "Recruitment and map" tab.', 'skautis-integration' );
+			? __( 'Fill in the registration number of the unit on the "Recruitment" page in the SkautIS menu.', 'skautis-integration' )
+			: __( 'No recruitment information could be loaded from SkautIS. See the "Recruitment" page in the SkautIS menu.', 'skautis-integration' );
 
 		return '<p class="skautis-recruitment-empty">' . esc_html( $message ) . '</p>';
 	}

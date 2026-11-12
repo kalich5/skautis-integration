@@ -165,7 +165,8 @@ final class Recruitment_Data {
 	private function call( string $method, array $args ) {
 		try {
 			$response = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->$method( $args );
-		} catch ( \Exception $e ) {
+		} catch ( \Throwable $e ) {
+			// The blocks are on public pages, so no error of SkautIS or of the SOAP client may break them.
 			Helpers::log_skautis_response( $method . ' (error)', $e->getMessage() );
 			$this->errors[] = $method;
 			return null;
