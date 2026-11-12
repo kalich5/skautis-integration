@@ -6,6 +6,7 @@
 
 interface WPBlockAttributes {
 	[key: string]: unknown;
+	height?: number;
 	skautisRules?: Array<number>;
 	skautisVisibilityMode?: string;
 }
@@ -60,6 +61,18 @@ declare const wp: {
 	};
 	blockEditor: {
 		InspectorControls: WPComponent;
+		useBlockProps(this: void): Record<string, unknown>;
+	};
+	blocks: {
+		registerBlockType(
+			this: void,
+			name: string,
+			settings: {
+				apiVersion: number;
+				edit: WPComponent<WPBlockEditProps>;
+				save(): null;
+			}
+		): void;
 	};
 	components: {
 		CheckboxControl: WPComponent;
@@ -67,6 +80,7 @@ declare const wp: {
 		Notice: WPComponent;
 		PanelBody: WPComponent;
 		RadioControl: WPComponent;
+		RangeControl: WPComponent;
 	};
 	compose: {
 		createHigherOrderComponent<P>(
@@ -132,4 +146,5 @@ declare const wp: {
 			settings: { icon?: string | null; render: WPComponent }
 		): void;
 	};
+	serverSideRender: WPComponent;
 };

@@ -48,6 +48,10 @@ class Skautis_Integration {
 		require __DIR__ . '/src/modules/Register/frontend/class-login-form.php';
 		require __DIR__ . '/src/modules/Register/class-register.php';
 		require __DIR__ . '/src/modules/Register/class-wp-register.php';
+		require __DIR__ . '/src/modules/Recruitment/admin/class-settings.php';
+		require __DIR__ . '/src/modules/Recruitment/frontend/class-blocks.php';
+		require __DIR__ . '/src/modules/Recruitment/class-recruitment-data.php';
+		require __DIR__ . '/src/modules/Recruitment/class-recruitment.php';
 		require __DIR__ . '/src/modules/Visibility/admin/class-admin.php';
 		require __DIR__ . '/src/modules/Visibility/admin/class-block-editor.php';
 		require __DIR__ . '/src/modules/Visibility/admin/class-metabox.php';
