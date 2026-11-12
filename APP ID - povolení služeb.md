@@ -80,6 +80,18 @@ Pravidlo „Akce“ používá jen služby z předchozích verzí (Events -> Eve
 <br>
 Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, protože nábor vidí i návštěvníci webu. Data se načtou nejvýš jednou denně (a po uložení nastavení na stránce SkautIS → Nábory).
 
+<b>Informace o jednotce (blok „Jednotka“)</b>
+<br>
+<b>OrganizationUnit -> UnitAll</b> a <b>UnitDetail</b> - už z verze 1.0 (jednotka podle registračního čísla, sídlo, IČ, podřízené jednotky)
+<br>
+<b>OrganizationUnit -> UnitContactAll</b> - Načíst kontakty jednotky (jen ty označené jako veřejné)
+<br>
+<b>OrganizationUnit -> FunctionAllRegistry</b> - Načíst statutární orgán, zástupce a kontaktní osobu z rejstříku
+<br>
+<b>OrganizationUnit -> AccountAll</b> - Načíst bankovní účty jednotky (jen když blok zobrazuje bankovní účet)
+<br>
+Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele. Data se načtou nejvýš jednou denně (a po uložení nastavení na stránce SkautIS → Jednotka).
+
 <b>Jak nové funkce otestovat</b>
 <br>
 1. Nechte pro App ID webu povolit čtyři služby z verze 1.2.0 výše (služby z předchozích verzí musí být povolené také).
@@ -89,6 +101,8 @@ Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, prot
 3. Správa uživatelů: přepněte se na roli v akci, ve které jste v týmu (např. „VzA: vedoucí“), a otevřete Správu uživatelů. V tabulce mají být účastníci, instruktoři i vedení akce se sloupcem „Role v akci“. Do logu se zapíšou řádky InstructorAll / EventFunctionAll…
 <br>
 4. Pravidlo „Akce“: vytvořte pravidlo s akcí, nastavte ho stránce a vyzkoušejte možnosti „Kdokoli z akce“, „Tým akce“ a „Účastníci (bez týmu akce)“. Do logu se zapíšou řádky EventAllPerson a UserRoleAll.
+<br>
+6. Jednotka: v menu SkautIS → Jednotka vyplňte registrační číslo (nebo ho nechte prázdné, pak se použije číslo z náborů) a uložte. Pod nastavením se ukáže, co se ze SkautISu načetlo. Na stránku vložte blok „Jednotka“ a v jeho nastavení zvolte, co zobrazit. Do logu se zapíšou řádky UnitDetail, UnitContactAll, FunctionAllRegistry a AccountAll.
 <br>
 5. Nábor a mapa: v menu SkautIS → Nábory vyplňte registrační číslo střediska nebo oddílu a uložte. Pod nastavením se ukáže, co se ze SkautISu načetlo. Na stránku vložte bloky „Nábor“ a „Mapa oddílů“. Do logu se zapíšou řádky UnitAll, AdvertisingDetail, AdvertisingCategoryAll, MeetingDateAll a OccupationAll.
 

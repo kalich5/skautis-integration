@@ -144,3 +144,19 @@
 	width: auto;
 	height: 24px;
 }
+
+/*
+ * The "Unit" block uses the card of a unit and adds labels and the map of
+ * the seat.
+ */
+.skautis-unit-label {
+	font-weight: 600;
+}
+
+.skautis-unit-note {
+	opacity: 0.75;
+}
+
+.skautis-unit-seat-map {
+	margin-top: 1em;
+}
