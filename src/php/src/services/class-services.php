@@ -15,6 +15,7 @@ use Skautis_Integration\Auth\Skautis_Login;
 use Skautis_Integration\Auth\WP_Login_Logout;
 use Skautis_Integration\Auth\Connect_And_Disconnect_WP_Account;
 use Skautis_Integration\General\Actions;
+use Skautis_Integration\General\Privacy;
 use Skautis_Integration\General\Profile_Photo;
 use Skautis_Integration\Frontend\Frontend;
 use Skautis_Integration\Frontend\Login_Form;
@@ -90,6 +91,13 @@ class Services {
 	 * @var Profile_Photo|null
 	 */
 	private static $profile_photo = null;
+
+	/**
+	 * A Privacy service instance.
+	 *
+	 * @var Privacy|null
+	 */
+	private static $privacy = null;
 
 	/**
 	 * A Revisions service instance.
@@ -298,6 +306,19 @@ class Services {
 		self::get_actions();
 		self::get_rules_init();
 		self::get_profile_photo();
+		self::get_privacy();
+	}
+
+	/**
+	 * Gets the Privacy service.
+	 *
+	 * @return Privacy The initialized service object.
+	 */
+	private static function get_privacy() {
+		if ( is_null( self::$privacy ) ) {
+			self::$privacy = new Privacy();
+		}
+		return self::$privacy;
 	}
 
 	/**
