@@ -22,6 +22,7 @@ use Skautis_Integration\Admin\Settings;
 use Skautis_Integration\Admin\Skautis_Errors;
 use Skautis_Integration\Admin\Users;
 use Skautis_Integration\Modules\Register\Admin\Admin as Register_Admin;
+use Skautis_Integration\Modules\Recruitment\Recruitment;
 use Skautis_Integration\Modules\Register\Register;
 use Skautis_Integration\Modules\Visibility\Visibility;
 use Skautis_Integration\Repository\Users as Repository_Users;
@@ -344,7 +345,7 @@ class Services {
 	}
 
 	/**
-	 * Sets up the content visibility and the registration.
+	 * Sets up the content visibility, the recruitment and the registration.
 	 *
 	 * The registration settings are always available in the administration, so that the registration can be enabled there.
 	 *
@@ -352,6 +353,7 @@ class Services {
 	 */
 	public static function get_features() {
 		self::get_visibility();
+		new Recruitment( self::get_skautis_gateway() );
 		if ( is_admin() ) {
 			new Register_Admin( self::get_rules_manager() );
 		}

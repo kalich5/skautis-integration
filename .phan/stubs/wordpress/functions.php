@@ -223,6 +223,36 @@ function wp_print_inline_script_tag( $data, $attributes = array() ) {
 }
 
 /**
+ * @param string   $format
+ * @param int|null $timestamp
+ * @param mixed    $timezone
+ *
+ * @return string|false
+ */
+function wp_date( $format, $timestamp = null, $timezone = null ) {
+}
+
+/**
+ * @param array<string, string> $extra_attributes
+ */
+function get_block_wrapper_attributes( $extra_attributes = array() ): string {
+}
+
+/**
+ * @param string $text
+ * @param bool   $br
+ */
+function wpautop( $text, $br = true ): string {
+}
+
+/**
+ * @param string                  $block_name
+ * @param int|string|WP_Post|null $post
+ */
+function has_block( $block_name, $post = null ): bool {
+}
+
+/**
  * @return string|false
  */
 function wp_get_referer() {

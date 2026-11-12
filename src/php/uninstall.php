@@ -49,6 +49,11 @@ function skautis_integration_uninstall_site() {
 	delete_option( 'skautis-integration_modules_visibility_visibilityMode' );
 	delete_option( 'skautis-integration_modules_visibility_includeChildren' );
 
+	// defined in src/modules/Recruitment/class-recruitment-data.php.
+	delete_option( 'skautis-integration_recruitment_unit' );
+	delete_option( 'skautis-integration_recruitment_mapy_api_key' );
+	delete_transient( 'skautis-integration_recruitment_data' );
+
 	// defined by the removed one-time autosave meta cleanup migration, sites that ran it still have the option.
 	delete_option( 'skautis_integration_autosave_meta_cleaned' );
 

@@ -66,6 +66,20 @@ Tyto čtyři služby používá Správa uživatelů: když je uživatel přepnut
 <br>
 Pravidlo „Akce“ používá jen služby z předchozích verzí (Events -> EventAllPerson, UserManagement -> UserRoleAll).
 
+<b>Nábor a mapa oddílů (bloky „Nábor“ a „Mapa oddílů“)</b>
+<br>
+<b>OrganizationUnit -> UnitAll</b> - Načíst seznam jednotek (už ve verzi 1.0; jednotka podle registračního čísla a její oddíly)
+<br>
+<b>OrganizationUnit -> AdvertisingDetail</b> - Načíst detail náboru jednotky (poznámka, vodní oddíl)
+<br>
+<b>OrganizationUnit -> AdvertisingCategoryAll</b> - Načíst náborové kategorie (věk a pohlaví)
+<br>
+<b>OrganizationUnit -> MeetingDateAll</b> - Načíst termíny schůzek
+<br>
+<b>OrganizationUnit -> OccupationAll</b> - Načíst klubovny jednotky (adresa a GPS pro mapu)
+<br>
+Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, protože nábor vidí i návštěvníci webu. Data se načtou nejvýš jednou denně (a po uložení nastavení na stránce SkautIS → Nábory).
+
 <b>Jak nové funkce otestovat</b>
 <br>
 1. Nechte pro App ID webu povolit čtyři služby z verze 1.2.0 výše (služby z předchozích verzí musí být povolené také).
@@ -75,6 +89,8 @@ Pravidlo „Akce“ používá jen služby z předchozích verzí (Events -> Eve
 3. Správa uživatelů: přepněte se na roli v akci, ve které jste v týmu (např. „VzA: vedoucí“), a otevřete Správu uživatelů. V tabulce mají být účastníci, instruktoři i vedení akce se sloupcem „Role v akci“. Do logu se zapíšou řádky InstructorAll / EventFunctionAll…
 <br>
 4. Pravidlo „Akce“: vytvořte pravidlo s akcí, nastavte ho stránce a vyzkoušejte možnosti „Kdokoli z akce“, „Tým akce“ a „Účastníci (bez týmu akce)“. Do logu se zapíšou řádky EventAllPerson a UserRoleAll.
+<br>
+5. Nábor a mapa: v menu SkautIS → Nábory vyplňte registrační číslo střediska nebo oddílu a uložte. Pod nastavením se ukáže, co se ze SkautISu načetlo. Na stránku vložte bloky „Nábor“ a „Mapa oddílů“. Do logu se zapíšou řádky UnitAll, AdvertisingDetail, AdvertisingCategoryAll, MeetingDateAll a OccupationAll.
 
 <b>Jak poznat chybu v logu</b>
 <br>
