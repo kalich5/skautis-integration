@@ -334,3 +334,18 @@ function media_handle_sideload( $file_array, $post_id = 0, $desc = null, $post_d
  */
 function wp_delete_attachment( $post_id, $force_delete = false ) {
 }
+
+/**
+ * @param string $plugin_name
+ * @param string $policy_text
+ */
+function wp_add_privacy_policy_content( $plugin_name, $policy_text ): void {
+}
+
+/**
+ * @param int $attachment_id
+ *
+ * @return string|false
+ */
+function wp_get_attachment_url( $attachment_id = 0 ) {
+}
