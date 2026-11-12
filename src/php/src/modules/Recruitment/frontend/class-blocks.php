@@ -300,7 +300,9 @@ final class Blocks {
 						'popup' => '<p class="skautis-map-place">' . esc_html( self::get_place_label( $place ) ) . '</p>',
 					);
 				}
-				$markers[ $key ]['water'] = $markers[ $key ]['water'] || $unit['is_water'];
+				if ( true === $unit['is_water'] ) {
+					$markers[ $key ]['water'] = true;
+				}
 
 				$popup = '<div class="skautis-map-unit"><strong>' . esc_html( $unit['name'] ) . '</strong>';
 				foreach ( $unit['categories'] as $category ) {
