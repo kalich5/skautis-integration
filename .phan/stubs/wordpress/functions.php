@@ -264,3 +264,73 @@ function wp_get_referer() {
  */
 function home_url( $path = '', $scheme = null ): string {
 }
+
+/**
+ * @param 'id'|'ID'|'slug'|'email'|'login' $field
+ * @param int|string                       $value
+ *
+ * @return WP_User|false
+ */
+function get_user_by( $field, $value ) {
+}
+
+/**
+ * @param int               $attachment_id
+ * @param string|array<int> $size
+ * @param bool              $icon
+ *
+ * @return string|false
+ */
+function wp_get_attachment_image_url( $attachment_id, $size = 'thumbnail', $icon = false ) {
+}
+
+/**
+ * @param int                          $attachment_id
+ * @param string|array<int>            $size
+ * @param bool                         $icon
+ * @param string|array<string, string> $attr
+ */
+function wp_get_attachment_image( $attachment_id, $size = 'thumbnail', $icon = false, $attr = '' ): string {
+}
+
+/**
+ * @param string $filename
+ * @param string $dir
+ */
+function wp_tempnam( $filename = '', $dir = '' ): string {
+}
+
+/**
+ * @param string               $path
+ * @param array<string, mixed> $args
+ *
+ * @return WP_Image_Editor|WP_Error
+ */
+function wp_get_image_editor( $path, $args = array() ) {
+}
+
+/**
+ * @param string $file
+ */
+function wp_delete_file( $file ): void {
+}
+
+/**
+ * @param array<string, mixed> $file_array
+ * @param int                  $post_id
+ * @param string|null          $desc
+ * @param array<string, mixed> $post_data
+ *
+ * @return int|WP_Error
+ */
+function media_handle_sideload( $file_array, $post_id = 0, $desc = null, $post_data = array() ) {
+}
+
+/**
+ * @param int  $post_id
+ * @param bool $force_delete
+ *
+ * @return WP_Post|false|null
+ */
+function wp_delete_attachment( $post_id, $force_delete = false ) {
+}
