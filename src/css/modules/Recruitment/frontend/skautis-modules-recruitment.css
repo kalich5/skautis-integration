@@ -1,0 +1,137 @@
+/*
+ * The "Recruitment" and "Map of the units" blocks. The styles are light, so
+ * that the blocks take the fonts and colors of the theme.
+ */
+.skautis-recruitment-unit {
+	margin: 0 0 1.25em;
+	padding: 1em 1.25em;
+	border: 1px solid rgb(0, 0, 0, 15%);
+	border-radius: 6px;
+}
+
+.skautis-recruitment-unit h3 {
+	margin: 0 0 0.4em;
+}
+
+.skautis-recruitment-tags {
+	margin: 0 0 0.6em;
+	padding: 0;
+	list-style: none;
+}
+
+.skautis-recruitment-tags li {
+	display: inline-block;
+	margin: 0 0.4em 0.4em 0;
+	padding: 0.1em 0.7em;
+	font-size: 0.85em;
+	color: #135e96;
+	background: #f0f6fc;
+	border-radius: 1em;
+}
+
+.skautis-recruitment-tags li.is-water {
+	color: #0a5c63;
+	background: #e6f4f5;
+}
+
+.skautis-recruitment-details {
+	margin: 0;
+}
+
+.skautis-recruitment-details dt {
+	margin-top: 0.4em;
+	font-weight: 600;
+}
+
+.skautis-recruitment-details dd {
+	margin: 0;
+}
+
+.skautis-recruitment-note {
+	margin-top: 0.6em;
+	font-style: italic;
+}
+
+.skautis-recruitment-note p {
+	margin: 0 0 0.4em;
+}
+
+.skautis-recruitment-empty,
+.skautis-unit-map-preview {
+	padding: 1em;
+	color: #1e1e1e;
+	background: #f0f0f0;
+	border: 1px dashed #949494;
+}
+
+.skautis-unit-map-preview {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	text-align: center;
+}
+
+.skautis-unit-map-canvas {
+	z-index: 0;
+	width: 100%;
+	border-radius: 6px;
+}
+
+.skautis-unit-map-marker span {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 30px;
+	height: 30px;
+	background-color: #2271b1;
+	background-image: url(../../../../src/frontend/public/img/lilie.png);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 18px auto;
+	border: 2px solid #fff;
+	border-radius: 50%;
+	box-shadow: 0 1px 4px rgb(0, 0, 0, 40%);
+	box-sizing: border-box;
+}
+
+/* The tip of the marker pointing to the clubroom. */
+.skautis-unit-map-marker span::after {
+	content: "";
+	position: absolute;
+	top: 26px;
+	left: 8px;
+	border-top: 9px solid #2271b1;
+	border-right: 5px solid transparent;
+	border-left: 5px solid transparent;
+}
+
+.skautis-unit-map-marker.is-water span {
+	background-color: #0a7c86;
+}
+
+.skautis-unit-map-marker.is-water span::after {
+	border-top-color: #0a7c86;
+}
+
+.skautis-unit-map .leaflet-popup-content {
+	margin: 12px 14px;
+	line-height: 1.45;
+}
+
+.skautis-map-place {
+	margin: 0 0 6px !important;
+	color: #50575e;
+}
+
+.skautis-map-unit + .skautis-map-unit {
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: 1px solid #dcdcde;
+}
+
+.skautis-unit-map-logo img {
+	display: block;
+	width: auto;
+	height: 24px;
+}
