@@ -259,12 +259,13 @@ final class Appearances_Page {
 			echo '<h3>' . esc_html( $appearance['name'] ) . ( $appearance_id === $default ? ' <span class="skautis-appearance-badge">' . esc_html__( 'Default', 'skautis-integration' ) . '</span>' : '' ) . '</h3>';
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in get_preview().
 			echo self::get_preview( $appearance_id, false );
+			$builtin = true === $appearance['builtin'];
 			echo '<p class="skautis-appearance-actions">';
-			if ( ! $appearance['builtin'] ) {
+			if ( ! $builtin ) {
 				echo '<a class="button button-primary" href="' . esc_url( self::get_page_url( $appearance_id ) ) . '">' . esc_html__( 'Edit', 'skautis-integration' ) . '</a> ';
 			}
-			echo '<a class="button" href="' . esc_url( self::get_action_url( self::COPY_ACTION, $appearance_id ) ) . '">' . esc_html( $appearance['builtin'] ? __( 'Copy and edit', 'skautis-integration' ) : __( 'Copy', 'skautis-integration' ) ) . '</a>';
-			if ( ! $appearance['builtin'] ) {
+			echo '<a class="button" href="' . esc_url( self::get_action_url( self::COPY_ACTION, $appearance_id ) ) . '">' . esc_html( $builtin ? __( 'Copy and edit', 'skautis-integration' ) : __( 'Copy', 'skautis-integration' ) ) . '</a>';
+			if ( ! $builtin ) {
 				/* translators: %s: The name of the appearance */
 				$confirm = sprintf( __( 'Delete the appearance "%s"? Blocks with this appearance get the default appearance.', 'skautis-integration' ), $appearance['name'] );
 				echo ' <a class="button button-link-delete" href="' . esc_url( self::get_action_url( self::DELETE_ACTION, $appearance_id ) ) . '" onclick="return confirm(' . esc_attr( (string) wp_json_encode( $confirm ) ) . ');">' . esc_html__( 'Delete', 'skautis-integration' ) . '</a>';
