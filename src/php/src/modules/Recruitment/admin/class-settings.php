@@ -128,7 +128,7 @@ final class Settings {
 			self::PAGE,
 			__( 'Recruitment and map of the units', 'skautis-integration' ),
 			static function () {
-				echo '<p>' . esc_html__( 'The recruitment information that the units fill in SkautIS on the "Jednotka: Nábory" tab can be shown on the site with the "Recruitment" and "Map of the units" blocks.', 'skautis-integration' ) . '</p>';
+				echo '<p>' . esc_html__( 'The recruitment information that the units fill in SkautIS on the "Jednotka: Nábory" tab can be shown on the site with the "Recruitment" and "Map of the units" blocks.', 'skautis-integration' ) . ' <a href="' . esc_url( Admin_Settings::get_tab_url( 'maps' ) ) . '">' . esc_html__( 'The API key of the maps is set in the settings, on the "Maps" tab.', 'skautis-integration' ) . '</a></p>';
 			},
 			self::PAGE
 		);
@@ -140,15 +140,6 @@ final class Settings {
 			self::PAGE,
 			self::PAGE,
 			array( 'label_for' => Recruitment_Data::UNIT_OPTION )
-		);
-
-		add_settings_field(
-			Recruitment_Data::MAPY_API_KEY_OPTION,
-			__( 'Mapy.com API key', 'skautis-integration' ),
-			array( self::class, 'field_mapy_api_key' ),
-			self::PAGE,
-			self::PAGE,
-			array( 'label_for' => Recruitment_Data::MAPY_API_KEY_OPTION )
 		);
 
 		add_settings_field(
@@ -193,18 +184,6 @@ final class Settings {
 				},
 			)
 		);
-
-		register_setting(
-			self::PAGE,
-			Recruitment_Data::MAPY_API_KEY_OPTION,
-			array(
-				'type'              => 'string',
-				'show_in_rest'      => false,
-				'sanitize_callback' => static function ( $value ) {
-					return is_string( $value ) ? sanitize_text_field( $value ) : '';
-				},
-			)
-		);
 	}
 
 	/**
@@ -232,19 +211,6 @@ final class Settings {
 		echo '<p class="description">' . esc_html__( 'For the templates of Dobrý skautský web, choose the appearance of your template. A block can have its own appearance in its settings in the editor.', 'skautis-integration' ) . '</p>';
 	}
 
-	/**
-	 * Prints the field for the API key of Mapy.com.
-	 *
-	 * @return void
-	 */
-	public static function field_mapy_api_key() {
-		$key = get_option( Recruitment_Data::MAPY_API_KEY_OPTION, '' );
-		echo '<input type="text" class="regular-text" id="' . esc_attr( Recruitment_Data::MAPY_API_KEY_OPTION ) . '" name="' . esc_attr( Recruitment_Data::MAPY_API_KEY_OPTION ) . '" value="' . esc_attr( is_string( $key ) ? $key : '' ) . '" autocomplete="off" spellcheck="false" />';
-		echo '<p class="description">';
-		echo esc_html__( 'The map uses the maps of Mapy.com with this key. You get a free key after registering at developer.mapy.com. Without the key, the map uses OpenStreetMap.', 'skautis-integration' );
-		echo ' <a href="https://developer.mapy.com/" target="_blank" rel="noopener noreferrer">developer.mapy.com</a>';
-		echo '</p>';
-	}
 
 	/**
 	 * Prints the overview of the data loaded from SkautIS.
