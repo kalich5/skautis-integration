@@ -15,6 +15,7 @@ use Skautis_Integration\Auth\Skautis_Login;
 use Skautis_Integration\Auth\WP_Login_Logout;
 use Skautis_Integration\Auth\Connect_And_Disconnect_WP_Account;
 use Skautis_Integration\General\Actions;
+use Skautis_Integration\General\Profile_Photo;
 use Skautis_Integration\Frontend\Frontend;
 use Skautis_Integration\Frontend\Login_Form;
 use Skautis_Integration\Admin\Admin;
@@ -80,6 +81,15 @@ class Services {
 	 * @var Actions|null
 	 */
 	private static $actions = null;
+
+	/**
+	 * A Profile_Photo service instance.
+	 *
+	 * Depends on $skautis_gateway and $skautis_login.
+	 *
+	 * @var Profile_Photo|null
+	 */
+	private static $profile_photo = null;
 
 	/**
 	 * A Revisions service instance.
@@ -287,6 +297,19 @@ class Services {
 	public static function get_general() {
 		self::get_actions();
 		self::get_rules_init();
+		self::get_profile_photo();
+	}
+
+	/**
+	 * Gets the Profile_Photo service.
+	 *
+	 * @return Profile_Photo The initialized service object.
+	 */
+	private static function get_profile_photo() {
+		if ( is_null( self::$profile_photo ) ) {
+			self::$profile_photo = new Profile_Photo( self::get_skautis_gateway(), self::get_skautis_login() );
+		}
+		return self::$profile_photo;
 	}
 
 	/**

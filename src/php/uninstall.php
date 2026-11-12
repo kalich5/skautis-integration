@@ -105,3 +105,8 @@ if ( is_multisite() ) {
 // The connections of WordPress users to SkautIS users (src/auth/class-connect-and-disconnect-wp-account.php). Users are shared by all sites of a network.
 delete_metadata( 'user', 0, 'skautisUserId_prod', '', true );
 delete_metadata( 'user', 0, 'skautisUserId_test', '', true );
+
+// The profile photos from SkautIS (src/general/class-profile-photo.php). The photos are attachments of the site where they were downloaded, so only the user meta is deleted here and the photos stay in the media library, like other uploads.
+delete_metadata( 'user', 0, 'skautis-integration_photo', '', true );
+delete_metadata( 'user', 0, 'skautis-integration_photo_hash', '', true );
+delete_metadata( 'user', 0, 'skautis-integration_photo_auto', '', true );

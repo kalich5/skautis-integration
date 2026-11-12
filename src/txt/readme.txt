@@ -54,6 +54,7 @@ See our [documentation](https://napoveda.skaut.cz/skautis/skautis-integration) (
 * New "Unit" block shows the public information about a unit from SkautIS: the seat with a map, the public contacts, the statutory body, the bank account and the child units
 * Appearances of the recruitment blocks for the Dobrý skautský web templates (DSW1, DSW2, DSW3) and custom appearances, chosen for the whole site or for each block
 * The SkautIS login is shown in its own card below the login form
+* Each user can use their photo from SkautIS as their profile picture; it is downloaded only when the user chooses it in their profile
 * A SkautIS method that the App ID is not allowed to use no longer breaks the site; the administration shows which methods to allow
 * English source texts, translatable on translate.wordpress.org
 * SVG menu icon
