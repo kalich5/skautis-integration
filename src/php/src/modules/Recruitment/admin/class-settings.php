@@ -11,6 +11,7 @@ namespace Skautis_Integration\Modules\Recruitment\Admin;
 
 use Skautis_Integration\Admin\Settings as Admin_Settings;
 use Skautis_Integration\Admin\Settings_Sections;
+use Skautis_Integration\Modules\Recruitment\Appearances;
 use Skautis_Integration\Modules\Recruitment\Recruitment_Data;
 use Skautis_Integration\Utils\Helpers;
 
@@ -82,6 +83,10 @@ final class Settings {
 	public static function enqueue_styles( $hook_suffix ) {
 		if ( '' !== self::$hook_suffix && self::$hook_suffix === $hook_suffix ) {
 			Helpers::enqueue_style( 'admin_settings', 'admin/css/skautis-admin-settings.min.css' );
+			// The previews of the appearances use the styles of the blocks.
+			wp_enqueue_style( SKAUTIS_INTEGRATION_NAME . '_modules_recruitment' );
+			Helpers::enqueue_style( 'modules_recruitment_admin', 'modules/Recruitment/admin/css/skautis-modules-recruitment-admin.min.css' );
+			Helpers::enqueue_script( 'modules_recruitment_appearance', 'modules/Recruitment/admin/js/skautis-modules-recruitment-appearance.min.js', array( 'wp-dom-ready' ) );
 		}
 	}
 
@@ -96,9 +101,10 @@ final class Settings {
 		}
 
 		Admin_Settings::print_page_header( _x( 'Recruitment', 'admin page', 'skautis-integration' ) );
-		?>
-		<div class="skautis-settings-body">
-			<?php settings_errors(); ?>
+		echo '<div class="skautis-settings-body">';
+		if ( ! Appearances_Page::maybe_print_editor() ) {
+			settings_errors();
+			?>
 			<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>">
 				<?php
 				settings_fields( self::PAGE );
@@ -106,8 +112,10 @@ final class Settings {
 				submit_button();
 				?>
 			</form>
-		</div>
-		<?php
+			<?php
+			Appearances_Page::print_list();
+		}
+		echo '</div>';
 	}
 
 	/**
@@ -143,6 +151,15 @@ final class Settings {
 			array( 'label_for' => Recruitment_Data::MAPY_API_KEY_OPTION )
 		);
 
+		add_settings_field(
+			Appearances::DEFAULT_OPTION,
+			__( 'Default appearance of the blocks', 'skautis-integration' ),
+			array( self::class, 'field_default_appearance' ),
+			self::PAGE,
+			self::PAGE,
+			array( 'label_for' => Appearances::DEFAULT_OPTION )
+		);
+
 		add_settings_section(
 			self::PAGE . '_status',
 			__( 'Data from SkautIS', 'skautis-integration' ),
@@ -161,6 +178,18 @@ final class Settings {
 					Recruitment_Data::clear_cache();
 
 					return is_string( $value ) ? preg_replace( '/[^0-9.]/u', '', $value ) : '';
+				},
+			)
+		);
+
+		register_setting(
+			self::PAGE,
+			Appearances::DEFAULT_OPTION,
+			array(
+				'type'              => 'string',
+				'show_in_rest'      => false,
+				'sanitize_callback' => static function ( $value ) {
+					return is_string( $value ) && ! is_null( Appearances::get( $value ) ) ? $value : Appearances::THEME;
 				},
 			)
 		);
@@ -186,6 +215,21 @@ final class Settings {
 	public static function field_unit() {
 		echo '<input type="text" class="regular-text" id="' . esc_attr( Recruitment_Data::UNIT_OPTION ) . '" name="' . esc_attr( Recruitment_Data::UNIT_OPTION ) . '" value="' . esc_attr( Recruitment_Data::get_unit_number() ) . '" placeholder="112.31" inputmode="decimal" />';
 		echo '<p class="description">' . esc_html__( 'The registration number of the group (středisko) or the troop (oddíl), e.g. 112.31. For a group, the recruitment of all its troops is shown.', 'skautis-integration' ) . '</p>';
+	}
+
+	/**
+	 * Prints the field for the default appearance of the blocks.
+	 *
+	 * @return void
+	 */
+	public static function field_default_appearance() {
+		$default = Appearances::get_default_id();
+		echo '<select id="' . esc_attr( Appearances::DEFAULT_OPTION ) . '" name="' . esc_attr( Appearances::DEFAULT_OPTION ) . '">';
+		foreach ( Appearances::get_all() as $id => $appearance ) {
+			echo '<option value="' . esc_attr( $id ) . '"' . selected( $id, $default, false ) . '>' . esc_html( $appearance['name'] ) . '</option>';
+		}
+		echo '</select>';
+		echo '<p class="description">' . esc_html__( 'For the templates of Dobrý skautský web, choose the appearance of your template. A block can have its own appearance in its settings in the editor.', 'skautis-integration' ) . '</p>';
 	}
 
 	/**

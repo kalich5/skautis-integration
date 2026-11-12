@@ -1,0 +1,103 @@
+/* The appearances of the recruitment blocks on the "Recruitment" page. */
+.skautis-appearances {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 -8px;
+}
+
+.skautis-appearance {
+	display: flex;
+	flex: 1 1 280px;
+	flex-direction: column;
+	max-width: 420px;
+	margin: 8px;
+	padding: 12px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+}
+
+.skautis-appearance.is-default {
+	border-color: var(--wp-admin-theme-color, #2271b1);
+	box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+}
+
+.skautis-appearance h3 {
+	margin: 0 0 8px;
+	font-size: 14px;
+}
+
+.skautis-appearance-badge {
+	margin-left: 4px;
+	padding: 1px 6px;
+	font-size: 11px;
+	font-weight: 400;
+	color: #fff;
+	vertical-align: middle;
+	background: var(--wp-admin-theme-color, #2271b1);
+	border-radius: 8px;
+}
+
+.skautis-appearance-actions {
+	margin: auto 0 0;
+	padding-top: 8px;
+}
+
+/* The preview shows the blocks smaller, on a light background like a page. */
+.skautis-appearance-preview {
+	padding: 10px;
+	font-size: 13px;
+	background: #f6f7f7;
+	border-radius: 4px;
+}
+
+.skautis-appearance-preview .skautis-recruitment-unit {
+	margin-bottom: 10px;
+}
+
+.skautis-appearance-preview .skautis-recruitment-unit h3 {
+	font-size: 16px;
+}
+
+.skautis-appearance-markers {
+	display: flex;
+	height: 36px;
+}
+
+.skautis-appearance-markers .skautis-unit-map-marker {
+	position: relative;
+	width: 30px;
+	height: 36px;
+	margin-right: 8px;
+}
+
+.skautis-appearance-editor {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	align-items: start;
+}
+
+.skautis-appearance-editor > .skautis-settings-card + .skautis-settings-card {
+	margin-left: 16px;
+}
+
+.skautis-appearance-editor input[type="color"] {
+	width: 48px;
+	height: 32px;
+	padding: 2px;
+	vertical-align: middle;
+}
+
+.skautis-appearance-inherit {
+	margin-left: 8px;
+}
+
+@media screen and (width <= 960px) {
+
+	.skautis-appearance-editor {
+		grid-template-columns: 1fr;
+	}
+
+	.skautis-appearance-editor > .skautis-settings-card + .skautis-settings-card {
+		margin-left: 0;
+	}
+}

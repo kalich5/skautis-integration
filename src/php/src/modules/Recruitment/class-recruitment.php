@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace Skautis_Integration\Modules\Recruitment;
 
 use Skautis_Integration\Auth\Skautis_Gateway;
+use Skautis_Integration\Modules\Recruitment\Admin\Appearances_Page;
 use Skautis_Integration\Modules\Recruitment\Admin\Settings;
 use Skautis_Integration\Modules\Recruitment\Frontend\Blocks;
 
@@ -31,6 +32,7 @@ final class Recruitment {
 		new Blocks( $recruitment_data );
 		if ( is_admin() ) {
 			new Settings( $recruitment_data );
+			new Appearances_Page();
 		}
 	}
 }

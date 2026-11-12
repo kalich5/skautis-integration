@@ -76,9 +76,20 @@ gulp.task('build:css:modules:Recruitment:frontend', () =>
 		.pipe(gulp.dest('dist/modules/Recruitment/frontend/css/'))
 );
 
+gulp.task('build:css:modules:Recruitment:admin', () =>
+	gulp
+		.src(['src/css/modules/Recruitment/admin/*.css'])
+		.pipe(lightningCSS())
+		.pipe(rename({ suffix: '.min' }))
+		.pipe(gulp.dest('dist/modules/Recruitment/admin/css/'))
+);
+
 gulp.task(
 	'build:css:modules:Recruitment',
-	gulp.parallel('build:css:modules:Recruitment:frontend')
+	gulp.parallel(
+		'build:css:modules:Recruitment:admin',
+		'build:css:modules:Recruitment:frontend'
+	)
 );
 
 gulp.task(

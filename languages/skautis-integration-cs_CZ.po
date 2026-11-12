@@ -35,11 +35,11 @@ msgstr "Junák - český skaut"
 msgid "https://github.com/skaut"
 msgstr "https://github.com/skaut"
 
-#: class-skautis-integration.php:190 class-skautis-integration.php:274
+#: class-skautis-integration.php:192 class-skautis-integration.php:276
 msgid "The SkautIS integration plugin requires WordPress 7.0 or newer!"
 msgstr "Plugin SkautIS integrace vyžaduje verzi WordPress 7.0 nebo vyšší!"
 
-#: class-skautis-integration.php:195 class-skautis-integration.php:281
+#: class-skautis-integration.php:197 class-skautis-integration.php:283
 msgid "The SkautIS integration plugin requires PHP 8.3 or newer!"
 msgstr "Plugin SkautIS integrace vyžaduje verzi PHP 8.3 nebo vyšší!"
 
@@ -76,7 +76,8 @@ msgid "Select the SkautIS environment in the plugin %1$ssettings%2$s"
 msgstr "Vyberte v %1$snastavení%2$s pluginu typ prostředí SkautISu"
 
 #: src/admin/class-settings.php:137 src/admin/class-settings.php:190
-#: modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.js:18
+#: modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.js:23
+#: modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.js:33
 msgid "Settings"
 msgstr "Nastavení"
 
@@ -122,7 +123,8 @@ msgstr "Části nastavení"
 
 #: src/admin/class-settings.php:316 src/admin/class-skautis-errors.php:76
 #: src/admin/class-users-management.php:173
-#: src/modules/Recruitment/admin/class-settings.php:95
+#: src/modules/Recruitment/admin/class-appearances-page.php:89
+#: src/modules/Recruitment/admin/class-settings.php:100
 msgid "You do not have sufficient permissions to access this page."
 msgstr "Nemáte dostatečná oprávnění pro přístup k této stránce."
 
@@ -340,6 +342,7 @@ msgstr[1] "%d uživatelé"
 msgstr[2] "%d uživatelů"
 
 #: src/admin/class-users-management.php:305
+#: src/modules/Recruitment/admin/class-appearances-page.php:300
 msgid "Name"
 msgstr "Jméno"
 
@@ -529,18 +532,120 @@ msgstr ""
 msgid "Plugin configuration error"
 msgstr "Chyba v konfiguraci pluginu"
 
-#: src/modules/Recruitment/admin/class-settings.php:64
+#: src/modules/Recruitment/admin/class-appearances-page.php:147
+#: src/modules/Recruitment/frontend/class-blocks.php:303
+msgid "Clubroom"
+msgid_plural "Clubrooms"
+msgstr[0] "Klubovna"
+msgstr[1] "Klubovny"
+msgstr[2] "Klubovny"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:156
+msgid "1st troop Petrklíč"
+msgstr "1. oddíl Petrklíč"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:159
+msgid "Come to any meeting and see for yourself."
+msgstr "Přijď se podívat na kteroukoli schůzku."
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:179
+msgid "Tuesday"
+msgstr "Úterý"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:189
+msgid "Wednesday"
+msgstr "Středa"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:202
+msgid "5th water troop Racek"
+msgstr "5. vodní oddíl Racek"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:218
+msgid "Thursday"
+msgstr "Čtvrtek"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:254
+msgid "Appearance of the blocks"
+msgstr "Vzhled bloků"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:255
+msgid ""
+"The appearance sets the colors of the \"Recruitment\" and \"Map of the "
+"units\" blocks. The fonts are taken from the theme of the site. Choose the "
+"default appearance above, or the appearance of a single block in its "
+"settings in the editor. To change the colors, copy an appearance and edit "
+"the copy."
+msgstr ""
+"Vzhled určuje barvy bloků „Nábor“ a „Mapa oddílů“. Písmo se přebírá ze "
+"šablony webu. Výchozí vzhled zvolíte výše, vzhled jednoho bloku v jeho "
+"nastavení v editoru. Pro vlastní barvy zkopírujte některý vzhled a kopii "
+"upravte."
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:259
+msgid "Default"
+msgstr "Výchozí"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:264
+msgid "Edit"
+msgstr "Upravit"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:266
+msgid "Copy and edit"
+msgstr "Zkopírovat a upravit"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:266
+msgid "Copy"
+msgstr "Zkopírovat"
+
+#. translators: %s: The name of the appearance
+#: src/modules/Recruitment/admin/class-appearances-page.php:269
+#, php-format
+msgid ""
+"Delete the appearance \"%s\"? Blocks with this appearance get the default "
+"appearance."
+msgstr "Smazat vzhled „%s“? Bloky s tímto vzhledem dostanou výchozí vzhled."
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:270
+msgid "Delete"
+msgstr "Smazat"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:291
+msgid "Back to the recruitment"
+msgstr "Zpět na nábory"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:293
+msgid "The appearance was saved."
+msgstr "Vzhled je uložený."
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:297
+msgid "Edit the appearance"
+msgstr "Úprava vzhledu"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:310
+#: src/modules/Recruitment/class-appearances.php:95
+msgid "Like the theme of the site"
+msgstr "Podle šablony webu"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:316
+msgid "Save the appearance"
+msgstr "Uložit vzhled"
+
+#: src/modules/Recruitment/admin/class-appearances-page.php:318
+msgid "Preview"
+msgstr "Náhled"
+
 #: src/modules/Recruitment/admin/class-settings.php:65
-#: src/modules/Recruitment/admin/class-settings.php:98
+#: src/modules/Recruitment/admin/class-settings.php:66
+#: src/modules/Recruitment/admin/class-settings.php:103
 msgctxt "admin page"
 msgid "Recruitment"
 msgstr "Nábory"
 
-#: src/modules/Recruitment/admin/class-settings.php:121
+#: src/modules/Recruitment/admin/class-settings.php:129
 msgid "Recruitment and map of the units"
 msgstr "Nábor a mapa oddílů"
 
-#: src/modules/Recruitment/admin/class-settings.php:123
+#: src/modules/Recruitment/admin/class-settings.php:131
 msgid ""
 "The recruitment information that the units fill in SkautIS on the "
 "\"Jednotka: Nábory\" tab can be shown on the site with the \"Recruitment\" "
@@ -549,19 +654,23 @@ msgstr ""
 "Informace o náboru, které jednotky vyplňují ve SkautISu na záložce "
 "„Jednotka: Nábory“, můžete zobrazit na webu bloky „Nábor“ a „Mapa oddílů“."
 
-#: src/modules/Recruitment/admin/class-settings.php:130
+#: src/modules/Recruitment/admin/class-settings.php:138
 msgid "Registration number of the unit"
 msgstr "Registrační číslo jednotky"
 
-#: src/modules/Recruitment/admin/class-settings.php:139
+#: src/modules/Recruitment/admin/class-settings.php:147
 msgid "Mapy.com API key"
 msgstr "API klíč Mapy.com"
 
-#: src/modules/Recruitment/admin/class-settings.php:148
+#: src/modules/Recruitment/admin/class-settings.php:156
+msgid "Default appearance of the blocks"
+msgstr "Výchozí vzhled bloků"
+
+#: src/modules/Recruitment/admin/class-settings.php:165
 msgid "Data from SkautIS"
 msgstr "Data ze SkautISu"
 
-#: src/modules/Recruitment/admin/class-settings.php:188
+#: src/modules/Recruitment/admin/class-settings.php:217
 msgid ""
 "The registration number of the group (středisko) or the troop (oddíl), e.g. "
 "112.31. For a group, the recruitment of all its troops is shown."
@@ -569,7 +678,15 @@ msgstr ""
 "Registrační číslo střediska nebo oddílu, např. 112.31. U střediska se "
 "zobrazí nábor všech jeho oddílů."
 
-#: src/modules/Recruitment/admin/class-settings.php:200
+#: src/modules/Recruitment/admin/class-settings.php:232
+msgid ""
+"For the templates of Dobrý skautský web, choose the appearance of your "
+"template. A block can have its own appearance in its settings in the editor."
+msgstr ""
+"Pro šablony Dobrého skautského webu zvolte vzhled své šablony. Blok může mít"
+" vlastní vzhled v nastavení bloku v editoru."
+
+#: src/modules/Recruitment/admin/class-settings.php:244
 msgid ""
 "The map uses the maps of Mapy.com with this key. You get a free key after "
 "registering at developer.mapy.com. Without the key, the map uses "
@@ -578,11 +695,11 @@ msgstr ""
 "S tímto klíčem mapa používá podklady Mapy.com. Klíč získáte zdarma po "
 "registraci na developer.mapy.com. Bez klíče mapa použije OpenStreetMap."
 
-#: src/modules/Recruitment/admin/class-settings.php:212
+#: src/modules/Recruitment/admin/class-settings.php:256
 msgid "Fill in the registration number of the unit and save the settings."
 msgstr "Vyplňte registrační číslo jednotky a uložte nastavení."
 
-#: src/modules/Recruitment/admin/class-settings.php:218
+#: src/modules/Recruitment/admin/class-settings.php:262
 msgid ""
 "No recruitment information could be loaded from SkautIS. Check the "
 "registration number and that the App ID of this site is allowed to use the "
@@ -592,29 +709,29 @@ msgstr ""
 "registrační číslo a to, že App ID tohoto webu má povolené služby SkautISu "
 "pro nábor."
 
-#: src/modules/Recruitment/admin/class-settings.php:221
+#: src/modules/Recruitment/admin/class-settings.php:265
 msgid "Unit"
 msgstr "Jednotka"
 
-#: src/modules/Recruitment/admin/class-settings.php:222
+#: src/modules/Recruitment/admin/class-settings.php:266
 msgid "Recruitment categories"
 msgstr "Náborové kategorie"
 
-#: src/modules/Recruitment/admin/class-settings.php:223
-#: src/modules/Recruitment/frontend/class-blocks.php:235
+#: src/modules/Recruitment/admin/class-settings.php:267
+#: src/modules/Recruitment/frontend/class-blocks.php:296
 msgid "Meetings"
 msgstr "Schůzky"
 
-#: src/modules/Recruitment/admin/class-settings.php:224
+#: src/modules/Recruitment/admin/class-settings.php:268
 msgid "Clubrooms on the map"
 msgstr "Klubovny na mapě"
 
-#: src/modules/Recruitment/admin/class-settings.php:244
+#: src/modules/Recruitment/admin/class-settings.php:288
 msgid "These SkautIS methods could not be called:"
 msgstr "Tyto metody SkautISu se nepodařilo zavolat:"
 
 #. translators: %s: The date and time
-#: src/modules/Recruitment/admin/class-settings.php:247
+#: src/modules/Recruitment/admin/class-settings.php:291
 #, php-format
 msgid ""
 "Loaded on %s. The data are loaded again once a day and after saving the "
@@ -622,34 +739,106 @@ msgid ""
 msgstr ""
 "Načteno %s. Data se znovu načítají jednou denně a po uložení nastavení."
 
-#: src/modules/Recruitment/frontend/class-blocks.php:71
+#: src/modules/Recruitment/class-appearances.php:61
+msgid "Accent (map markers, links)"
+msgstr "Zvýraznění (špendlíky na mapě, odkazy)"
+
+#: src/modules/Recruitment/class-appearances.php:62
+msgid "Text of the labels \"for whom\""
+msgstr "Text štítků „pro koho“"
+
+#: src/modules/Recruitment/class-appearances.php:63
+msgid "Background of the labels \"for whom\""
+msgstr "Pozadí štítků „pro koho“"
+
+#: src/modules/Recruitment/class-appearances.php:64
+msgid "Map markers of water troops"
+msgstr "Špendlíky vodních oddílů"
+
+#: src/modules/Recruitment/class-appearances.php:65
+msgid "Text of the label \"Water troop\""
+msgstr "Text štítku „Vodní oddíl“"
+
+#: src/modules/Recruitment/class-appearances.php:66
+msgid "Background of the label \"Water troop\""
+msgstr "Pozadí štítku „Vodní oddíl“"
+
+#: src/modules/Recruitment/class-appearances.php:67
+msgid "Text"
+msgstr "Text"
+
+#: src/modules/Recruitment/class-appearances.php:68
+msgid "Names of the units"
+msgstr "Názvy oddílů"
+
+#: src/modules/Recruitment/class-appearances.php:69
+msgid "Background of the cards"
+msgstr "Pozadí karet"
+
+#: src/modules/Recruitment/class-appearances.php:70
+msgid "Border of the cards"
+msgstr "Okraj karet"
+
+#: src/modules/Recruitment/class-appearances.php:71
+msgid "Rounded corners (px)"
+msgstr "Zaoblení rohů (px)"
+
+#: src/modules/Recruitment/class-appearances.php:112
+msgid "DSW1 – troop, blue"
+msgstr "DSW1 – oddíl, modrá"
+
+#: src/modules/Recruitment/class-appearances.php:129
+msgid "DSW2 – troop, orange"
+msgstr "DSW2 – oddíl, oranžová"
+
+#: src/modules/Recruitment/class-appearances.php:146
+msgid "DSW3 – group, green"
+msgstr "DSW3 – středisko, zelená"
+
+#: src/modules/Recruitment/class-appearances.php:232
+msgid "My appearance"
+msgstr "Můj vzhled"
+
+#. translators: %s: The name of the copied appearance
+#: src/modules/Recruitment/class-appearances.php:257
+#, php-format
+msgid "%s (copy)"
+msgstr "%s (kopie)"
+
+#: src/modules/Recruitment/frontend/class-blocks.php:73
 msgid "Recruitment"
 msgstr "Nábor"
 
-#: src/modules/Recruitment/frontend/class-blocks.php:72
+#: src/modules/Recruitment/frontend/class-blocks.php:74
 msgid ""
 "The recruitment information of the units from SkautIS: for whom, meetings "
 "and clubrooms."
 msgstr "Informace o náboru oddílů ze SkautISu: pro koho, schůzky a klubovny."
 
-#: src/modules/Recruitment/frontend/class-blocks.php:89
+#: src/modules/Recruitment/frontend/class-blocks.php:97
 msgid "Map of the units"
 msgstr "Mapa oddílů"
 
-#: src/modules/Recruitment/frontend/class-blocks.php:90
+#: src/modules/Recruitment/frontend/class-blocks.php:98
 msgid ""
 "A map with the clubrooms of the units from SkautIS and their recruitment "
 "information."
 msgstr "Mapa s klubovnami oddílů ze SkautISu a informacemi o náboru."
 
-#: src/modules/Recruitment/frontend/class-blocks.php:126
+#. translators: %s: The name of the default appearance
+#: src/modules/Recruitment/frontend/class-blocks.php:134
+#, php-format
+msgid "Default (%s)"
+msgstr "Výchozí (%s)"
+
+#: src/modules/Recruitment/frontend/class-blocks.php:171
 msgid ""
 "Fill in the registration number of the unit on the \"Recruitment\" page in "
 "the SkautIS menu."
 msgstr ""
 "Vyplňte registrační číslo jednotky na stránce „Nábory“ v menu SkautIS."
 
-#: src/modules/Recruitment/frontend/class-blocks.php:127
+#: src/modules/Recruitment/frontend/class-blocks.php:172
 msgid ""
 "No recruitment information could be loaded from SkautIS. See the "
 "\"Recruitment\" page in the SkautIS menu."
@@ -657,61 +846,54 @@ msgstr ""
 "Ze SkautISu se nepodařilo načíst žádné informace o náboru. Podívejte se na "
 "stránku „Nábory“ v menu SkautIS."
 
-#: src/modules/Recruitment/frontend/class-blocks.php:140
+#: src/modules/Recruitment/frontend/class-blocks.php:185
 msgid "Boys"
 msgstr "Kluci"
 
-#: src/modules/Recruitment/frontend/class-blocks.php:143
+#: src/modules/Recruitment/frontend/class-blocks.php:188
 msgid "Girls"
 msgstr "Holky"
 
-#: src/modules/Recruitment/frontend/class-blocks.php:146
+#: src/modules/Recruitment/frontend/class-blocks.php:191
 msgid "Boys and girls"
 msgstr "Kluci i holky"
 
 #. translators: 1: The minimal age 2: The maximal age
-#: src/modules/Recruitment/frontend/class-blocks.php:152
+#: src/modules/Recruitment/frontend/class-blocks.php:197
 #, php-format
 msgid "%1$d–%2$d years"
 msgstr "%1$d–%2$d let"
 
 #. translators: %d: The minimal age
-#: src/modules/Recruitment/frontend/class-blocks.php:155
+#: src/modules/Recruitment/frontend/class-blocks.php:200
 #, php-format
 msgid "from %d years"
 msgstr "od %d let"
 
 #. translators: %d: The maximal age
-#: src/modules/Recruitment/frontend/class-blocks.php:158
+#: src/modules/Recruitment/frontend/class-blocks.php:203
 #, php-format
 msgid "up to %d years"
 msgstr "do %d let"
 
-#: src/modules/Recruitment/frontend/class-blocks.php:208
+#: src/modules/Recruitment/frontend/class-blocks.php:253
 msgid "Water troop"
 msgstr "Vodní oddíl"
 
-#: src/modules/Recruitment/frontend/class-blocks.php:242
-msgid "Clubroom"
-msgid_plural "Clubrooms"
-msgstr[0] "Klubovna"
-msgstr[1] "Klubovny"
-msgstr[2] "Klubovny"
-
-#: src/modules/Recruitment/frontend/class-blocks.php:267
+#: src/modules/Recruitment/frontend/class-blocks.php:328
 msgid "Seznam.cz a.s. and others"
 msgstr "Seznam.cz a.s. a další"
 
-#: src/modules/Recruitment/frontend/class-blocks.php:275
+#: src/modules/Recruitment/frontend/class-blocks.php:336
 msgid "OpenStreetMap contributors"
 msgstr "přispěvatelé OpenStreetMap"
 
-#: src/modules/Recruitment/frontend/class-blocks.php:317
+#: src/modules/Recruitment/frontend/class-blocks.php:378
 msgid "More about the recruitment"
 msgstr "Více o náboru"
 
 #. translators: %d: The number of the clubrooms
-#: src/modules/Recruitment/frontend/class-blocks.php:342
+#: src/modules/Recruitment/frontend/class-blocks.php:403
 #, php-format
 msgid "Map of the units with %d clubroom. The map is shown on the site."
 msgid_plural ""
@@ -1375,7 +1557,15 @@ msgstr "Propojit %s s účtem ve WordPressu"
 msgid "%1$d of %2$d users"
 msgstr "%1$d z %2$d uživatelů"
 
-#: modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.js:20
+#: modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.js:11
+msgid "The appearances are managed in SkautIS → Recruitment."
+msgstr "Vzhledy se spravují v SkautIS → Nábory."
+
+#: modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.js:12
+msgid "Appearance"
+msgstr "Vzhled"
+
+#: modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.js:35
 msgid "Height of the map (px)"
 msgstr "Výška mapy (px)"
 
