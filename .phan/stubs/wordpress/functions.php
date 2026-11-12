@@ -251,3 +251,9 @@ function wpautop( $text, $br = true ): string {
  */
 function has_block( $block_name, $post = null ): bool {
 }
+
+/**
+ * @return string|false
+ */
+function wp_get_referer() {
+}

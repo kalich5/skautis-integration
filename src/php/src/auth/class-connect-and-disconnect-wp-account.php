@@ -122,9 +122,9 @@ final class Connect_And_Disconnect_WP_Account {
 			}
 		}
 
-		$user_detail = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail();
+		$user_detail = $this->skautis_gateway->get_user_detail();
 
-		if ( $user_detail && isset( $user_detail->ID ) && $user_detail->ID > 0 ) {
+		if ( ! is_null( $user_detail ) && intval( $user_detail->ID ) > 0 ) {
 			$this->set_skautis_user_id_to_wp_account( get_current_user_id(), $user_detail->ID );
 		}
 	}

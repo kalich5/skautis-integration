@@ -140,10 +140,10 @@ class Role implements Rule {
 	 */
 	public function get_values(): array {
 		$values = array();
-		$roles  = $this->skautis_gateway->get_skautis_instance()->UserManagement->RoleAll();
-
-		foreach ( $roles as $role ) {
-			$values[ strval( $role->ID ) ] = $role->DisplayName;
+		foreach ( $this->skautis_gateway->call_list( 'UserManagement', 'RoleAll' ) as $role ) {
+			if ( isset( $role->ID, $role->DisplayName ) ) {
+				$values[ strval( $role->ID ) ] = strval( $role->DisplayName );
+			}
 		}
 
 		return $values;
@@ -181,31 +181,28 @@ class Role implements Rule {
 			return $user_roles;
 		}
 
-		$user_roles = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserRoleAll(
+		$user_detail = $this->skautis_gateway->get_user_detail();
+		if ( is_null( $user_detail ) ) {
+			return array();
+		}
+		$user_roles = $this->skautis_gateway->call_list(
+			'UserManagement',
+			'UserRoleAll',
 			array(
 				'ID_Login' => $this->skautis_gateway->get_skautis_instance()->getUser()->getLoginId(),
-				'ID_User'  => $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail()->ID,
+				'ID_User'  => $user_detail->ID,
 				'IsActive' => true,
 			)
 		);
 
 		$result = array();
 		foreach ( $user_roles as $user_role ) {
-			try {
-				$unit_detail = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->UnitDetail(
-					array(
-						'ID' => $user_role->ID_Unit,
-					)
-				);
-
-				if ( $unit_detail ) {
-					if ( ! isset( $result[ $user_role->ID_Role ] ) ) {
-						$result[ intval( $user_role->ID_Role ) ] = array();
-					}
-					$result[ intval( $user_role->ID_Role ) ][] = $unit_detail->RegistrationNumber;
-				}
-			} catch ( \Exception $_ ) {
+			if ( ! isset( $user_role->ID_Unit, $user_role->ID_Role ) ) {
 				continue;
+			}
+			$unit_detail = $this->skautis_gateway->call( 'OrganizationUnit', 'UnitDetail', array( 'ID' => $user_role->ID_Unit ) );
+			if ( is_object( $unit_detail ) && isset( $unit_detail->RegistrationNumber ) ) {
+				$result[ intval( $user_role->ID_Role ) ][] = strval( $unit_detail->RegistrationNumber );
 			}
 		}
 
