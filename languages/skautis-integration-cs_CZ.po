@@ -706,12 +706,12 @@ msgstr "Seznam.cz a.s. a další"
 msgid "OpenStreetMap contributors"
 msgstr "přispěvatelé OpenStreetMap"
 
-#: src/modules/Recruitment/frontend/class-blocks.php:315
+#: src/modules/Recruitment/frontend/class-blocks.php:317
 msgid "More about the recruitment"
 msgstr "Více o náboru"
 
 #. translators: %d: The number of the clubrooms
-#: src/modules/Recruitment/frontend/class-blocks.php:340
+#: src/modules/Recruitment/frontend/class-blocks.php:342
 #, php-format
 msgid "Map of the units with %d clubroom. The map is shown on the site."
 msgid_plural ""

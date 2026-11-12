@@ -157,28 +157,24 @@ final class Recruitment_Data {
 	/**
 	 * Calls a SkautIS method of the OrganizationUnit web service and returns the response as a list of objects.
 	 *
+	 * The blocks are on public pages, so the call never breaks them (see Skautis_Gateway::call()); a method that the App ID may not use is also shown in the notice in the administration.
+	 *
 	 * @param string               $method The name of the method.
 	 * @param array<string, mixed> $args The arguments of the method.
 	 *
-	 * @return array<object>|null The objects or null when the call failed.
+	 * @return array<\stdClass>|null The objects or null when the call failed.
 	 */
 	private function call( string $method, array $args ) {
-		try {
-			$response = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->$method( $args );
-		} catch ( \Throwable $e ) {
-			// The blocks are on public pages, so no error of SkautIS or of the SOAP client may break them.
-			Helpers::log_skautis_response( $method . ' (error)', $e->getMessage() );
+		$response = $this->skautis_gateway->call_list( 'OrganizationUnit', $method, $args );
+		if ( $this->skautis_gateway->last_call_failed() ) {
 			$this->errors[] = $method;
 			return null;
 		}
 		Helpers::log_skautis_response( $method, $response );
 
-		if ( is_object( $response ) ) {
-			$response = array( $response );
-		}
-
-		return is_array( $response ) ? array_values( array_filter( $response, 'is_object' ) ) : array();
+		return $response;
 	}
+
 
 	/**
 	 * Loads the unit of the site, its child units and their recruitment information from SkautIS.
