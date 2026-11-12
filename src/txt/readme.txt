@@ -51,6 +51,7 @@ See our [documentation](https://napoveda.skaut.cz/skautis/skautis-integration) (
 * The list of rules shows where each rule is used, the rule editor matches the WordPress administration
 * The registration rules use the whole width of the screen
 * New "Recruitment" and "Map of the units" blocks show the recruitment information of the units from SkautIS, with maps from Mapy.com or OpenStreetMap
+* Appearances of the recruitment blocks for the Dobrý skautský web templates (DSW1, DSW2, DSW3) and custom appearances, chosen for the whole site or for each block
 * The SkautIS login is shown in its own card below the login form
 * A SkautIS method that the App ID is not allowed to use no longer breaks the site; the administration shows which methods to allow
 * English source texts, translatable on translate.wordpress.org

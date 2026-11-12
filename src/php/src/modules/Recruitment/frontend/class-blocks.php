@@ -11,6 +11,7 @@ namespace Skautis_Integration\Modules\Recruitment\Frontend;
 
 use PHPMD\Attribute\SuppressWarnings;
 use PHPMD\Rule\Design\ExcessiveClassComplexity;
+use Skautis_Integration\Modules\Recruitment\Appearances;
 use Skautis_Integration\Modules\Recruitment\Recruitment_Data;
 use Skautis_Integration\Utils\Helpers;
 
@@ -63,6 +64,7 @@ final class Blocks {
 		Helpers::register_style( 'modules_recruitment', 'modules/Recruitment/frontend/css/skautis-modules-recruitment.min.css' );
 		Helpers::register_script( 'modules_recruitment_blocks', 'modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.min.js', array( 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-server-side-render' ) );
 		wp_set_script_translations( SKAUTIS_INTEGRATION_NAME . '_modules_recruitment_blocks', 'skautis-integration' );
+		wp_add_inline_script( SKAUTIS_INTEGRATION_NAME . '_modules_recruitment_blocks', 'var skautisRecruitmentAppearances = ' . wp_json_encode( self::get_appearance_options() ) . ';', 'before' );
 
 		register_block_type(
 			self::RECRUITMENT_BLOCK,
@@ -72,6 +74,12 @@ final class Blocks {
 				'description'           => __( 'The recruitment information of the units from SkautIS: for whom, meetings and clubrooms.', 'skautis-integration' ),
 				'category'              => 'widgets',
 				'icon'                  => 'groups',
+				'attributes'            => array(
+					'appearance' => array(
+						'type'    => 'string',
+						'default' => '',
+					),
+				),
 				'supports'              => array(
 					'align' => array( 'wide', 'full' ),
 					'html'  => false,
@@ -91,9 +99,13 @@ final class Blocks {
 				'category'              => 'widgets',
 				'icon'                  => 'location-alt',
 				'attributes'            => array(
-					'height' => array(
+					'height'     => array(
 						'type'    => 'number',
 						'default' => 400,
+					),
+					'appearance' => array(
+						'type'    => 'string',
+						'default' => '',
 					),
 				),
 				'supports'              => array(
@@ -106,6 +118,39 @@ final class Blocks {
 				'render_callback'       => array( $this, 'render_map' ),
 			)
 		);
+	}
+
+	/**
+	 * Returns the appearances for the select in the block settings.
+	 *
+	 * @return array<array{value: string, label: string}> The appearances, the first one is the default appearance of the site.
+	 */
+	private static function get_appearance_options(): array {
+		$default = Appearances::get( Appearances::get_default_id() );
+		$options = array(
+			array(
+				'value' => '',
+				/* translators: %s: The name of the default appearance */
+				'label' => sprintf( __( 'Default (%s)', 'skautis-integration' ), is_null( $default ) ? '' : $default['name'] ),
+			),
+		);
+		foreach ( Appearances::get_all() as $id => $appearance ) {
+			$options[] = array(
+				'value' => $id,
+				'label' => $appearance['name'],
+			);
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Returns the inline style of a block with the CSS custom properties of its appearance.
+	 *
+	 * @param array<string, mixed> $attributes The attributes of the block.
+	 */
+	private static function get_appearance_style( array $attributes ): string {
+		return Appearances::get_style( isset( $attributes['appearance'] ) && is_string( $attributes['appearance'] ) ? $attributes['appearance'] : '' );
 	}
 
 	/**
@@ -217,15 +262,31 @@ final class Blocks {
 	/**
 	 * Renders the "Recruitment" block.
 	 *
+	 * @param array<string, mixed> $attributes The attributes of the block.
+	 *
 	 * @return string The HTML code of the block.
 	 */
-	public function render_recruitment(): string {
+	public function render_recruitment( array $attributes ): string {
 		$units = $this->recruitment_data->get_units();
 		if ( count( $units ) === 0 ) {
 			return self::get_empty_notice();
 		}
 
-		$html = '<div ' . get_block_wrapper_attributes( array( 'class' => 'skautis-recruitment' ) ) . '>';
+		return '<div ' . get_block_wrapper_attributes(
+			array(
+				'class' => 'skautis-recruitment',
+				'style' => self::get_appearance_style( $attributes ),
+			)
+		) . '>' . self::render_units( $units ) . '</div>';
+	}
+
+	/**
+	 * Returns the HTML code of the cards of the units, used by the block and by the preview of the appearances.
+	 *
+	 * @param array<array{id: int, name: string, registration_number: string, is_water: bool, note: string, categories: array<array{age_from: int, age_to: int, sex: string, note: string, meeting: int}>, meetings: array<array{id: int, day: string, day_order: int, time_from: string, time_to: string, periodicity: string, place: int, place_name: string}>, places: array<array{id: int, name: string, address: string, lat: float, lng: float}>}> $units The units.
+	 */
+	public static function render_units( array $units ): string {
+		$html = '';
 		foreach ( $units as $unit ) {
 			$html .= '<section class="skautis-recruitment-unit" id="skautis-unit-' . esc_attr( (string) $unit['id'] ) . '">';
 			$html .= '<h3>' . esc_html( $unit['name'] ) . '</h3>';
@@ -251,7 +312,7 @@ final class Blocks {
 			$html .= '</section>';
 		}
 
-		return $html . '</div>';
+		return $html;
 	}
 
 	/**
@@ -341,7 +402,12 @@ final class Blocks {
 			/* translators: %d: The number of the clubrooms */
 			$text = sprintf( _n( 'Map of the units with %d clubroom. The map is shown on the site.', 'Map of the units with %d clubrooms. The map is shown on the site.', count( $markers ), 'skautis-integration' ), count( $markers ) );
 
-			return '<div ' . get_block_wrapper_attributes( array( 'class' => 'skautis-unit-map-preview' ) ) . ' style="height: ' . esc_attr( (string) $height ) . 'px;"><p>' . esc_html( $text ) . '</p></div>';
+			return '<div ' . get_block_wrapper_attributes(
+				array(
+					'class' => 'skautis-unit-map-preview',
+					'style' => 'height: ' . $height . 'px',
+				)
+			) . '><p>' . esc_html( $text ) . '</p></div>';
 		}
 
 		$data = array(
@@ -349,6 +415,11 @@ final class Blocks {
 			'tiles'   => self::get_tiles(),
 		);
 
-		return '<div ' . get_block_wrapper_attributes( array( 'class' => 'skautis-unit-map' ) ) . '><div class="skautis-unit-map-canvas" style="height: ' . esc_attr( (string) $height ) . 'px;" data-skautis-map="' . esc_attr( (string) wp_json_encode( $data ) ) . '"></div></div>';
+		return '<div ' . get_block_wrapper_attributes(
+			array(
+				'class' => 'skautis-unit-map',
+				'style' => self::get_appearance_style( $attributes ),
+			)
+		) . '><div class="skautis-unit-map-canvas" style="height: ' . esc_attr( (string) $height ) . 'px;" data-skautis-map="' . esc_attr( (string) wp_json_encode( $data ) ) . '"></div></div>';
 	}
 }

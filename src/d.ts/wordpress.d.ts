@@ -6,6 +6,7 @@
 
 interface WPBlockAttributes {
 	[key: string]: unknown;
+	appearance?: string;
 	height?: number;
 	skautisRules?: Array<number>;
 	skautisVisibilityMode?: string;
@@ -81,6 +82,7 @@ declare const wp: {
 		PanelBody: WPComponent;
 		RadioControl: WPComponent;
 		RangeControl: WPComponent;
+		SelectControl: WPComponent;
 	};
 	compose: {
 		createHigherOrderComponent<P>(

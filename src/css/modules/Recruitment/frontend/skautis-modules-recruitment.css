@@ -1,16 +1,21 @@
 /*
  * The "Recruitment" and "Map of the units" blocks. The styles are light, so
- * that the blocks take the fonts and colors of the theme.
+ * that the blocks take the fonts and colors of the theme. An appearance
+ * (Appearances::get_style()) sets the --skautis-rec-* custom properties on
+ * the block, the fallbacks are the look without an appearance.
  */
 .skautis-recruitment-unit {
 	margin: 0 0 1.25em;
 	padding: 1em 1.25em;
-	border: 1px solid rgb(0, 0, 0, 15%);
-	border-radius: 6px;
+	color: var(--skautis-rec-text, inherit);
+	background: var(--skautis-rec-card-bg, transparent);
+	border: 1px solid var(--skautis-rec-border, rgb(0, 0, 0, 15%));
+	border-radius: var(--skautis-rec-radius, 6px);
 }
 
 .skautis-recruitment-unit h3 {
 	margin: 0 0 0.4em;
+	color: var(--skautis-rec-heading, inherit);
 }
 
 .skautis-recruitment-tags {
@@ -24,14 +29,14 @@
 	margin: 0 0.4em 0.4em 0;
 	padding: 0.1em 0.7em;
 	font-size: 0.85em;
-	color: #135e96;
-	background: #f0f6fc;
+	color: var(--skautis-rec-tag-text, #135e96);
+	background: var(--skautis-rec-tag-bg, #f0f6fc);
 	border-radius: 1em;
 }
 
 .skautis-recruitment-tags li.is-water {
-	color: #0a5c63;
-	background: #e6f4f5;
+	color: var(--skautis-rec-water-text, #0a5c63);
+	background: var(--skautis-rec-water-bg, #e6f4f5);
 }
 
 .skautis-recruitment-details {
@@ -75,7 +80,7 @@
 .skautis-unit-map-canvas {
 	z-index: 0;
 	width: 100%;
-	border-radius: 6px;
+	border-radius: var(--skautis-rec-radius, 6px);
 }
 
 .skautis-unit-map-marker span {
@@ -84,7 +89,7 @@
 	left: 0;
 	width: 30px;
 	height: 30px;
-	background-color: #2271b1;
+	background-color: var(--skautis-rec-accent, #2271b1);
 	background-image: url(../../../../src/frontend/public/img/lilie.png);
 	background-repeat: no-repeat;
 	background-position: center;
@@ -101,17 +106,21 @@
 	position: absolute;
 	top: 26px;
 	left: 8px;
-	border-top: 9px solid #2271b1;
+	border-top: 9px solid var(--skautis-rec-accent, #2271b1);
 	border-right: 5px solid transparent;
 	border-left: 5px solid transparent;
 }
 
 .skautis-unit-map-marker.is-water span {
-	background-color: #0a7c86;
+	background-color: var(--skautis-rec-water, #0a7c86);
 }
 
 .skautis-unit-map-marker.is-water span::after {
-	border-top-color: #0a7c86;
+	border-top-color: var(--skautis-rec-water, #0a7c86);
+}
+
+.skautis-unit-map .leaflet-popup-content a {
+	color: var(--skautis-rec-accent, inherit);
 }
 
 .skautis-unit-map .leaflet-popup-content {
