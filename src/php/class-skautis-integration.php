@@ -55,6 +55,11 @@ class Skautis_Integration {
 		require __DIR__ . '/src/modules/Recruitment/class-appearances.php';
 		require __DIR__ . '/src/modules/Recruitment/class-recruitment-data.php';
 		require __DIR__ . '/src/modules/Recruitment/class-recruitment.php';
+		require __DIR__ . '/src/modules/Unit/admin/class-settings.php';
+		require __DIR__ . '/src/modules/Unit/frontend/class-unit-block.php';
+		require __DIR__ . '/src/modules/Unit/class-geocoder.php';
+		require __DIR__ . '/src/modules/Unit/class-unit-data.php';
+		require __DIR__ . '/src/modules/Unit/class-unit.php';
 		require __DIR__ . '/src/modules/Visibility/admin/class-admin.php';
 		require __DIR__ . '/src/modules/Visibility/admin/class-block-editor.php';
 		require __DIR__ . '/src/modules/Visibility/admin/class-metabox.php';
