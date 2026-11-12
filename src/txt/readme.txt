@@ -78,7 +78,8 @@ See our [documentation](https://napoveda.skaut.cz/skautis/skautis-integration) (
 * The registration rules use the whole width of the screen
 * New "Recruitment" and "Map of the units" blocks show the recruitment information of the units from SkautIS, with maps from Mapy.com or OpenStreetMap
 * New "Unit" block shows the public information about a unit from SkautIS: the seat with a map, the public contacts, the statutory body, the bank account and the child units
-* Appearances of the recruitment blocks for the Dobrý skautský web templates (DSW1, DSW2, DSW3) and custom appearances, chosen for the whole site or for each block
+* Appearances of the recruitment and unit blocks for the Dobrý skautský web templates (DSW1, DSW2, DSW3) and custom appearances, chosen for the whole site or for each block
+* The "Recruitment" and "Unit" blocks can turn each of their parts on or off
 * The SkautIS login is shown in its own card below the login form
 * Each user can use their photo from SkautIS as their profile picture; it is downloaded only when the user chooses it in their profile
 * Privacy: a suggested privacy policy text, export and erasure of the personal data stored by the plugin, the external services described in the readme

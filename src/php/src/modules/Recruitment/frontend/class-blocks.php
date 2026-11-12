@@ -42,6 +42,19 @@ final class Blocks {
 	const MAP_BLOCK = 'skautis-integration/unit-map';
 
 	/**
+	 * The parts of the cards of the "Recruitment" block in the form `attribute => shown by default`.
+	 */
+	const RECRUITMENT_ITEMS = array(
+		'showName'               => true,
+		'showRegistrationNumber' => false,
+		'showWater'              => true,
+		'showCategories'         => true,
+		'showMeetings'           => true,
+		'showClubrooms'          => true,
+		'showNote'               => true,
+	);
+
+	/**
 	 * A link to the Recruitment_Data service instance.
 	 *
 	 * @var Recruitment_Data
@@ -88,22 +101,30 @@ final class Blocks {
 		Helpers::register_style( 'modules_recruitment', 'modules/Recruitment/frontend/css/skautis-modules-recruitment.min.css' );
 		Helpers::register_script( 'modules_recruitment_blocks', 'modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.min.js', array( 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-server-side-render' ) );
 		wp_set_script_translations( SKAUTIS_INTEGRATION_NAME . '_modules_recruitment_blocks', 'skautis-integration' );
-		wp_add_inline_script( SKAUTIS_INTEGRATION_NAME . '_modules_recruitment_blocks', 'var skautisRecruitmentAppearances = ' . wp_json_encode( self::get_appearance_options() ) . ';', 'before' );
+		wp_add_inline_script( SKAUTIS_INTEGRATION_NAME . '_modules_recruitment_blocks', 'var skautisRecruitmentAppearances = ' . wp_json_encode( self::get_appearance_options( Appearances::RECRUITMENT ) ) . ', skautisUnitAppearances = ' . wp_json_encode( self::get_appearance_options( Appearances::UNIT ) ) . ';', 'before' );
+
+		$recruitment_attributes = array(
+			'appearance' => array(
+				'type'    => 'string',
+				'default' => '',
+			),
+		);
+		foreach ( self::RECRUITMENT_ITEMS as $item => $default ) {
+			$recruitment_attributes[ $item ] = array(
+				'type'    => 'boolean',
+				'default' => $default,
+			);
+		}
 
 		register_block_type(
 			self::RECRUITMENT_BLOCK,
-			array(
+			array( // @phpstan-ignore argument.type (The WordPress stubs allow only strings as default values of attributes.)
 				'api_version'           => '3',
 				'title'                 => __( 'Recruitment', 'skautis-integration' ),
 				'description'           => __( 'The recruitment information of the units from SkautIS: for whom, meetings and clubrooms.', 'skautis-integration' ),
 				'category'              => self::CATEGORY,
 				'icon'                  => 'groups',
-				'attributes'            => array(
-					'appearance' => array(
-						'type'    => 'string',
-						'default' => '',
-					),
-				),
+				'attributes'            => $recruitment_attributes,
 				'supports'              => array(
 					'align' => array( 'wide', 'full' ),
 					'html'  => false,
@@ -147,10 +168,12 @@ final class Blocks {
 	/**
 	 * Returns the appearances for the select in the block settings.
 	 *
-	 * @return array<array{value: string, label: string}> The appearances, the first one is the default appearance of the site.
+	 * @param string $context The blocks: Appearances::RECRUITMENT or Appearances::UNIT.
+	 *
+	 * @return array<array{value: string, label: string}> The appearances, the first one is the default appearance of the blocks.
 	 */
-	private static function get_appearance_options(): array {
-		$default = Appearances::get( Appearances::get_default_id() );
+	private static function get_appearance_options( string $context ): array {
+		$default = Appearances::get( Appearances::get_default_id( $context ) );
 		$options = array(
 			array(
 				'value' => '',
@@ -172,9 +195,10 @@ final class Blocks {
 	 * Returns the inline style of a block with the CSS custom properties of its appearance.
 	 *
 	 * @param array<string, mixed> $attributes The attributes of the block.
+	 * @param string               $context The blocks, for the default appearance: Appearances::RECRUITMENT or Appearances::UNIT.
 	 */
-	public static function get_appearance_style( array $attributes ): string {
-		return Appearances::get_style( isset( $attributes['appearance'] ) && is_string( $attributes['appearance'] ) ? $attributes['appearance'] : '' );
+	public static function get_appearance_style( array $attributes, string $context = Appearances::RECRUITMENT ): string {
+		return Appearances::get_style( isset( $attributes['appearance'] ) && is_string( $attributes['appearance'] ) ? $attributes['appearance'] : '', $context );
 	}
 
 	/**
@@ -267,16 +291,28 @@ final class Blocks {
 	}
 
 	/**
+	 * Checks whether a part of the cards of the "Recruitment" block is shown.
+	 *
+	 * @param array<string, mixed> $attributes The attributes of the block.
+	 * @param string               $item The attribute of the part.
+	 */
+	private static function shows( array $attributes, string $item ): bool {
+		return isset( $attributes[ $item ] ) ? true === $attributes[ $item ] : self::RECRUITMENT_ITEMS[ $item ];
+	}
+
+	/**
 	 * Returns the HTML code of the labels of the unit: water troop and the recruitment categories.
 	 *
 	 * @param array{is_water: bool, categories: array<array{age_from: int, age_to: int, sex: string, note: string, meeting: int}>} $unit The unit.
+	 * @param array<string, mixed>                                                                                                 $attributes The attributes of the block.
 	 */
-	private static function get_tags( array $unit ): string {
+	private static function get_tags( array $unit, array $attributes ): string {
 		$tags = array();
-		if ( $unit['is_water'] ) {
+		if ( $unit['is_water'] && self::shows( $attributes, 'showWater' ) ) {
 			$tags[] = '<li class="is-water">' . esc_html__( 'Water troop', 'skautis-integration' ) . '</li>';
 		}
-		foreach ( array_unique( array_map( array( self::class, 'get_category_label' ), $unit['categories'] ) ) as $label ) {
+		$categories = self::shows( $attributes, 'showCategories' ) ? $unit['categories'] : array();
+		foreach ( array_unique( array_map( array( self::class, 'get_category_label' ), $categories ) ) as $label ) {
 			$tags[] = '<li>' . esc_html( $label ) . '</li>';
 		}
 
@@ -301,36 +337,45 @@ final class Blocks {
 				'class' => 'skautis-recruitment',
 				'style' => self::get_appearance_style( $attributes ),
 			)
-		) . '>' . self::render_units( $units ) . '</div>';
+		) . '>' . self::render_units( $units, $attributes ) . '</div>';
 	}
 
 	/**
 	 * Returns the HTML code of the cards of the units, used by the block and by the preview of the appearances.
 	 *
 	 * @param array<array{id: int, name: string, registration_number: string, is_water: bool, note: string, categories: array<array{age_from: int, age_to: int, sex: string, note: string, meeting: int}>, meetings: array<array{id: int, day: string, day_order: int, time_from: string, time_to: string, periodicity: string, place: int, place_name: string}>, places: array<array{id: int, name: string, address: string, lat: float, lng: float}>}> $units The units.
+	 * @param array<string, mixed>                                                                                                                                                                                                                                                                                                                                                                                                                       $attributes The attributes of the block, which choose the shown parts of the cards.
 	 */
-	public static function render_units( array $units ): string {
+	public static function render_units( array $units, array $attributes = array() ): string {
 		$html = '';
 		foreach ( $units as $unit ) {
 			$html .= '<section class="skautis-recruitment-unit" id="skautis-unit-' . esc_attr( (string) $unit['id'] ) . '">';
-			$html .= '<h3>' . esc_html( $unit['name'] ) . '</h3>';
-			$html .= self::get_tags( $unit );
-			$html .= '<dl class="skautis-recruitment-details">';
-			if ( count( $unit['meetings'] ) > 0 ) {
-				$html .= '<dt>' . esc_html__( 'Meetings', 'skautis-integration' ) . '</dt>';
+			$name  = self::shows( $attributes, 'showName' ) ? $unit['name'] : '';
+			if ( self::shows( $attributes, 'showRegistrationNumber' ) && '' !== $unit['registration_number'] ) {
+				$name = '' !== $name ? $name . ' (' . $unit['registration_number'] . ')' : $unit['registration_number'];
+			}
+			if ( '' !== $name ) {
+				$html .= '<h3>' . esc_html( $name ) . '</h3>';
+			}
+			$html   .= self::get_tags( $unit, $attributes );
+			$details = '';
+			if ( self::shows( $attributes, 'showMeetings' ) && count( $unit['meetings'] ) > 0 ) {
+				$details .= '<dt>' . esc_html__( 'Meetings', 'skautis-integration' ) . '</dt>';
 				foreach ( $unit['meetings'] as $meeting ) {
-					$html .= '<dd>' . esc_html( self::get_meeting_label( $meeting, $unit['categories'] ) ) . '</dd>';
+					$details .= '<dd>' . esc_html( self::get_meeting_label( $meeting, $unit['categories'] ) ) . '</dd>';
 				}
 			}
-			$places = array_filter( array_map( array( self::class, 'get_place_label' ), $unit['places'] ) );
+			$places = self::shows( $attributes, 'showClubrooms' ) ? array_filter( array_map( array( self::class, 'get_place_label' ), $unit['places'] ) ) : array();
 			if ( count( $places ) > 0 ) {
-				$html .= '<dt>' . esc_html( _n( 'Clubroom', 'Clubrooms', count( $places ), 'skautis-integration' ) ) . '</dt>';
+				$details .= '<dt>' . esc_html( _n( 'Clubroom', 'Clubrooms', count( $places ), 'skautis-integration' ) ) . '</dt>';
 				foreach ( $places as $place ) {
-					$html .= '<dd>' . esc_html( $place ) . '</dd>';
+					$details .= '<dd>' . esc_html( $place ) . '</dd>';
 				}
 			}
-			$html .= '</dl>';
-			if ( '' !== $unit['note'] ) {
+			if ( '' !== $details ) {
+				$html .= '<dl class="skautis-recruitment-details">' . $details . '</dl>';
+			}
+			if ( self::shows( $attributes, 'showNote' ) && '' !== $unit['note'] ) {
 				$html .= '<div class="skautis-recruitment-note">' . wpautop( esc_html( $unit['note'] ) ) . '</div>';
 			}
 			$html .= '</section>';
