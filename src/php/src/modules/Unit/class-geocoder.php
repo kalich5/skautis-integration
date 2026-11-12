@@ -9,7 +9,7 @@ declare( strict_types=1 );
 
 namespace Skautis_Integration\Modules\Unit;
 
-use Skautis_Integration\Modules\Recruitment\Recruitment_Data;
+use Skautis_Integration\Admin\Maps_Settings;
 
 /**
  * Finds the GPS coordinates of an address, for the map of the seat of a unit.
@@ -26,9 +26,9 @@ final class Geocoder {
 	 * @return array{lat: float, lng: float} The coordinates, zeros when the address was not found.
 	 */
 	public static function geocode( string $address ): array {
-		$key = get_option( Recruitment_Data::MAPY_API_KEY_OPTION, '' );
+		$key = Maps_Settings::get_mapy_api_key();
 
-		return is_string( $key ) && '' !== $key ? self::geocode_mapy( $address, $key ) : self::geocode_nominatim( $address );
+		return '' !== $key ? self::geocode_mapy( $address, $key ) : self::geocode_nominatim( $address );
 	}
 
 	/**

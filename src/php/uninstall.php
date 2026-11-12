@@ -52,6 +52,8 @@ function skautis_integration_uninstall_site() {
 	// defined in src/modules/Recruitment/class-recruitment-data.php.
 	delete_option( 'skautis-integration_recruitment_unit' );
 	delete_option( 'skautis-integration_recruitment_mapy_api_key' );
+	// defined in src/admin/class-maps-settings.php.
+	delete_option( 'skautis-integration_mapy_api_key' );
 	delete_option( 'skautis-integration_recruitment_appearances' );
 	delete_option( 'skautis-integration_recruitment_default_appearance' );
 	delete_transient( 'skautis-integration_recruitment_data' );
