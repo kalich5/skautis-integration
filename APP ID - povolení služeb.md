@@ -78,7 +78,7 @@ Pravidlo „Akce“ používá jen služby z předchozích verzí (Events -> Eve
 <br>
 <b>OrganizationUnit -> OccupationAll</b> - Načíst klubovny jednotky (adresa a GPS pro mapu)
 <br>
-Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, protože nábor vidí i návštěvníci webu. Data se načtou nejvýš jednou denně (a po uložení nastavení na záložce „Nábor a mapa“).
+Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, protože nábor vidí i návštěvníci webu. Data se načtou nejvýš jednou denně (a po uložení nastavení na stránce SkautIS → Nábory).
 
 <b>Jak nové funkce otestovat</b>
 <br>
@@ -90,7 +90,7 @@ Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, prot
 <br>
 4. Pravidlo „Akce“: vytvořte pravidlo s akcí, nastavte ho stránce a vyzkoušejte možnosti „Kdokoli z akce“, „Tým akce“ a „Účastníci (bez týmu akce)“. Do logu se zapíšou řádky EventAllPerson a UserRoleAll.
 <br>
-5. Nábor a mapa: v nastavení SkautIS na záložce „Nábor a mapa“ vyplňte registrační číslo střediska nebo oddílu a uložte. Pod nastavením se ukáže, co se ze SkautISu načetlo. Na stránku vložte bloky „Nábor“ a „Mapa oddílů“. Do logu se zapíšou řádky UnitAll, AdvertisingDetail, AdvertisingCategoryAll, MeetingDateAll a OccupationAll.
+5. Nábor a mapa: v menu SkautIS → Nábory vyplňte registrační číslo střediska nebo oddílu a uložte. Pod nastavením se ukáže, co se ze SkautISu načetlo. Na stránku vložte bloky „Nábor“ a „Mapa oddílů“. Do logu se zapíšou řádky UnitAll, AdvertisingDetail, AdvertisingCategoryAll, MeetingDateAll a OccupationAll.
 
 <b>Jak poznat chybu v logu</b>
 <br>

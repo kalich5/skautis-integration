@@ -9,19 +9,29 @@ declare( strict_types=1 );
 
 namespace Skautis_Integration\Modules\Recruitment\Admin;
 
+use Skautis_Integration\Admin\Settings as Admin_Settings;
+use Skautis_Integration\Admin\Settings_Sections;
 use Skautis_Integration\Modules\Recruitment\Recruitment_Data;
+use Skautis_Integration\Utils\Helpers;
 
 /**
- * Registers and shows the settings of the recruitment information and the map of the units.
+ * Adds the "Recruitment" page to the SkautIS menu, with the settings of the recruitment information and the map of the units.
  *
  * @phan-constructor-used-for-side-effects
  */
 final class Settings {
 
 	/**
-	 * The settings group and page of the settings tab.
+	 * The slug of the administration page, which is also its settings group.
 	 */
 	const PAGE = SKAUTIS_INTEGRATION_NAME . '_recruitment';
+
+	/**
+	 * The hook suffix of the administration page.
+	 *
+	 * @var string
+	 */
+	private static $hook_suffix = '';
 
 	/**
 	 * A link to the Recruitment_Data service instance.
@@ -38,6 +48,66 @@ final class Settings {
 	public function __construct( Recruitment_Data $recruitment_data ) {
 		$this->recruitment_data = $recruitment_data;
 		add_action( 'admin_init', array( $this, 'setup_setting_fields' ) );
+		// After the settings and the user management.
+		add_action( 'admin_menu', array( self::class, 'setup_page' ), 11 );
+		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue_styles' ) );
+	}
+
+	/**
+	 * Adds the page to the SkautIS menu.
+	 *
+	 * @return void
+	 */
+	public static function setup_page() {
+		$hook_suffix = add_submenu_page(
+			SKAUTIS_INTEGRATION_NAME,
+			_x( 'Recruitment', 'admin page', 'skautis-integration' ),
+			_x( 'Recruitment', 'admin page', 'skautis-integration' ),
+			Helpers::get_skautis_manager_capability(),
+			self::PAGE,
+			array( self::class, 'print_page' )
+		);
+		if ( false !== $hook_suffix ) {
+			self::$hook_suffix = $hook_suffix;
+		}
+	}
+
+	/**
+	 * Enqueues the styles of the plugin administration pages on the page.
+	 *
+	 * @param string $hook_suffix The suffix of the hook for the current admin page.
+	 *
+	 * @return void
+	 */
+	public static function enqueue_styles( $hook_suffix ) {
+		if ( '' !== self::$hook_suffix && self::$hook_suffix === $hook_suffix ) {
+			Helpers::enqueue_style( 'admin_settings', 'admin/css/skautis-admin-settings.min.css' );
+		}
+	}
+
+	/**
+	 * Prints the page.
+	 *
+	 * @return void
+	 */
+	public static function print_page() {
+		if ( ! Helpers::user_is_skautis_manager() ) {
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'skautis-integration' ) );
+		}
+
+		Admin_Settings::print_page_header( _x( 'Recruitment', 'admin page', 'skautis-integration' ) );
+		?>
+		<div class="skautis-settings-body">
+			<?php settings_errors(); ?>
+			<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>">
+				<?php
+				settings_fields( self::PAGE );
+				Settings_Sections::print( self::PAGE );
+				submit_button();
+				?>
+			</form>
+		</div>
+		<?php
 	}
 
 	/**

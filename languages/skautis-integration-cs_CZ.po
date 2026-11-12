@@ -49,7 +49,7 @@ msgstr "Odhlásit se (i ze SkautISu)"
 
 #. translators: 1: Start of a link to the settings 2: End of the link to the
 #. settings
-#: src/admin/class-settings.php:116
+#: src/admin/class-settings.php:115
 #, php-format
 msgid ""
 "Enter the App ID of the production version of SkautIS in the plugin "
@@ -58,7 +58,7 @@ msgstr "Zadejte v %1$snastavení%2$s pluginu APP ID produkční verze SkautISu"
 
 #. translators: 1: Start of a link to the settings 2: End of the link to the
 #. settings
-#: src/admin/class-settings.php:121
+#: src/admin/class-settings.php:120
 #, php-format
 msgid ""
 "Enter the App ID of the test version of SkautIS in the plugin "
@@ -69,72 +69,69 @@ msgstr "Zadejte v %1$snastavení%2$s pluginu APP ID testovací verze SkautISu"
 #. settings
 #. translators: 1: Start of link to the settings 2: End of link to the
 #. settings
-#: src/admin/class-settings.php:125 src/admin/class-users-management.php:183
+#: src/admin/class-settings.php:124 src/admin/class-users-management.php:183
 #: src/rules/admin/class-admin.php:200
 #, php-format
 msgid "Select the SkautIS environment in the plugin %1$ssettings%2$s"
 msgstr "Vyberte v %1$snastavení%2$s pluginu typ prostředí SkautISu"
 
-#: src/admin/class-settings.php:138 src/admin/class-settings.php:191
+#: src/admin/class-settings.php:137 src/admin/class-settings.php:190
 #: modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.js:18
 msgid "Settings"
 msgstr "Nastavení"
 
-#: src/admin/class-settings.php:153 src/admin/class-settings.php:291
+#: src/admin/class-settings.php:152 src/admin/class-settings.php:289
 msgid "Help"
 msgstr "Nápověda"
 
-#: src/admin/class-settings.php:180 src/admin/class-settings.php:190
-#: src/admin/class-settings.php:322
+#: src/admin/class-settings.php:179 src/admin/class-settings.php:189
+#: src/admin/class-settings.php:320
 msgid "SkautIS settings"
 msgstr "Nastavení SkautIS"
 
-#: src/admin/class-settings.php:181 src/admin/class-users.php:62
+#: src/admin/class-settings.php:180 src/admin/class-users.php:62
 #: src/admin/class-users.php:107
 msgid "SkautIS"
 msgstr "SkautIS"
 
-#: src/admin/class-settings.php:205
+#: src/admin/class-settings.php:204
 msgid "General"
 msgstr "Obecné"
 
-#: src/admin/class-settings.php:206
+#: src/admin/class-settings.php:205
 msgid "Login"
 msgstr "Přihlašování"
 
-#: src/admin/class-settings.php:207
+#: src/admin/class-settings.php:206
 #: src/modules/Register/admin/class-settings.php:61
 msgid "Registration"
 msgstr "Registrace"
 
-#: src/admin/class-settings.php:208
+#: src/admin/class-settings.php:207
 #: src/modules/Visibility/admin/class-settings.php:47
 msgid "Content visibility"
 msgstr "Viditelnost obsahu"
 
-#: src/admin/class-settings.php:209
-msgid "Recruitment and map"
-msgstr "Nábor a mapa"
-
-#: src/admin/class-settings.php:292
+#: src/admin/class-settings.php:290
 msgid "(opens in a new tab)"
 msgstr "(otevře se v nové záložce)"
 
-#: src/admin/class-settings.php:298
+#: src/admin/class-settings.php:296
 msgid "Settings sections"
 msgstr "Části nastavení"
 
-#: src/admin/class-settings.php:318 src/admin/class-users-management.php:173
+#: src/admin/class-settings.php:316 src/admin/class-users-management.php:173
+#: src/modules/Recruitment/admin/class-settings.php:95
 msgid "You do not have sufficient permissions to access this page."
 msgstr "Nemáte dostatečná oprávnění pro přístup k této stránce."
 
-#: src/admin/class-settings.php:364
+#: src/admin/class-settings.php:362
 msgid "Connection to SkautIS"
 msgstr "Propojení se SkautISem"
 
 #. translators: 1: Start of a link to the documentation 2: End of the link to
 #. the documentation
-#: src/admin/class-settings.php:367
+#: src/admin/class-settings.php:365
 #, php-format
 msgid ""
 "You can find instructions for setting up the plugin and getting an App ID in"
@@ -142,55 +139,55 @@ msgid ""
 msgstr ""
 "Návod pro nastavení pluginu a získání APP ID najdete v %1$snápovědě%2$s."
 
-#: src/admin/class-settings.php:374 src/admin/class-settings.php:548
+#: src/admin/class-settings.php:372 src/admin/class-settings.php:546
 msgid "Active App ID"
 msgstr "Vyberte aktivní APP ID"
 
-#: src/admin/class-settings.php:382
+#: src/admin/class-settings.php:380
 msgid "Production App ID"
 msgstr "APP ID produkční verze"
 
-#: src/admin/class-settings.php:391
+#: src/admin/class-settings.php:389
 msgid "Test App ID"
 msgstr "APP ID testovací verze"
 
-#: src/admin/class-settings.php:435
+#: src/admin/class-settings.php:433
 msgid "Login page"
 msgstr "Přihlašovací stránka"
 
-#: src/admin/class-settings.php:437
+#: src/admin/class-settings.php:435
 msgid "The address of the page where users can log in with SkautIS."
 msgstr "Adresa stránky, na které se uživatelé mohou přihlásit přes SkautIS."
 
-#: src/admin/class-settings.php:444
+#: src/admin/class-settings.php:442
 msgid "Login page address"
 msgstr "Adresa stránky s přihlašováním"
 
-#: src/admin/class-settings.php:453
+#: src/admin/class-settings.php:451
 msgid "User accounts"
 msgstr "Uživatelské účty"
 
-#: src/admin/class-settings.php:462 src/admin/class-settings.php:582
+#: src/admin/class-settings.php:460 src/admin/class-settings.php:580
 msgid "Disconnecting from SkautIS"
 msgstr "Zrušení spojení se SkautISem"
 
-#: src/admin/class-settings.php:471 src/admin/class-settings.php:602
+#: src/admin/class-settings.php:469 src/admin/class-settings.php:600
 msgid "Checking registration conditions"
 msgstr "Ověřování podmínek registrace"
 
-#: src/admin/class-settings.php:536
+#: src/admin/class-settings.php:534
 msgid "Use the test version of SkautIS only for trying out the plugin."
 msgstr "Testovací verzi SkautISu používejte jen pro vyzkoušení pluginu."
 
-#: src/admin/class-settings.php:552
+#: src/admin/class-settings.php:550
 msgid "Production"
 msgstr "Produkční"
 
-#: src/admin/class-settings.php:558
+#: src/admin/class-settings.php:556
 msgid "Test"
 msgstr "Testovací"
 
-#: src/admin/class-settings.php:571
+#: src/admin/class-settings.php:569
 msgid ""
 "For a custom login page, add a \"skautis\" folder with a \"login.php\" file "
 "to the active theme."
@@ -198,7 +195,7 @@ msgstr ""
 "Pro vlastní vzhled přihlašovací stránky přidejte do složky aktivní šablony "
 "složku \"skautis\" a do ní soubor \"login.php\"."
 
-#: src/admin/class-settings.php:571
+#: src/admin/class-settings.php:569
 msgid ""
 "In the login.php file, you can call the global functions "
 "getSkautisLoginUrl(), getSkautisLogoutUrl(), getSkautisRegisterUrl() and "
@@ -207,15 +204,15 @@ msgstr ""
 "V souboru login.php pak můžete volat globální funkce: getSkautisLoginUrl(), "
 "getSkautisLogoutUrl(), getSkautisRegisterUrl(), isUserLoggedInSkautis()"
 
-#: src/admin/class-settings.php:587
+#: src/admin/class-settings.php:585
 msgid "Allows users to disconnect their account from SkautIS."
 msgstr "Umožní uživatelům zrušit propojení svého účtu se SkautISem."
 
-#: src/admin/class-settings.php:589 src/admin/class-settings.php:609
+#: src/admin/class-settings.php:587 src/admin/class-settings.php:607
 msgid "This setting does not affect users with the administrator role."
 msgstr "Nastavení nebude mít dopad na uživatele s úrovní administrátora."
 
-#: src/admin/class-settings.php:607
+#: src/admin/class-settings.php:605
 msgid ""
 "When a user logs in with SkautIS, check whether they still meet the "
 "registration conditions."
@@ -495,11 +492,18 @@ msgstr ""
 msgid "Plugin configuration error"
 msgstr "Chyba v konfiguraci pluginu"
 
-#: src/modules/Recruitment/admin/class-settings.php:51
+#: src/modules/Recruitment/admin/class-settings.php:64
+#: src/modules/Recruitment/admin/class-settings.php:65
+#: src/modules/Recruitment/admin/class-settings.php:98
+msgctxt "admin page"
+msgid "Recruitment"
+msgstr "Nábory"
+
+#: src/modules/Recruitment/admin/class-settings.php:121
 msgid "Recruitment and map of the units"
 msgstr "Nábor a mapa oddílů"
 
-#: src/modules/Recruitment/admin/class-settings.php:53
+#: src/modules/Recruitment/admin/class-settings.php:123
 msgid ""
 "The recruitment information that the units fill in SkautIS on the "
 "\"Jednotka: Nábory\" tab can be shown on the site with the \"Recruitment\" "
@@ -508,19 +512,19 @@ msgstr ""
 "Informace o náboru, které jednotky vyplňují ve SkautISu na záložce "
 "„Jednotka: Nábory“, můžete zobrazit na webu bloky „Nábor“ a „Mapa oddílů“."
 
-#: src/modules/Recruitment/admin/class-settings.php:60
+#: src/modules/Recruitment/admin/class-settings.php:130
 msgid "Registration number of the unit"
 msgstr "Registrační číslo jednotky"
 
-#: src/modules/Recruitment/admin/class-settings.php:69
+#: src/modules/Recruitment/admin/class-settings.php:139
 msgid "Mapy.com API key"
 msgstr "API klíč Mapy.com"
 
-#: src/modules/Recruitment/admin/class-settings.php:78
+#: src/modules/Recruitment/admin/class-settings.php:148
 msgid "Data from SkautIS"
 msgstr "Data ze SkautISu"
 
-#: src/modules/Recruitment/admin/class-settings.php:118
+#: src/modules/Recruitment/admin/class-settings.php:188
 msgid ""
 "The registration number of the group (středisko) or the troop (oddíl), e.g. "
 "112.31. For a group, the recruitment of all its troops is shown."
@@ -528,7 +532,7 @@ msgstr ""
 "Registrační číslo střediska nebo oddílu, např. 112.31. U střediska se "
 "zobrazí nábor všech jeho oddílů."
 
-#: src/modules/Recruitment/admin/class-settings.php:130
+#: src/modules/Recruitment/admin/class-settings.php:200
 msgid ""
 "The map uses the maps of Mapy.com with this key. You get a free key after "
 "registering at developer.mapy.com. Without the key, the map uses "
@@ -537,11 +541,11 @@ msgstr ""
 "S tímto klíčem mapa používá podklady Mapy.com. Klíč získáte zdarma po "
 "registraci na developer.mapy.com. Bez klíče mapa použije OpenStreetMap."
 
-#: src/modules/Recruitment/admin/class-settings.php:142
+#: src/modules/Recruitment/admin/class-settings.php:212
 msgid "Fill in the registration number of the unit and save the settings."
 msgstr "Vyplňte registrační číslo jednotky a uložte nastavení."
 
-#: src/modules/Recruitment/admin/class-settings.php:148
+#: src/modules/Recruitment/admin/class-settings.php:218
 msgid ""
 "No recruitment information could be loaded from SkautIS. Check the "
 "registration number and that the App ID of this site is allowed to use the "
@@ -551,29 +555,29 @@ msgstr ""
 "registrační číslo a to, že App ID tohoto webu má povolené služby SkautISu "
 "pro nábor."
 
-#: src/modules/Recruitment/admin/class-settings.php:151
+#: src/modules/Recruitment/admin/class-settings.php:221
 msgid "Unit"
 msgstr "Jednotka"
 
-#: src/modules/Recruitment/admin/class-settings.php:152
+#: src/modules/Recruitment/admin/class-settings.php:222
 msgid "Recruitment categories"
 msgstr "Náborové kategorie"
 
-#: src/modules/Recruitment/admin/class-settings.php:153
+#: src/modules/Recruitment/admin/class-settings.php:223
 #: src/modules/Recruitment/frontend/class-blocks.php:235
 msgid "Meetings"
 msgstr "Schůzky"
 
-#: src/modules/Recruitment/admin/class-settings.php:154
+#: src/modules/Recruitment/admin/class-settings.php:224
 msgid "Clubrooms on the map"
 msgstr "Klubovny na mapě"
 
-#: src/modules/Recruitment/admin/class-settings.php:174
+#: src/modules/Recruitment/admin/class-settings.php:244
 msgid "These SkautIS methods could not be called:"
 msgstr "Tyto metody SkautISu se nepodařilo zavolat:"
 
 #. translators: %s: The date and time
-#: src/modules/Recruitment/admin/class-settings.php:177
+#: src/modules/Recruitment/admin/class-settings.php:247
 #, php-format
 msgid ""
 "Loaded on %s. The data are loaded again once a day and after saving the "
@@ -603,19 +607,18 @@ msgstr "Mapa s klubovnami oddílů ze SkautISu a informacemi o náboru."
 
 #: src/modules/Recruitment/frontend/class-blocks.php:126
 msgid ""
-"Fill in the registration number of the unit in the SkautIS settings, on the "
-"\"Recruitment and map\" tab."
+"Fill in the registration number of the unit on the \"Recruitment\" page in "
+"the SkautIS menu."
 msgstr ""
-"Vyplňte registrační číslo jednotky v nastavení SkautIS na záložce „Nábor a "
-"mapa“."
+"Vyplňte registrační číslo jednotky na stránce „Nábory“ v menu SkautIS."
 
 #: src/modules/Recruitment/frontend/class-blocks.php:127
 msgid ""
-"No recruitment information could be loaded from SkautIS. See the SkautIS "
-"settings, the \"Recruitment and map\" tab."
+"No recruitment information could be loaded from SkautIS. See the "
+"\"Recruitment\" page in the SkautIS menu."
 msgstr ""
-"Ze SkautISu se nepodařilo načíst žádné informace o náboru. Podívejte se do "
-"nastavení SkautIS na záložku „Nábor a mapa“."
+"Ze SkautISu se nepodařilo načíst žádné informace o náboru. Podívejte se na "
+"stránku „Nábory“ v menu SkautIS."
 
 #: src/modules/Recruitment/frontend/class-blocks.php:140
 msgid "Boys"
