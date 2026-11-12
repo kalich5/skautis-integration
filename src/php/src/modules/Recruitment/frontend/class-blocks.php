@@ -26,6 +26,11 @@ use Skautis_Integration\Utils\Helpers;
 final class Blocks {
 
 	/**
+	 * The category of the blocks of the plugin in the block inserter.
+	 */
+	const CATEGORY = 'skautis-integration';
+
+	/**
 	 * The name of the recruitment block.
 	 */
 	const RECRUITMENT_BLOCK = 'skautis-integration/recruitment';
@@ -50,6 +55,24 @@ final class Blocks {
 	public function __construct( Recruitment_Data $recruitment_data ) {
 		$this->recruitment_data = $recruitment_data;
 		add_action( 'init', array( $this, 'register_blocks' ) );
+		add_filter( 'block_categories_all', array( self::class, 'add_block_category' ) );
+	}
+
+	/**
+	 * Adds the category of the blocks of the plugin, so that they are together in the block inserter.
+	 *
+	 * @param array<array<string, mixed>> $categories The block categories.
+	 *
+	 * @return array<array<string, mixed>> The block categories with the category of the plugin.
+	 */
+	public static function add_block_category( array $categories ): array {
+		$categories[] = array(
+			'slug'  => self::CATEGORY,
+			'title' => __( 'SkautIS integration', 'skautis-integration' ),
+			'icon'  => null,
+		);
+
+		return $categories;
 	}
 
 	/**
@@ -72,7 +95,7 @@ final class Blocks {
 				'api_version'           => '3',
 				'title'                 => __( 'Recruitment', 'skautis-integration' ),
 				'description'           => __( 'The recruitment information of the units from SkautIS: for whom, meetings and clubrooms.', 'skautis-integration' ),
-				'category'              => 'widgets',
+				'category'              => self::CATEGORY,
 				'icon'                  => 'groups',
 				'attributes'            => array(
 					'appearance' => array(
@@ -96,7 +119,7 @@ final class Blocks {
 				'api_version'           => '3',
 				'title'                 => __( 'Map of the units', 'skautis-integration' ),
 				'description'           => __( 'A map with the clubrooms of the units from SkautIS and their recruitment information.', 'skautis-integration' ),
-				'category'              => 'widgets',
+				'category'              => self::CATEGORY,
 				'icon'                  => 'location-alt',
 				'attributes'            => array(
 					'height'     => array(
