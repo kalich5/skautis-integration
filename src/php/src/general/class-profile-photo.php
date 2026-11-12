@@ -12,6 +12,7 @@ namespace Skautis_Integration\General;
 use PHPMD\Attribute\SuppressWarnings;
 use PHPMD\Rule\Design\ExcessiveClassComplexity;
 use PHPMD\Rule\Design\ExitExpression;
+use PHPMD\Rule\UnusedFormalParameter;
 use Skautis_Integration\Auth\Skautis_Gateway;
 use Skautis_Integration\Auth\Skautis_Login;
 use Skautis_Integration\Utils\Helpers;
@@ -61,6 +62,16 @@ final class Profile_Photo {
 	 * The width and height of the stored photo in pixels.
 	 */
 	const SIZE = 512;
+
+	/**
+	 * The extensions of the image types that SkautIS may return, by which the image editor recognizes the image.
+	 */
+	const EXTENSIONS = array(
+		'image/jpeg' => 'jpg',
+		'image/png'  => 'png',
+		'image/gif'  => 'gif',
+		'image/webp' => 'webp',
+	);
 
 	/**
 	 * A link to the Skautis_Gateway service instance.
@@ -364,10 +375,12 @@ final class Profile_Photo {
 	 * @param string   $user_login The login name of the user.
 	 * @param \WP_User $user The user.
 	 *
+	 * @unused-param $user_login
+	 *
 	 * @return void
 	 */
+	#[SuppressWarnings( UnusedFormalParameter::class )]
 	public function update_at_login( $user_login, $user ) {
-		unset( $user_login );
 		if ( '1' !== get_user_meta( $user->ID, self::AUTO_META, true ) || ! $this->skautis_login->is_user_logged_in_skautis() ) {
 			return;
 		}
@@ -500,14 +513,8 @@ final class Profile_Photo {
 		require_once ABSPATH . 'wp-admin/includes/image.php'; // @phpstan-ignore requireOnce.fileNotFound (WordPress is not analysed.)
 
 		// The image editor recognizes the image by the extension of the file.
-		$info       = getimagesizefromstring( $content );
-		$extensions = array(
-			'image/jpeg' => 'jpg',
-			'image/png'  => 'png',
-			'image/gif'  => 'gif',
-			'image/webp' => 'webp',
-		);
-		if ( false === $info || ! isset( $extensions[ $info['mime'] ] ) ) {
+		$info = getimagesizefromstring( $content );
+		if ( false === $info || ! isset( self::EXTENSIONS[ $info['mime'] ] ) ) {
 			return 0;
 		}
 		$temporary = wp_tempnam( 'skautis-photo' );
@@ -515,7 +522,7 @@ final class Profile_Photo {
 			return 0;
 		}
 		wp_delete_file( $temporary );
-		$source = $temporary . '.' . $extensions[ $info['mime'] ];
+		$source = $temporary . '.' . self::EXTENSIONS[ $info['mime'] ];
 		if ( false === file_put_contents( $source, $content ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- A temporary file.
 			return 0;
 		}
