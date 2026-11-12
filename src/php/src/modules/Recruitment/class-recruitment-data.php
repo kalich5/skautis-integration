@@ -34,11 +34,6 @@ final class Recruitment_Data {
 	const UNIT_OPTION = SKAUTIS_INTEGRATION_NAME . '_recruitment_unit';
 
 	/**
-	 * The option with the API key of Mapy.com.
-	 */
-	const MAPY_API_KEY_OPTION = SKAUTIS_INTEGRATION_NAME . '_recruitment_mapy_api_key';
-
-	/**
 	 * The transient with the loaded data.
 	 */
 	const CACHE = SKAUTIS_INTEGRATION_NAME . '_recruitment_data';
