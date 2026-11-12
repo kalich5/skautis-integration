@@ -18,16 +18,42 @@ Login, registration, user management and other features connecting SkautIS to Wo
 * Login to WordPress with a SkautIS account
 * Manage SkautIS account connections and import users to your site
 * Enable registration of users to your site based on their SkautIS functions, memberships or other criteria
+* Show pages or blocks only to users with selected SkautIS roles, memberships, functions, qualifications or events
+* Show the recruitment information, the map of the units and the public information about a unit from SkautIS
+* Let users use their SkautIS photo as their profile picture
 
 === Minimal requirements ===
 - WordPress 7.0 or higher
 - PHP 8.3 or higher
 
+=== External services ===
+The plugin connects to these services. Nothing is sent to them before the plugin is set up.
+
+**SkautIS** (is.skaut.cz, or test-is.skaut.cz for the test environment) is the information system of Junák – český skaut, operated by Junák – český skaut, z. s. The plugin needs it for all its features:
+
+* When a user logs in, registers or connects their account, they are sent to the SkautIS login page and SkautIS returns their login token to the site. The site then loads their user detail, roles, memberships, functions, qualifications or events, to log them in and to check the rules of registration and content visibility.
+* The user management page loads the people of the current role of the manager.
+* When a user chooses to use their SkautIS photo as their profile picture, the site loads the photo of that user.
+* The recruitment, map and unit blocks load the public information about the units set in the settings, with the App ID of the site only, without any user data, at most once a day.
+
+Privacy policy of Junák – český skaut: https://www.skaut.cz/osobniudaje
+
+**Mapy.com** (api.mapy.com), operated by Seznam.cz, a.s., is used only when its API key is set on the "Maps" tab of the settings. Visitors' browsers load the map tiles and the Mapy.com logo when they see a map block, which sends their IP address to Mapy.com. The server of the site sends the address of the seat of a unit to the Mapy.com geocoding to find its position on the map (at most once a day per unit).
+Terms: https://developer.mapy.com/terms-and-conditions/ , privacy policy: https://o-seznam.cz/ochrana-udaju/
+
+**OpenStreetMap** (tile.openstreetmap.org and nominatim.openstreetmap.org), operated by the OpenStreetMap Foundation, is used when no Mapy.com API key is set. Visitors' browsers load the map tiles when they see a map block, which sends their IP address to OpenStreetMap. The server of the site sends the address of the seat of a unit to Nominatim to find its position on the map (at most once a day per unit).
+Tile usage policy: https://operations.osmfoundation.org/policies/tiles/ , Nominatim usage policy: https://operations.osmfoundation.org/policies/nominatim/ , privacy policy: https://osmfoundation.org/wiki/Privacy_Policy
+
+=== Privacy ===
+The plugin stores the SkautIS user ID with the WordPress account of a user, the name and e-mail address of a user registered through SkautIS (as a regular WordPress user), and the SkautIS photo of users who chose to use it. It sets a technical cookie for 40 minutes during the login through SkautIS. It suggests a text for the privacy policy of the site (Settings → Privacy) and supports the export and erasure of personal data (Tools → Export Personal Data and Erase Personal Data).
+
+When `WP_DEBUG` and `WP_DEBUG_LOG` are on, the plugin writes some SkautIS responses, which may contain names of people, to the debug log. Do not leave the debug log on in production.
+
 === GitHub ===
 All the sources for the plugin and the build process are detailed in our [GitHub repo](https://github.com/skaut/skautis-integration/).
 
 == Installation ==
-1. Download and install the plugin from the WordPress plugin directory or from [GitHub](https://github.com/skaut/skaut-google-drive-gallery/releases)
+1. Download and install the plugin from the WordPress plugin directory or from [GitHub](https://github.com/skaut/skautis-integration/releases)
 2. Activate the plugin
 3. Request an APP ID for SkautIS by following the [docs](https://napoveda.skaut.cz/skautis/skautis-integration) (only in Czech)
 4. In the admin interface, open the plugin settings, enter the provided APP ID and register the plugin
@@ -55,6 +81,7 @@ See our [documentation](https://napoveda.skaut.cz/skautis/skautis-integration) (
 * Appearances of the recruitment blocks for the Dobrý skautský web templates (DSW1, DSW2, DSW3) and custom appearances, chosen for the whole site or for each block
 * The SkautIS login is shown in its own card below the login form
 * Each user can use their photo from SkautIS as their profile picture; it is downloaded only when the user chooses it in their profile
+* Privacy: a suggested privacy policy text, export and erasure of the personal data stored by the plugin, the external services described in the readme
 * A SkautIS method that the App ID is not allowed to use no longer breaks the site; the administration shows which methods to allow
 * English source texts, translatable on translate.wordpress.org
 * SVG menu icon

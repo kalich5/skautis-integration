@@ -11,7 +11,8 @@ msgstr ""
 "X-Domain: skautis-integration\n"
 
 #. Plugin Name of the plugin
-#: skautis-integration.php
+#: skautis-integration.php src/general/class-privacy.php:69
+#: src/general/class-privacy.php:85
 #: src/modules/Recruitment/frontend/class-blocks.php:72
 msgid "SkautIS integration"
 msgstr "SkautIS integration"
@@ -36,11 +37,11 @@ msgstr "Junák - český skaut"
 msgid "https://github.com/skaut"
 msgstr "https://github.com/skaut"
 
-#: class-skautis-integration.php:199 class-skautis-integration.php:283
+#: class-skautis-integration.php:200 class-skautis-integration.php:284
 msgid "The SkautIS integration plugin requires WordPress 7.0 or newer!"
 msgstr "Plugin SkautIS integrace vyžaduje verzi WordPress 7.0 nebo vyšší!"
 
-#: class-skautis-integration.php:204 class-skautis-integration.php:290
+#: class-skautis-integration.php:205 class-skautis-integration.php:291
 msgid "The SkautIS integration plugin requires PHP 8.3 or newer!"
 msgstr "Plugin SkautIS integrace vyžaduje verzi PHP 8.3 nebo vyšší!"
 
@@ -121,7 +122,7 @@ msgid "SkautIS settings"
 msgstr "Nastavení SkautIS"
 
 #: src/admin/class-settings.php:181 src/admin/class-users.php:62
-#: src/admin/class-users.php:107
+#: src/admin/class-users.php:107 src/general/class-privacy.php:136
 msgid "SkautIS"
 msgstr "SkautIS"
 
@@ -563,7 +564,113 @@ msgstr ""
 msgid "Plugin configuration error"
 msgstr "Chyba v konfiguraci pluginu"
 
-#: src/general/class-profile-photo.php:177
+#: src/general/class-privacy.php:49
+msgid "Suggested text:"
+msgstr "Navrhovaný text:"
+
+#: src/general/class-privacy.php:49
+msgid ""
+"This site lets members of Junák – český skaut log in and register with their"
+" SkautIS account. SkautIS is the information system of Junák – český skaut, "
+"which is also its operator."
+msgstr ""
+"Tento web umožňuje členům Junáka – českého skauta přihlásit se a registrovat"
+" pomocí účtu ve SkautISu. SkautIS je informační systém Junáka – českého "
+"skauta, který je také jeho provozovatelem."
+
+#: src/general/class-privacy.php:50
+msgid ""
+"When you log in or register through SkautIS, this site receives from SkautIS"
+" your user ID and, for a registration, your name, nickname and e-mail "
+"address, which are stored with your account on this site. To decide whether "
+"you may register or see some content, this site checks your roles, "
+"memberships, functions, qualifications or events in SkautIS; these data are "
+"only used for the check and are not stored."
+msgstr ""
+"Když se přihlásíte nebo registrujete přes SkautIS, tento web od SkautISu "
+"získá vaše uživatelské ID a při registraci také jméno, přezdívku a "
+"e-mailovou adresu, které se uloží k vašemu účtu na tomto webu. Aby web "
+"rozhodl, zda se můžete registrovat nebo vidět určitý obsah, ověří ve "
+"SkautISu vaše role, členství, funkce, kvalifikace nebo akce; tyto údaje se "
+"použijí jen pro ověření a neukládají se."
+
+#: src/general/class-privacy.php:51
+msgid ""
+"If you choose so in your profile, this site downloads your photo from "
+"SkautIS and uses it as your profile picture. You can remove it in your "
+"profile at any time."
+msgstr ""
+"Pokud si to zvolíte ve svém profilu, web stáhne vaši fotku ze SkautISu a "
+"použije ji jako váš profilový obrázek. Ve svém profilu ji můžete kdykoli "
+"odebrat."
+
+#: src/general/class-privacy.php:52
+msgid ""
+"During the login through SkautIS, this site sets a technical cookie "
+"(skautis-integration-skautis-session) that keeps your SkautIS login for 40 "
+"minutes."
+msgstr ""
+"Při přihlášení přes SkautIS web nastaví technickou cookie (skautis-"
+"integration-skautis-session), která na 40 minut uchovává vaše přihlášení do "
+"SkautISu."
+
+#: src/general/class-privacy.php:53
+msgid ""
+"The maps on this site load map tiles from Mapy.com (Seznam.cz, a.s.) or from"
+" OpenStreetMap; your browser sends your IP address to these services when it"
+" shows a map. The addresses of the units are looked up with Mapy.com or "
+"Nominatim of OpenStreetMap; no data about you are sent in this case."
+msgstr ""
+"Mapy na tomto webu načítají mapové podklady z Mapy.com (Seznam.cz, a.s.) "
+"nebo z OpenStreetMap; když prohlížeč zobrazuje mapu, odesílá těmto službám "
+"vaši IP adresu. Adresy jednotek se vyhledávají přes Mapy.com nebo Nominatim "
+"z OpenStreetMap; v tom případě se o vás neodesílají žádné údaje."
+
+#: src/general/class-privacy.php:54
+msgid ""
+"The administrators of the site can export or erase the data that this plugin"
+" stores about you with the privacy tools of WordPress. The processing of "
+"personal data in SkautIS is described by Junák – český skaut at "
+"https://www.skaut.cz/osobniudaje."
+msgstr ""
+"Správci webu mohou údaje, které o vás tento plugin ukládá, exportovat nebo "
+"vymazat pomocí nástrojů WordPressu pro ochranu osobních údajů. Zpracování "
+"osobních údajů ve SkautISu popisuje Junák – český skaut na "
+"https://www.skaut.cz/osobniudaje."
+
+#. translators: %s: SkautIS or SkautIS (test)
+#: src/general/class-privacy.php:114
+#, php-format
+msgid "User ID in %s"
+msgstr "Uživatelské ID v %s"
+
+#: src/general/class-privacy.php:123 src/general/class-profile-photo.php:238
+msgid "Profile photo from SkautIS"
+msgstr "Profilová fotka ze SkautISu"
+
+#: src/general/class-privacy.php:127
+msgid "Download the photo again at every login through SkautIS"
+msgstr "Stáhnout fotku znovu při každém přihlášení přes SkautIS"
+
+#: src/general/class-privacy.php:128
+#: src/modules/Unit/admin/class-settings.php:187
+#: src/rules/Rule/class-all.php:143
+msgid "Yes"
+msgstr "Ano"
+
+#: src/general/class-privacy.php:128
+#: src/modules/Unit/admin/class-settings.php:187
+msgid "No"
+msgstr "Ne"
+
+#: src/general/class-privacy.php:174
+msgid ""
+"The account was disconnected from SkautIS and the profile photo from SkautIS"
+" was removed."
+msgstr ""
+"Účet byl odpojen od SkautISu a profilová fotka ze SkautISu byla odebrána."
+
+#: src/general/class-profile-photo.php:188
 msgid ""
 "Your photo from SkautIS is used as the profile picture. You can update or "
 "remove it in the \"Profile photo from SkautIS\" section below."
@@ -571,27 +678,23 @@ msgstr ""
 "Jako profilový obrázek se používá vaše fotka ze SkautISu. Aktualizovat nebo "
 "odebrat ji můžete níže v části „Profilová fotka ze SkautISu“."
 
-#: src/general/class-profile-photo.php:227
-msgid "Profile photo from SkautIS"
-msgstr "Profilová fotka ze SkautISu"
-
-#: src/general/class-profile-photo.php:230
+#: src/general/class-profile-photo.php:241
 msgid "Photo"
 msgstr "Fotka"
 
-#: src/general/class-profile-photo.php:238
+#: src/general/class-profile-photo.php:249
 msgid "Update the photo from SkautIS"
 msgstr "Aktualizovat fotku ze SkautISu"
 
-#: src/general/class-profile-photo.php:238
+#: src/general/class-profile-photo.php:249
 msgid "Use my photo from SkautIS"
 msgstr "Použít moji fotku ze SkautISu"
 
-#: src/general/class-profile-photo.php:242
+#: src/general/class-profile-photo.php:253
 msgid "Remove the photo"
 msgstr "Odebrat fotku"
 
-#: src/general/class-profile-photo.php:247
+#: src/general/class-profile-photo.php:258
 msgid ""
 "Your photo from SkautIS can be used as your profile picture on this site, "
 "instead of Gravatar. It is downloaded only when you click the button, and "
@@ -603,7 +706,7 @@ msgstr ""
 "můžete odebrat. Pokud nejste přihlášeni do SkautISu, budete nejdřív vyzváni "
 "k přihlášení."
 
-#: src/general/class-profile-photo.php:249
+#: src/general/class-profile-photo.php:260
 msgid ""
 "Connect your account to SkautIS first, then you can use your photo from "
 "SkautIS as your profile picture."
@@ -611,51 +714,51 @@ msgstr ""
 "Nejdřív připojte svůj účet ke SkautISu, potom můžete svou fotku ze SkautISu "
 "použít jako profilový obrázek."
 
-#: src/general/class-profile-photo.php:258
+#: src/general/class-profile-photo.php:269
 msgid "Updating the photo"
 msgstr "Aktualizace fotky"
 
-#: src/general/class-profile-photo.php:262
+#: src/general/class-profile-photo.php:273
 msgid "Download my photo from SkautIS again at every login through SkautIS"
 msgstr "Při každém přihlášení přes SkautIS stáhnout moji fotku znovu"
 
-#: src/general/class-profile-photo.php:301
+#: src/general/class-profile-photo.php:312
 msgid "The link has expired. Go back to the profile and try it again."
 msgstr "Platnost odkazu vypršela. Vraťte se do profilu a zkuste to znovu."
 
-#: src/general/class-profile-photo.php:331
+#: src/general/class-profile-photo.php:342
 msgid "Only the user themselves can download their photo from SkautIS."
 msgstr "Fotku ze SkautISu si může stáhnout jen sám uživatel."
 
-#: src/general/class-profile-photo.php:353
+#: src/general/class-profile-photo.php:364
 msgid "You are not allowed to remove the photo of this user."
 msgstr "Nemáte oprávnění odebrat fotku tohoto uživatele."
 
-#: src/general/class-profile-photo.php:388
+#: src/general/class-profile-photo.php:401
 msgid "Your photo from SkautIS is now your profile picture."
 msgstr "Vaše fotka ze SkautISu je teď vaším profilovým obrázkem."
 
-#: src/general/class-profile-photo.php:389
+#: src/general/class-profile-photo.php:402
 msgid ""
 "Your photo in SkautIS has not changed, the profile picture is up to date."
 msgstr "Vaše fotka ve SkautISu se nezměnila, profilový obrázek je aktuální."
 
-#: src/general/class-profile-photo.php:390
+#: src/general/class-profile-photo.php:403
 msgid "The photo from SkautIS was removed."
 msgstr "Fotka ze SkautISu byla odebrána."
 
-#: src/general/class-profile-photo.php:391
+#: src/general/class-profile-photo.php:404
 msgid ""
 "You do not have a photo in SkautIS. You can add it in SkautIS on the page of"
 " your person."
 msgstr ""
 "Ve SkautISu nemáte fotku. Přidat ji můžete ve SkautISu na stránce své osoby."
 
-#: src/general/class-profile-photo.php:392
+#: src/general/class-profile-photo.php:405
 msgid "Your account is not connected to SkautIS."
 msgstr "Váš účet není připojen ke SkautISu."
 
-#: src/general/class-profile-photo.php:393
+#: src/general/class-profile-photo.php:406
 msgid ""
 "You are logged in to SkautIS as another user than the one connected to this "
 "account. Log out of SkautIS and try it again."
@@ -663,7 +766,7 @@ msgstr ""
 "Do SkautISu jste přihlášeni jako jiný uživatel, než který je připojen k "
 "tomuto účtu. Odhlaste se ze SkautISu a zkuste to znovu."
 
-#: src/general/class-profile-photo.php:394
+#: src/general/class-profile-photo.php:407
 msgid ""
 "The photo could not be downloaded from SkautIS. The App ID of this site may "
 "not be allowed to use it, or the photo could not be saved."
@@ -672,7 +775,7 @@ msgstr ""
 "povolenou, nebo se fotku nepodařilo uložit."
 
 #. translators: %s: The display name of the user
-#: src/general/class-profile-photo.php:548
+#: src/general/class-profile-photo.php:555
 #, php-format
 msgid "Profile photo from SkautIS: %s"
 msgstr "Profilová fotka ze SkautISu: %s"
@@ -1266,15 +1369,6 @@ msgstr "Sídlo"
 #: src/modules/Unit/admin/class-settings.php:187
 msgid "Seat on the map"
 msgstr "Sídlo na mapě"
-
-#: src/modules/Unit/admin/class-settings.php:187
-#: src/rules/Rule/class-all.php:143
-msgid "Yes"
-msgstr "Ano"
-
-#: src/modules/Unit/admin/class-settings.php:187
-msgid "No"
-msgstr "Ne"
 
 #: src/modules/Unit/admin/class-settings.php:188
 #: modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.js:75
