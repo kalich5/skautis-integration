@@ -32,6 +32,7 @@ final class Settings {
 		'login'        => SKAUTIS_INTEGRATION_NAME . '_login',
 		'registration' => SKAUTIS_INTEGRATION_NAME . '_modules_register',
 		'visibility'   => SKAUTIS_INTEGRATION_NAME . '_modules_visibility',
+		'maps'         => SKAUTIS_INTEGRATION_NAME . '_maps',
 	);
 
 	/**
@@ -205,6 +206,7 @@ final class Settings {
 			'login'        => __( 'Login', 'skautis-integration' ),
 			'registration' => __( 'Registration', 'skautis-integration' ),
 			'visibility'   => __( 'Content visibility', 'skautis-integration' ),
+			'maps'         => __( 'Maps', 'skautis-integration' ),
 		);
 	}
 

@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Skautis_Integration\Modules\Recruitment\Frontend;
 
+use Skautis_Integration\Admin\Maps_Settings;
 use PHPMD\Attribute\SuppressWarnings;
 use PHPMD\Rule\Design\ExcessiveClassComplexity;
 use Skautis_Integration\Modules\Recruitment\Appearances;
@@ -344,8 +345,8 @@ final class Blocks {
 	 * @return array{url: string, attribution: string, logo: bool, maxZoom: int}
 	 */
 	public static function get_tiles(): array {
-		$key = get_option( Recruitment_Data::MAPY_API_KEY_OPTION, '' );
-		if ( is_string( $key ) && '' !== $key ) {
+		$key = Maps_Settings::get_mapy_api_key();
+		if ( '' !== $key ) {
 			return array(
 				'url'         => 'https://api.mapy.com/v1/maptiles/basic/256/{z}/{x}/{y}?apikey=' . rawurlencode( $key ),
 				'attribution' => '<a href="https://api.mapy.com/copyright" target="_blank" rel="noopener noreferrer">&copy; ' . esc_html__( 'Seznam.cz a.s. and others', 'skautis-integration' ) . '</a>',
