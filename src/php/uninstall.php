@@ -38,6 +38,9 @@ function skautis_integration_uninstall_site() {
 	delete_option( 'skautis-integration_modules_register_rules' );
 	delete_option( 'skautis-integration_registration_enabled' );
 
+	// defined in src/auth/class-skautis-gateway.php.
+	delete_option( 'skautis-integration_missing_permissions' );
+
 	// defined by the removed Shortcodes module.
 	delete_option( 'skautis-integration_modules_shortcodes_visibilityMode' );
 

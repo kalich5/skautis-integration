@@ -221,3 +221,9 @@ function wp_trim_excerpt( $text = '', $post = null ): string {
  */
 function wp_print_inline_script_tag( $data, $attributes = array() ) {
 }
+
+/**
+ * @return string|false
+ */
+function wp_get_referer() {
+}

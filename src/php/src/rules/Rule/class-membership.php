@@ -140,7 +140,7 @@ class Membership implements Rule {
 	 */
 	public function get_values(): array {
 		$result      = array();
-		$memberships = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->MembershipTypeAll();
+		$memberships = $this->skautis_gateway->call_list( 'OrganizationUnit', 'MembershipTypeAll' );
 
 		foreach ( $memberships as $membership ) {
 			$result[ strval( $membership->ID ) ] = $membership->DisplayName;
@@ -180,8 +180,10 @@ class Membership implements Rule {
 		static $user_memberships = null;
 
 		if ( is_null( $user_memberships ) ) {
-			$user_detail      = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail();
-			$user_memberships = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->MembershipAllPerson(
+			$user_detail      = $this->skautis_gateway->get_user_detail();
+			$user_memberships = is_null( $user_detail ) || ! isset( $user_detail->ID_Person ) ? null : $this->skautis_gateway->call(
+				'OrganizationUnit',
+				'MembershipAllPerson',
 				array(
 					'ID_Person'   => $user_detail->ID_Person,
 					'ShowHistory' => false,
@@ -189,7 +191,7 @@ class Membership implements Rule {
 				)
 			);
 
-			if ( ! isset( $user_memberships->MembershipAllOutput ) ) {
+			if ( ! is_object( $user_memberships ) || ! isset( $user_memberships->MembershipAllOutput ) ) {
 				return array();
 			}
 
@@ -214,16 +216,9 @@ class Membership implements Rule {
 					continue;
 				}
 
-				$unit_detail = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->UnitDetail(
-					array(
-						'ID' => $user_membership->ID_Unit,
-					)
-				);
-				if ( $unit_detail ) {
-					if ( ! isset( $result[ $user_membership->ID_MembershipType ] ) ) {
-						$result[ $user_membership->ID_MembershipType ] = array();
-					}
-					$result[ $user_membership->ID_MembershipType ][] = $unit_detail->RegistrationNumber;
+				$unit_detail = $this->skautis_gateway->call( 'OrganizationUnit', 'UnitDetail', array( 'ID' => $user_membership->ID_Unit ) );
+				if ( is_object( $unit_detail ) && isset( $unit_detail->RegistrationNumber ) ) {
+					$result[ $user_membership->ID_MembershipType ][] = strval( $unit_detail->RegistrationNumber );
 				}
 			}
 			$user_memberships = $result;

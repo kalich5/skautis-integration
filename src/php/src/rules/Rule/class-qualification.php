@@ -139,11 +139,11 @@ class Qualification implements Rule {
 	 * @return array<string, string> The current values.
 	 */
 	public function get_values(): array {
-		$result         = array();
-		$qualifications = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->QualificationTypeAll();
-
-		foreach ( $qualifications as $qualification ) {
-			$result[ strval( $qualification->ID ) ] = $qualification->DisplayName;
+		$result = array();
+		foreach ( $this->skautis_gateway->call_list( 'OrganizationUnit', 'QualificationTypeAll' ) as $qualification ) {
+			if ( isset( $qualification->ID, $qualification->DisplayName ) ) {
+				$result[ strval( $qualification->ID ) ] = strval( $qualification->DisplayName );
+			}
 		}
 
 		return $result;
@@ -161,8 +161,10 @@ class Qualification implements Rule {
 			return $user_qualifications;
 		}
 
-		$user_detail         = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail();
-		$user_qualifications = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->QualificationAll(
+		$user_detail         = $this->skautis_gateway->get_user_detail();
+		$user_qualifications = is_null( $user_detail ) || ! isset( $user_detail->ID_Person ) ? array() : $this->skautis_gateway->call_list(
+			'OrganizationUnit',
+			'QualificationAll',
 			array(
 				'ID_Person'   => $user_detail->ID_Person,
 				'ShowHistory' => true,
@@ -170,14 +172,12 @@ class Qualification implements Rule {
 			)
 		);
 
-		if ( ! is_array( $user_qualifications ) || empty( $user_qualifications ) ) {
-			$user_qualifications = array();
-			return array();
-		}
-
 		$result = array();
 
 		foreach ( $user_qualifications as $user_qualification ) {
+			if ( ! isset( $user_qualification->ID_QualificationType ) ) {
+				continue;
+			}
 			// SkautIS returns the IDs as numbers, the rule data contains them as strings.
 			$result[] = strval( $user_qualification->ID_QualificationType );
 		}

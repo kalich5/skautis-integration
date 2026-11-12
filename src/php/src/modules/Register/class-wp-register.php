@@ -186,21 +186,27 @@ final class WP_Register {
 	 * @return array{id: int, UserName: string, personId: int, email: string, firstName: string, lastName: string, nickName: string} The information about a user.
 	 */
 	private function prepare_user_data( $skautis_user ): array {
-		$skautis_user_detail = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->PersonDetail(
+		// Without the person detail (e.g. when the App ID may not read it), the user is registered with the username only.
+		$skautis_user_detail = $this->skautis_gateway->call(
+			'OrganizationUnit',
+			'PersonDetail',
 			array(
 				'ID_Login' => $this->skautis_gateway->get_skautis_instance()->getUser()->getLoginId(),
 				'ID'       => $skautis_user->ID_Person,
 			)
 		);
+		$person              = static function ( string $property ) use ( $skautis_user_detail ): string {
+			return is_object( $skautis_user_detail ) && isset( $skautis_user_detail->$property ) ? strval( $skautis_user_detail->$property ) : '';
+		};
 
 		$user = array(
 			'id'        => $skautis_user->ID,
 			'UserName'  => $skautis_user->UserName,
 			'personId'  => $skautis_user->ID_Person,
-			'email'     => $skautis_user_detail->Email,
-			'firstName' => $skautis_user_detail->FirstName,
-			'lastName'  => $skautis_user_detail->LastName,
-			'nickName'  => $skautis_user_detail->NickName,
+			'email'     => $person( 'Email' ),
+			'firstName' => $person( 'FirstName' ),
+			'lastName'  => $person( 'LastName' ),
+			'nickName'  => $person( 'NickName' ),
 		);
 
 		return $user;
@@ -288,7 +294,7 @@ final class WP_Register {
 	 * Returns the WordPress user ID of the current SkautIS user, or 0 if there is no such WordPress user.
 	 */
 	public function get_registered_user_id(): int {
-		$user_detail = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail();
+		$user_detail = $this->skautis_gateway->get_user_detail();
 
 		if ( is_null( $user_detail ) || ! isset( $user_detail->ID ) || ! $user_detail->ID > 0 ) {
 			return 0;
@@ -345,7 +351,7 @@ final class WP_Register {
 	 * @param string $wp_role The WordPress role to assign to the new user.
 	 */
 	public function register_to_wp( string $wp_role ): bool {
-		$user_detail = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail();
+		$user_detail = $this->skautis_gateway->get_user_detail();
 
 		if ( $user_detail instanceof \stdClass && isset( $user_detail->ID ) && $user_detail->ID > 0 ) {
 			$user = $this->prepare_user_data( $user_detail );

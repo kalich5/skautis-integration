@@ -50,6 +50,7 @@ See our [documentation](https://napoveda.skaut.cz/skautis/skautis-integration) (
 * New user management page with search and a filter, without DataTables and Thickbox
 * The list of rules shows where each rule is used, the rule editor matches the WordPress administration
 * The registration rules use the whole width of the screen
+* A SkautIS method that the App ID is not allowed to use no longer breaks the site; the administration shows which methods to allow
 * English source texts, translatable on translate.wordpress.org
 * SVG menu icon
 * Restricted posts and their comments are also hidden in the REST API and in feeds

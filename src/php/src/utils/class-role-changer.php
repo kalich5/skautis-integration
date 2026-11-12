@@ -77,10 +77,13 @@ class Role_Changer {
 	 * @return void
 	 */
 	public function print_change_roles_form() {
-		$current_user_roles = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserRoleAll(
+		$user_detail        = $this->skautis_gateway->get_user_detail();
+		$current_user_roles = is_null( $user_detail ) ? array() : $this->skautis_gateway->call_list(
+			'UserManagement',
+			'UserRoleAll',
 			array(
 				'ID_Login' => $this->skautis_gateway->get_skautis_instance()->getUser()->getLoginId(),
-				'ID_User'  => $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail()->ID,
+				'ID_User'  => $user_detail->ID,
 				'IsActive' => true,
 			)
 		);
@@ -94,7 +97,7 @@ class Role_Changer {
 				<label for="skautisRoleChanger" class="screen-reader-text"><?php esc_html_e( 'My role', 'skautis-integration' ); ?></label>
 				<select id="skautisRoleChanger" name="changeSkautisUserRole" aria-describedby="skautisRoleChanger-description">
 					<?php
-					foreach ( (array) $current_user_roles as $role ) {
+					foreach ( $current_user_roles as $role ) {
 						echo '<option value="' . esc_attr( $role->ID ) . '" ' . selected( $role->ID, $current_user_role, false ) . '>' . esc_html( $role->DisplayName ) . '</option>';
 					}
 					?>

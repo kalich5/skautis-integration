@@ -153,7 +153,8 @@ class All implements Rule {
 	 * @param array{0: int} $data The rule data.
 	 */
 	public function is_rule_passed( string $operator, $data ): bool {
-		if ( ! empty( $data[0] ) && 1 === $data[0] && $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail()->ID > 0 ) {
+		$user_detail = $this->skautis_gateway->get_user_detail();
+		if ( ! empty( $data[0] ) && 1 === $data[0] && ! is_null( $user_detail ) && intval( $user_detail->ID ) > 0 ) {
 			return true;
 		}
 

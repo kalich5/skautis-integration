@@ -173,10 +173,13 @@ final class WP_Login_Logout {
 	 * @return void
 	 */
 	public function login_to_wp() {
-		$user_detail = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail();
+		$user_detail = $this->skautis_gateway->get_user_detail();
 
-		if ( $user_detail && isset( $user_detail->ID ) && $user_detail->ID > 0 ) {
-			$this->login_wp_user_by_skautis_user_id( $user_detail->ID );
+		if ( is_null( $user_detail ) ) {
+			wp_die( esc_html__( 'The login with SkautIS failed, because SkautIS did not return the details of your account. Please try it again later.', 'skautis-integration' ), esc_html__( 'Login with SkautIS failed', 'skautis-integration' ), array( 'back_link' => true ) );
+		}
+		if ( intval( $user_detail->ID ) > 0 ) {
+			$this->login_wp_user_by_skautis_user_id( intval( $user_detail->ID ) );
 		}
 	}
 
@@ -190,10 +193,10 @@ final class WP_Login_Logout {
 	 * @return void
 	 */
 	public function try_to_login_to_wp() {
-		$user_detail = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail();
+		$user_detail = $this->skautis_gateway->get_user_detail();
 
-		if ( $user_detail && isset( $user_detail->ID ) && $user_detail->ID > 0 ) {
-			$this->login_wp_user_by_skautis_user_id( $user_detail->ID, true );
+		if ( ! is_null( $user_detail ) && intval( $user_detail->ID ) > 0 ) {
+			$this->login_wp_user_by_skautis_user_id( intval( $user_detail->ID ), true );
 		}
 	}
 
