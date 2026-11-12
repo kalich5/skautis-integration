@@ -203,31 +203,21 @@ class Event implements Rule {
 		}
 		$this->user_events = array();
 
-		try {
-			$user_detail = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail();
-			if ( ! is_object( $user_detail ) || ! isset( $user_detail->ID_Person ) ) {
-				return $this->user_events;
-			}
-			$events = $this->skautis_gateway->get_skautis_instance()->Events->EventAllPerson(
-				array(
-					'ID_Person' => $user_detail->ID_Person,
-				)
-			);
-		} catch ( \Exception $e ) {
-			Helpers::log_skautis_response( 'EventAllPerson (error)', $e->getMessage() );
+		$user_detail = $this->skautis_gateway->get_user_detail();
+		if ( is_null( $user_detail ) || ! isset( $user_detail->ID_Person ) ) {
 			return $this->user_events;
 		}
+		$events = $this->skautis_gateway->call_list(
+			'Events',
+			'EventAllPerson',
+			array(
+				'ID_Person' => $user_detail->ID_Person,
+			)
+		);
 		Helpers::log_skautis_response( 'EventAllPerson', $events );
 
-		if ( is_object( $events ) ) {
-			$events = array( $events );
-		}
-		if ( ! is_array( $events ) ) {
-			return $this->user_events;
-		}
-
 		foreach ( $events as $event ) {
-			if ( ! is_object( $event ) || ! isset( $event->ID ) ) {
+			if ( ! isset( $event->ID ) ) {
 				continue;
 			}
 			$this->user_events[ strval( $event->ID ) ] = array(
@@ -267,25 +257,23 @@ class Event implements Rule {
 			'participant' => array(),
 		);
 
-		try {
-			$roles = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserRoleAll(
-				array(
-					'ID_Login' => $this->skautis_gateway->get_skautis_instance()->getUser()->getLoginId(),
-					'ID_User'  => $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail()->ID,
-					'IsActive' => true,
-				)
-			);
-		} catch ( \Exception $e ) {
-			Helpers::log_skautis_response( 'UserRoleAll (error)', $e->getMessage() );
+		$user_detail = $this->skautis_gateway->get_user_detail();
+		if ( is_null( $user_detail ) ) {
 			return $this->user_role_groups;
 		}
+		$roles = $this->skautis_gateway->call_list(
+			'UserManagement',
+			'UserRoleAll',
+			array(
+				'ID_Login' => $this->skautis_gateway->get_skautis_instance()->getUser()->getLoginId(),
+				'ID_User'  => $user_detail->ID,
+				'IsActive' => true,
+			)
+		);
 		Helpers::log_skautis_response( 'UserRoleAll', $roles );
 
-		if ( is_object( $roles ) ) {
-			$roles = array( $roles );
-		}
-		foreach ( is_array( $roles ) ? $roles : array() as $role ) {
-			if ( is_object( $role ) && isset( $role->ID_Group ) && intval( $role->ID_Group ) > 0 ) {
+		foreach ( $roles as $role ) {
+			if ( isset( $role->ID_Group ) && intval( $role->ID_Group ) > 0 ) {
 				$this->user_role_groups[ self::is_participant_role( $role ) ? 'participant' : 'team' ][] = intval( $role->ID_Group );
 			}
 		}

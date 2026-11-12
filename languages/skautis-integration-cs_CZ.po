@@ -35,11 +35,11 @@ msgstr "Junák - český skaut"
 msgid "https://github.com/skaut"
 msgstr "https://github.com/skaut"
 
-#: class-skautis-integration.php:189 class-skautis-integration.php:273
+#: class-skautis-integration.php:190 class-skautis-integration.php:274
 msgid "The SkautIS integration plugin requires WordPress 7.0 or newer!"
 msgstr "Plugin SkautIS integrace vyžaduje verzi WordPress 7.0 nebo vyšší!"
 
-#: class-skautis-integration.php:194 class-skautis-integration.php:280
+#: class-skautis-integration.php:195 class-skautis-integration.php:281
 msgid "The SkautIS integration plugin requires PHP 8.3 or newer!"
 msgstr "Plugin SkautIS integrace vyžaduje verzi PHP 8.3 nebo vyšší!"
 
@@ -120,7 +120,8 @@ msgstr "(otevře se v nové záložce)"
 msgid "Settings sections"
 msgstr "Části nastavení"
 
-#: src/admin/class-settings.php:316 src/admin/class-users-management.php:173
+#: src/admin/class-settings.php:316 src/admin/class-skautis-errors.php:76
+#: src/admin/class-users-management.php:173
 #: src/modules/Recruitment/admin/class-settings.php:95
 msgid "You do not have sufficient permissions to access this page."
 msgstr "Nemáte dostatečná oprávnění pro přístup k této stránce."
@@ -219,6 +220,30 @@ msgid ""
 msgstr ""
 "Při přihlašování uživatele přes SkautIS ověřit, zda stále splňuje podmínky "
 "pro registraci."
+
+#: src/admin/class-skautis-errors.php:58
+msgid "SkautIS refused some calls of this site."
+msgstr "SkautIS odmítl některá volání tohoto webu."
+
+#: src/admin/class-skautis-errors.php:59
+msgid ""
+"The App ID of this site is not allowed to use these SkautIS methods, so the "
+"plugin cannot show everything:"
+msgstr ""
+"App ID tohoto webu nemá povolené tyto služby SkautISu, proto plugin nemůže "
+"zobrazit všechno:"
+
+#: src/admin/class-skautis-errors.php:63
+msgid ""
+"Ask the SkautIS administrators to allow them for the App ID. Hide this "
+"notice after they are allowed; it shows again if SkautIS still refuses them."
+msgstr ""
+"Požádejte správce SkautISu, aby je pro App ID povolili. Po povolení "
+"upozornění skryjte. Pokud je SkautIS bude dál odmítat, zobrazí se znovu."
+
+#: src/admin/class-skautis-errors.php:64
+msgid "Hide the notice"
+msgstr "Skrýt upozornění"
 
 #: src/admin/class-users-management.php:155
 #: src/admin/class-users-management.php:156
@@ -420,7 +445,7 @@ msgstr "Nemáte oprávnění k propojování uživatelů."
 msgid "Unauthorized access"
 msgstr "Neautorizovaný přístup"
 
-#: src/auth/class-skautis-gateway.php:100
+#: src/auth/class-skautis-gateway.php:120
 msgid ""
 "The SkautIS integration plugin cannot be used without setting a valid App "
 "ID."
@@ -450,6 +475,18 @@ msgstr "Nemáte oprávnění k přístupu. %1$sZkuste se nejdříve zaregistrova
 #: src/auth/class-wp-login-logout.php:108
 msgid "You do not have access"
 msgstr "Nemáte oprávnění k přístupu"
+
+#: src/auth/class-wp-login-logout.php:179
+msgid ""
+"The login with SkautIS failed, because SkautIS did not return the details of"
+" your account. Please try it again later."
+msgstr ""
+"Přihlášení přes SkautIS se nepodařilo, protože SkautIS nevrátil údaje vašeho"
+" účtu. Zkuste to prosím později znovu."
+
+#: src/auth/class-wp-login-logout.php:179
+msgid "Login with SkautIS failed"
+msgstr "Přihlášení přes SkautIS se nepodařilo"
 
 #: src/frontend/class-login-form.php:89
 msgid "Do you have a SkautIS account?"
@@ -669,12 +706,12 @@ msgstr "Seznam.cz a.s. a další"
 msgid "OpenStreetMap contributors"
 msgstr "přispěvatelé OpenStreetMap"
 
-#: src/modules/Recruitment/frontend/class-blocks.php:315
+#: src/modules/Recruitment/frontend/class-blocks.php:317
 msgid "More about the recruitment"
 msgstr "Více o náboru"
 
 #. translators: %d: The number of the clubrooms
-#: src/modules/Recruitment/frontend/class-blocks.php:340
+#: src/modules/Recruitment/frontend/class-blocks.php:342
 #, php-format
 msgid "Map of the units with %d clubroom. The map is shown on the site."
 msgid_plural ""
@@ -985,11 +1022,11 @@ msgstr "Instruktor"
 msgid "Event leadership"
 msgstr "Vedení akce"
 
-#: src/repository/class-users.php:327
+#: src/repository/class-users.php:316
 msgid "Participant"
 msgstr "Účastník"
 
-#: src/repository/class-users.php:446
+#: src/repository/class-users.php:433
 msgid "Could not get the user information from SkautIS"
 msgstr "Nepodařilo se získat informace o uživateli ze SkautISu"
 
@@ -1289,7 +1326,7 @@ msgstr "Typ členství"
 
 #. translators: 1: Start of a link to the documentation 2: End of the link to
 #. the documentation
-#: src/rules/Rule/class-membership.php:237
+#: src/rules/Rule/class-membership.php:232
 #, php-format
 msgid ""
 "Your SkautIS account is probably not connected to your person. %1$sFollow "
@@ -1310,19 +1347,19 @@ msgstr "Role"
 msgid "Close"
 msgstr "Zavřít"
 
-#: src/utils/class-role-changer.php:91
+#: src/utils/class-role-changer.php:94
 msgid "My SkautIS role"
 msgstr "Moje role ve SkautISu"
 
-#: src/utils/class-role-changer.php:94
+#: src/utils/class-role-changer.php:97
 msgid "My role"
 msgstr "Moje role"
 
-#: src/utils/class-role-changer.php:102
+#: src/utils/class-role-changer.php:105
 msgid "Change role"
 msgstr "Změnit roli"
 
-#: src/utils/class-role-changer.php:103
+#: src/utils/class-role-changer.php:106
 msgid "The selected role determines which users are shown in the table below."
 msgstr "Vybraná role ovlivní, kteří uživatelé se zobrazí v tabulce níže."
 

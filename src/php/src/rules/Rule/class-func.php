@@ -140,10 +140,10 @@ class Func implements Rule {
 	 */
 	public function get_values(): array {
 		$values = array();
-		$funcs  = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->FunctionTypeAll();
-
-		foreach ( $funcs as $func ) {
-			$values[ strval( $func->ID ) ] = $func->ShortName;
+		foreach ( $this->skautis_gateway->call_list( 'OrganizationUnit', 'FunctionTypeAll' ) as $func ) {
+			if ( isset( $func->ID, $func->ShortName ) ) {
+				$values[ strval( $func->ID ) ] = strval( $func->ShortName );
+			}
 		}
 
 		return $values;
@@ -180,8 +180,10 @@ class Func implements Rule {
 		if ( ! is_null( $user_funcs ) ) {
 			return $user_funcs;
 		}
-		$user_detail = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail();
-		$user_funcs  = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->FunctionAllPerson(
+		$user_detail = $this->skautis_gateway->get_user_detail();
+		$user_funcs  = is_null( $user_detail ) || ! isset( $user_detail->ID_Person ) ? null : $this->skautis_gateway->call(
+			'OrganizationUnit',
+			'FunctionAllPerson',
 			array(
 				'ID_Person' => $user_detail->ID_Person,
 			)
@@ -208,16 +210,9 @@ class Func implements Rule {
 			if ( ! is_object( $user_func ) || ! isset( $user_func->ID_Unit, $user_func->ID_FunctionType ) ) {
 				continue;
 			}
-			$unit_detail = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->UnitDetail(
-				array(
-					'ID' => $user_func->ID_Unit,
-				)
-			);
-			if ( $unit_detail ) {
-				if ( ! isset( $result[ $user_func->ID_FunctionType ] ) ) {
-					$result[ intval( $user_func->ID_FunctionType ) ] = array();
-				}
-				$result[ intval( $user_func->ID_FunctionType ) ][] = $unit_detail->RegistrationNumber;
+			$unit_detail = $this->skautis_gateway->call( 'OrganizationUnit', 'UnitDetail', array( 'ID' => $user_func->ID_Unit ) );
+			if ( is_object( $unit_detail ) && isset( $unit_detail->RegistrationNumber ) ) {
+				$result[ intval( $user_func->ID_FunctionType ) ][] = strval( $unit_detail->RegistrationNumber );
 			}
 		}
 

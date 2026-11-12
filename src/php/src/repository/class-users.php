@@ -206,23 +206,18 @@ class Users {
 	 * @return \stdClass|null The SkautIS user or null if the person has no user account.
 	 */
 	private function find_user_by_person( int $person_id, string $last_name ) {
-		$skautis_users = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserAll(
+		$skautis_users = $this->skautis_gateway->call_list(
+			'UserManagement',
+			'UserAll',
 			array(
 				'ID_Person'   => $person_id,
 				'DisplayName' => $last_name,
 			)
 		);
 
-		if ( is_object( $skautis_users ) && isset( $skautis_users->ID ) ) {
-			$skautis_users = array( $skautis_users );
-		}
-		if ( ! is_array( $skautis_users ) ) {
-			return null;
-		}
-
 		// The results are filtered by the person ID once more, in case the API only applied the name filter.
 		foreach ( $skautis_users as $skautis_user ) {
-			if ( $skautis_user instanceof \stdClass && isset( $skautis_user->ID, $skautis_user->ID_Person ) && intval( $skautis_user->ID_Person ) === $person_id ) {
+			if ( isset( $skautis_user->ID, $skautis_user->ID_Person ) && intval( $skautis_user->ID_Person ) === $person_id ) {
 				return $skautis_user;
 			}
 		}
@@ -247,42 +242,36 @@ class Users {
 			);
 		}
 
-		$current_user_roles = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserRoleAll(
+		$user_detail        = $this->skautis_gateway->get_user_detail();
+		$current_user_roles = is_null( $user_detail ) ? array() : $this->skautis_gateway->call_list(
+			'UserManagement',
+			'UserRoleAll',
 			array(
 				'ID_Login' => $this->skautis_gateway->get_skautis_instance()->getUser()->getLoginId(),
-				'ID_User'  => $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail()->ID,
+				'ID_User'  => $user_detail->ID,
 			)
 		);
 		$current_user_role  = $this->skautis_gateway->get_skautis_instance()->getUser()->getRoleId();
 
 		// Different procedure for roles associated with events.
 		foreach ( $current_user_roles as $role ) {
-			if ( $role->ID === $current_user_role && isset( $role->Key ) ) {
+			if ( isset( $role->ID, $role->Key ) && $role->ID === $current_user_role ) {
 				$words = preg_split( '~(?=[A-Z])~', $role->Key );
 				if ( ! empty( $words ) && isset( $words[1], $words[2] ) && 'Event' === $words[1] ) {
 					$event_type = $words[2];
 
-					$user_detail         = $this->skautis_gateway->get_skautis_instance()->UserManagement->UserDetail();
-					$current_user_events = $this->skautis_gateway->get_skautis_instance()->Events->EventAllPerson(
+					$current_user_events = $this->skautis_gateway->call_list(
+						'Events',
+						'EventAllPerson',
 						array(
 							'ID_Person' => $user_detail->ID_Person,
 						)
 					);
 
 					foreach ( $current_user_events as $event ) {
-						// @phpstan-ignore-next-line
-						if ( $event->ID_Group === $role->ID_Group ) {
-							try {
-								$event_url = $this->skautis_gateway->get_skautis_instance()->Events->EventDetail(
-									array(
-										'ID' => $event->ID,
-									)
-								);
-							} catch ( \Exception $e ) {
-								Helpers::log_skautis_response( 'EventDetail (error)', $e->getMessage() );
-								continue;
-							}
-							if ( isset( $event_url->UrlDetail ) ) {
+						if ( isset( $event->ID_Group, $role->ID_Group ) && $event->ID_Group === $role->ID_Group ) {
+							$event_url = $this->skautis_gateway->call( 'Events', 'EventDetail', array( 'ID' => $event->ID ) );
+							if ( is_object( $event_url ) && isset( $event_url->UrlDetail ) ) {
 								$reg_result = array();
 								preg_match( '~ID=(\d+)$~', $event_url->UrlDetail, $reg_result );
 								if ( isset( $reg_result[1] ) ) {
@@ -300,16 +289,16 @@ class Users {
 			$participants = null;
 			$failed       = array();
 			if ( 'Congress' !== $event_type ) {
-				$method_name = 'Participant' . $event_type . 'All';
-				try {
-					$participants = $this->skautis_gateway->get_skautis_instance()->Events->$method_name(
-						array(
-							'ID_Event' . $event_type => $event_id,
-						)
-					);
-				} catch ( \Exception $e ) {
-					// E.g. the role of the user is not allowed to see the participants of this event.
-					Helpers::log_skautis_response( $method_name . ' (error)', $e->getMessage() );
+				$method_name  = 'Participant' . $event_type . 'All';
+				$participants = $this->skautis_gateway->call_list(
+					'Events',
+					$method_name,
+					array(
+						'ID_Event' . $event_type => $event_id,
+					)
+				);
+				// E.g. the role of the user is not allowed to see the participants of this event.
+				if ( $this->skautis_gateway->last_call_failed() ) {
 					$failed[] = $method_name;
 				}
 			}
@@ -348,13 +337,15 @@ class Users {
 		if ( empty( $users ) ) {
 			$search_user_string = self::get_search_user_string();
 
-			$skautis_users = $this->skautis_gateway->get_skautis_instance()->UserManagement->userAll(
+			$skautis_users = $this->skautis_gateway->call_list(
+				'UserManagement',
+				'UserAll',
 				array(
 					'DisplayName' => $search_user_string,
 				)
 			);
 
-			if ( is_array( $skautis_users ) ) {
+			if ( count( $skautis_users ) > 0 ) {
 				$users = array_map(
 					static function ( $skautis_user ) {
 						$user = new \stdClass();
@@ -423,17 +414,13 @@ class Users {
 		} else {
 			foreach ( (array) $users['users'] as $user ) {
 				if ( $user->id === $skautis_user_id ) {
-					$person_detail = $this->skautis_gateway->get_skautis_instance()->OrganizationUnit->PersonDetail(
-						array(
-							'ID' => $user->personId,
-						)
-					);
+					$person_detail = $this->skautis_gateway->call( 'OrganizationUnit', 'PersonDetail', array( 'ID' => $user->personId ) );
 
 					$user_detail = array(
 						'id'        => $skautis_user_id,
 						'UserName'  => $user->UserName,
 						'personId'  => $user->personId,
-						'email'     => $person_detail->Email,
+						'email'     => is_object( $person_detail ) && isset( $person_detail->Email ) ? strval( $person_detail->Email ) : '',
 						'firstName' => $user->firstName,
 						'lastName'  => $user->lastName,
 						'nickName'  => $user->nickName,

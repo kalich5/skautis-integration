@@ -100,25 +100,15 @@ final class Event_Team {
 		$team = array();
 
 		foreach ( self::get_team_methods( $event_type, $event_id ) as $call ) {
-			$method = $call['method'];
-			try {
-				$response = $this->skautis_gateway->get_skautis_instance()->Events->$method( $call['args'] );
-			} catch ( \Exception $e ) {
-				Helpers::log_skautis_response( $call['method'] . ' (error)', $e->getMessage() );
+			$response = $this->skautis_gateway->call_list( 'Events', $call['method'], $call['args'] );
+			if ( $this->skautis_gateway->last_call_failed() ) {
 				$this->failed_methods[] = $call['method'];
 				continue;
 			}
 			Helpers::log_skautis_response( $call['method'], $response );
 
-			if ( is_object( $response ) ) {
-				$response = array( $response );
-			}
-			if ( ! is_array( $response ) ) {
-				continue;
-			}
-
 			foreach ( $response as $person ) {
-				if ( ! is_object( $person ) || ! isset( $person->ID_Person ) ) {
+				if ( ! isset( $person->ID_Person ) ) {
 					continue;
 				}
 				$person_id = intval( $person->ID_Person );

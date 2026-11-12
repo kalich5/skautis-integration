@@ -52,6 +52,7 @@ See our [documentation](https://napoveda.skaut.cz/skautis/skautis-integration) (
 * The registration rules use the whole width of the screen
 * New "Recruitment" and "Map of the units" blocks show the recruitment information of the units from SkautIS, with maps from Mapy.com or OpenStreetMap
 * The SkautIS login is shown in its own card below the login form
+* A SkautIS method that the App ID is not allowed to use no longer breaks the site; the administration shows which methods to allow
 * English source texts, translatable on translate.wordpress.org
 * SVG menu icon
 * Restricted posts and their comments are also hidden in the REST API and in feeds
