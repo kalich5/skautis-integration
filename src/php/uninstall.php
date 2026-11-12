@@ -56,6 +56,11 @@ function skautis_integration_uninstall_site() {
 	delete_option( 'skautis-integration_recruitment_default_appearance' );
 	delete_transient( 'skautis-integration_recruitment_data' );
 
+	// defined in src/modules/Unit/class-unit-data.php; the data of the units are stored in transients named after the unit.
+	delete_option( 'skautis-integration_unit' );
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s", $wpdb->esc_like( '_transient_skautis-integration_unit_data_' ) . '%', $wpdb->esc_like( '_transient_timeout_skautis-integration_unit_data_' ) . '%' ) );
+
 	// defined by the removed one-time autosave meta cleanup migration, sites that ran it still have the option.
 	delete_option( 'skautis_integration_autosave_meta_cleaned' );
 

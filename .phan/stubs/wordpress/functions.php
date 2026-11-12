@@ -257,3 +257,10 @@ function has_block( $block_name, $post = null ): bool {
  */
 function wp_get_referer() {
 }
+
+/**
+ * @param string      $path
+ * @param string|null $scheme
+ */
+function home_url( $path = '', $scheme = null ): string {
+}

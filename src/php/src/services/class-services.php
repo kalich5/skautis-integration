@@ -24,6 +24,7 @@ use Skautis_Integration\Admin\Users;
 use Skautis_Integration\Modules\Register\Admin\Admin as Register_Admin;
 use Skautis_Integration\Modules\Recruitment\Recruitment;
 use Skautis_Integration\Modules\Register\Register;
+use Skautis_Integration\Modules\Unit\Unit;
 use Skautis_Integration\Modules\Visibility\Visibility;
 use Skautis_Integration\Repository\Users as Repository_Users;
 use Skautis_Integration\Rules\Revisions;
@@ -354,6 +355,7 @@ class Services {
 	public static function get_features() {
 		self::get_visibility();
 		new Recruitment( self::get_skautis_gateway() );
+		new Unit( self::get_skautis_gateway() );
 		if ( is_admin() ) {
 			new Register_Admin( self::get_rules_manager() );
 		}

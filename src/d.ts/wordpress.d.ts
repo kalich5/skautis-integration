@@ -8,8 +8,16 @@ interface WPBlockAttributes {
 	[key: string]: unknown;
 	appearance?: string;
 	height?: number;
+	mapHeight?: number;
+	showAccounts?: boolean;
+	showContacts?: boolean;
+	showMap?: boolean;
+	showPeople?: boolean;
+	showSeat?: boolean;
+	showUnits?: boolean;
 	skautisRules?: Array<number>;
 	skautisVisibilityMode?: string;
+	unit?: string;
 }
 
 interface WPBlockEditProps {
@@ -83,6 +91,8 @@ declare const wp: {
 		RadioControl: WPComponent;
 		RangeControl: WPComponent;
 		SelectControl: WPComponent;
+		TextControl: WPComponent;
+		ToggleControl: WPComponent;
 	};
 	compose: {
 		createHigherOrderComponent<P>(

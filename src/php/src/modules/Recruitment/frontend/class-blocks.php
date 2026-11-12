@@ -172,14 +172,14 @@ final class Blocks {
 	 *
 	 * @param array<string, mixed> $attributes The attributes of the block.
 	 */
-	private static function get_appearance_style( array $attributes ): string {
+	public static function get_appearance_style( array $attributes ): string {
 		return Appearances::get_style( isset( $attributes['appearance'] ) && is_string( $attributes['appearance'] ) ? $attributes['appearance'] : '' );
 	}
 
 	/**
 	 * Checks whether the block is rendered for the preview in the block editor.
 	 */
-	private static function is_editor_preview(): bool {
+	public static function is_editor_preview(): bool {
 		return defined( 'REST_REQUEST' ) && true === REST_REQUEST;
 	}
 
@@ -343,7 +343,7 @@ final class Blocks {
 	 *
 	 * @return array{url: string, attribution: string, logo: bool, maxZoom: int}
 	 */
-	private static function get_tiles(): array {
+	public static function get_tiles(): array {
 		$key = get_option( Recruitment_Data::MAPY_API_KEY_OPTION, '' );
 		if ( is_string( $key ) && '' !== $key ) {
 			return array(
