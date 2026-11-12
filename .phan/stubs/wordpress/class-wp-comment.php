@@ -27,4 +27,9 @@ final class WP_Comment {
 	 * @var string
 	 */
 	public $comment_post_ID;
+
+	/**
+	 * @var string
+	 */
+	public $user_id;
 }

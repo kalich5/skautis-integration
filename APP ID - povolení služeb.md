@@ -92,9 +92,15 @@ Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, prot
 <br>
 Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele. Data se načtou nejvýš jednou denně (a po uložení nastavení na stránce SkautIS → Jednotka).
 
+<b>Profilová fotka ze SkautISu</b>
+<br>
+<b>OrganizationUnit -> PersonPhoto</b> - Načíst fotografii osoby (jen fotka přihlášeného uživatele, jen když si ji sám stáhne v profilu)
+<br>
+Volá se s přihlášeným uživatelem a jen pro jeho vlastní osobu (ID_Person z UserDetail).
+
 <b>Jak nové funkce otestovat</b>
 <br>
-1. Nechte pro App ID webu povolit čtyři služby z verze 1.2.0 výše (služby z předchozích verzí musí být povolené také).
+1. Nechte pro App ID webu povolit služby z verze 1.2.0 výše (služby z předchozích verzí musí být povolené také).
 <br>
 2. V `wp-config.php` zapněte `WP_DEBUG` a `WP_DEBUG_LOG`. Plugin pak zapisuje odpovědi SkautISu do `wp-content/debug.log` jako řádky „SkautIS integration – <služba>: …“.
 <br>
@@ -102,9 +108,11 @@ Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele. Data
 <br>
 4. Pravidlo „Akce“: vytvořte pravidlo s akcí, nastavte ho stránce a vyzkoušejte možnosti „Kdokoli z akce“, „Tým akce“ a „Účastníci (bez týmu akce)“. Do logu se zapíšou řádky EventAllPerson a UserRoleAll.
 <br>
+5. Nábor a mapa: v menu SkautIS → Nábory vyplňte registrační číslo střediska nebo oddílu a uložte. Pod nastavením se ukáže, co se ze SkautISu načetlo. Na stránku vložte bloky „Nábor“ a „Mapa oddílů“. Do logu se zapíšou řádky UnitAll, AdvertisingDetail, AdvertisingCategoryAll, MeetingDateAll a OccupationAll.
+<br>
 6. Jednotka: v menu SkautIS → Jednotka vyplňte registrační číslo (nebo ho nechte prázdné, pak se použije číslo z náborů) a uložte. Pod nastavením se ukáže, co se ze SkautISu načetlo. Na stránku vložte blok „Jednotka“ a v jeho nastavení zvolte, co zobrazit. Do logu se zapíšou řádky UnitDetail, UnitContactAll, FunctionAllRegistry a AccountAll.
 <br>
-5. Nábor a mapa: v menu SkautIS → Nábory vyplňte registrační číslo střediska nebo oddílu a uložte. Pod nastavením se ukáže, co se ze SkautISu načetlo. Na stránku vložte bloky „Nábor“ a „Mapa oddílů“. Do logu se zapíšou řádky UnitAll, AdvertisingDetail, AdvertisingCategoryAll, MeetingDateAll a OccupationAll.
+7. Profilová fotka: připojte svůj účet ke SkautISu, v profilu (Uživatelé → Profil) v části „Profilová fotka ze SkautISu“ klikněte na „Použít moji fotku ze SkautISu“. Fotka se ukáže jako profilový obrázek. Do logu se zapíše řádek PersonPhoto s názvy polí odpovědi a velikostí fotky (bez samotné fotky).
 
 <b>Jak poznat chybu v logu</b>
 <br>

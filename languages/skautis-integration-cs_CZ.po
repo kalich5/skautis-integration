@@ -36,11 +36,11 @@ msgstr "Junák - český skaut"
 msgid "https://github.com/skaut"
 msgstr "https://github.com/skaut"
 
-#: class-skautis-integration.php:198 class-skautis-integration.php:282
+#: class-skautis-integration.php:199 class-skautis-integration.php:283
 msgid "The SkautIS integration plugin requires WordPress 7.0 or newer!"
 msgstr "Plugin SkautIS integrace vyžaduje verzi WordPress 7.0 nebo vyšší!"
 
-#: class-skautis-integration.php:203 class-skautis-integration.php:289
+#: class-skautis-integration.php:204 class-skautis-integration.php:290
 msgid "The SkautIS integration plugin requires PHP 8.3 or newer!"
 msgstr "Plugin SkautIS integrace vyžaduje verzi PHP 8.3 nebo vyšší!"
 
@@ -526,7 +526,7 @@ msgstr "Přihlášení přes SkautIS se nepodařilo"
 msgid "Do you have a SkautIS account?"
 msgstr "Máte účet ve SkautISu?"
 
-#: src/frontend/class-login-form.php:90 src/frontendublic/views/login.php:19
+#: src/frontend/class-login-form.php:90 src/frontend/public/views/login.php:19
 #: src/modules/Visibility/frontend/class-frontend.php:106
 msgid "Log in with SkautIS"
 msgstr "Přihlásit se přes SkautIS"
@@ -538,11 +538,11 @@ msgstr ""
 "Přihlašovací jméno a heslo do SkautISu zadáte až na přihlašovací stránce "
 "SkautISu."
 
-#: src/frontendublic/views/login.php:26
+#: src/frontend/public/views/login.php:26
 msgid "You are logged in to SkautIS"
 msgstr "Jste přihlášeni ve SkautISu"
 
-#: src/frontendublic/views/login.php:29
+#: src/frontend/public/views/login.php:29
 msgid "Log out of SkautIS"
 msgstr "Odhlásit se ze SkautISu"
 
@@ -562,6 +562,120 @@ msgstr ""
 #: src/general/class-actions.php:218
 msgid "Plugin configuration error"
 msgstr "Chyba v konfiguraci pluginu"
+
+#: src/general/class-profile-photo.php:177
+msgid ""
+"Your photo from SkautIS is used as the profile picture. You can update or "
+"remove it in the \"Profile photo from SkautIS\" section below."
+msgstr ""
+"Jako profilový obrázek se používá vaše fotka ze SkautISu. Aktualizovat nebo "
+"odebrat ji můžete níže v části „Profilová fotka ze SkautISu“."
+
+#: src/general/class-profile-photo.php:227
+msgid "Profile photo from SkautIS"
+msgstr "Profilová fotka ze SkautISu"
+
+#: src/general/class-profile-photo.php:230
+msgid "Photo"
+msgstr "Fotka"
+
+#: src/general/class-profile-photo.php:238
+msgid "Update the photo from SkautIS"
+msgstr "Aktualizovat fotku ze SkautISu"
+
+#: src/general/class-profile-photo.php:238
+msgid "Use my photo from SkautIS"
+msgstr "Použít moji fotku ze SkautISu"
+
+#: src/general/class-profile-photo.php:242
+msgid "Remove the photo"
+msgstr "Odebrat fotku"
+
+#: src/general/class-profile-photo.php:247
+msgid ""
+"Your photo from SkautIS can be used as your profile picture on this site, "
+"instead of Gravatar. It is downloaded only when you click the button, and "
+"you can remove it at any time. If you are not logged in to SkautIS, you will"
+" be asked to log in first."
+msgstr ""
+"Svoji fotku ze SkautISu můžete na tomto webu použít jako profilový obrázek "
+"místo Gravataru. Stáhne se, jen když kliknete na tlačítko, a kdykoli ji "
+"můžete odebrat. Pokud nejste přihlášeni do SkautISu, budete nejdřív vyzváni "
+"k přihlášení."
+
+#: src/general/class-profile-photo.php:249
+msgid ""
+"Connect your account to SkautIS first, then you can use your photo from "
+"SkautIS as your profile picture."
+msgstr ""
+"Nejdřív připojte svůj účet ke SkautISu, potom můžete svou fotku ze SkautISu "
+"použít jako profilový obrázek."
+
+#: src/general/class-profile-photo.php:258
+msgid "Updating the photo"
+msgstr "Aktualizace fotky"
+
+#: src/general/class-profile-photo.php:262
+msgid "Download my photo from SkautIS again at every login through SkautIS"
+msgstr "Při každém přihlášení přes SkautIS stáhnout moji fotku znovu"
+
+#: src/general/class-profile-photo.php:301
+msgid "The link has expired. Go back to the profile and try it again."
+msgstr "Platnost odkazu vypršela. Vraťte se do profilu a zkuste to znovu."
+
+#: src/general/class-profile-photo.php:331
+msgid "Only the user themselves can download their photo from SkautIS."
+msgstr "Fotku ze SkautISu si může stáhnout jen sám uživatel."
+
+#: src/general/class-profile-photo.php:353
+msgid "You are not allowed to remove the photo of this user."
+msgstr "Nemáte oprávnění odebrat fotku tohoto uživatele."
+
+#: src/general/class-profile-photo.php:388
+msgid "Your photo from SkautIS is now your profile picture."
+msgstr "Vaše fotka ze SkautISu je teď vaším profilovým obrázkem."
+
+#: src/general/class-profile-photo.php:389
+msgid ""
+"Your photo in SkautIS has not changed, the profile picture is up to date."
+msgstr "Vaše fotka ve SkautISu se nezměnila, profilový obrázek je aktuální."
+
+#: src/general/class-profile-photo.php:390
+msgid "The photo from SkautIS was removed."
+msgstr "Fotka ze SkautISu byla odebrána."
+
+#: src/general/class-profile-photo.php:391
+msgid ""
+"You do not have a photo in SkautIS. You can add it in SkautIS on the page of"
+" your person."
+msgstr ""
+"Ve SkautISu nemáte fotku. Přidat ji můžete ve SkautISu na stránce své osoby."
+
+#: src/general/class-profile-photo.php:392
+msgid "Your account is not connected to SkautIS."
+msgstr "Váš účet není připojen ke SkautISu."
+
+#: src/general/class-profile-photo.php:393
+msgid ""
+"You are logged in to SkautIS as another user than the one connected to this "
+"account. Log out of SkautIS and try it again."
+msgstr ""
+"Do SkautISu jste přihlášeni jako jiný uživatel, než který je připojen k "
+"tomuto účtu. Odhlaste se ze SkautISu a zkuste to znovu."
+
+#: src/general/class-profile-photo.php:394
+msgid ""
+"The photo could not be downloaded from SkautIS. The App ID of this site may "
+"not be allowed to use it, or the photo could not be saved."
+msgstr ""
+"Fotku se nepodařilo stáhnout ze SkautISu. App ID tohoto webu ji možná nemá "
+"povolenou, nebo se fotku nepodařilo uložit."
+
+#. translators: %s: The display name of the user
+#: src/general/class-profile-photo.php:548
+#, php-format
+msgid "Profile photo from SkautIS: %s"
+msgstr "Profilová fotka ze SkautISu: %s"
 
 #: src/modules/Recruitment/admin/class-appearances-page.php:147
 #: src/modules/Recruitment/frontend/class-blocks.php:327
