@@ -50,6 +50,8 @@ See our [documentation](https://napoveda.skaut.cz/skautis/skautis-integration) (
 * New user management page with search and a filter, without DataTables and Thickbox
 * The list of rules shows where each rule is used, the rule editor matches the WordPress administration
 * The registration rules use the whole width of the screen
+* New "Recruitment" and "Map of the units" blocks show the recruitment information of the units from SkautIS, with maps from Mapy.com or OpenStreetMap
+* The SkautIS login is shown in its own card below the login form
 * English source texts, translatable on translate.wordpress.org
 * SVG menu icon
 * Restricted posts and their comments are also hidden in the REST API and in feeds

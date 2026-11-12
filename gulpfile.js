@@ -68,9 +68,26 @@ gulp.task(
 	gulp.parallel('build:css:modules:Visibility:admin')
 );
 
+gulp.task('build:css:modules:Recruitment:frontend', () =>
+	gulp
+		.src(['src/css/modules/Recruitment/frontend/*.css'])
+		.pipe(lightningCSS())
+		.pipe(rename({ suffix: '.min' }))
+		.pipe(gulp.dest('dist/modules/Recruitment/frontend/css/'))
+);
+
+gulp.task(
+	'build:css:modules:Recruitment',
+	gulp.parallel('build:css:modules:Recruitment:frontend')
+);
+
 gulp.task(
 	'build:css:modules',
-	gulp.parallel('build:css:modules:Register', 'build:css:modules:Visibility')
+	gulp.parallel(
+		'build:css:modules:Recruitment',
+		'build:css:modules:Register',
+		'build:css:modules:Visibility'
+	)
 );
 
 gulp.task('build:css:rules:admin', () =>
@@ -189,6 +206,19 @@ gulp.task('build:deps:npm:jQuery-QueryBuilder', () =>
 		.pipe(gulp.dest('dist/bundled/'))
 );
 
+gulp.task('build:deps:npm:leaflet', () =>
+	gulp
+		.src(
+			[
+				'node_modules/leaflet/dist/leaflet.css',
+				'node_modules/leaflet/dist/leaflet.js',
+				'node_modules/leaflet/dist/images/*.png',
+			],
+			{ base: 'node_modules/leaflet/dist', encoding: false }
+		)
+		.pipe(gulp.dest('dist/bundled/leaflet/'))
+);
+
 gulp.task('build:deps:npm:select2', () =>
 	gulp
 		.src([
@@ -204,6 +234,7 @@ gulp.task(
 		'build:deps:npm:interactjs',
 		'build:deps:npm:jquery.repeater',
 		'build:deps:npm:jQuery-QueryBuilder',
+		'build:deps:npm:leaflet',
 		'build:deps:npm:select2'
 	)
 );
@@ -258,9 +289,45 @@ gulp.task(
 	gulp.parallel('build:js:modules:Visibility:admin')
 );
 
+gulp.task('build:js:modules:Recruitment:admin', () => {
+	const tsProject = ts.createProject('tsconfig.json');
+	return (
+		gulp
+			.src(['src/ts/modules/Recruitment/admin/*.ts', 'src/d.ts/*.d.ts'])
+			.pipe(tsProject())
+			// Shipped unminified as well for the translations, see build:js:modules:Visibility:admin.
+			.js.pipe(gulp.dest('dist/modules/Recruitment/admin/js/'))
+			.pipe(terser())
+			.pipe(rename({ suffix: '.min' }))
+			.pipe(gulp.dest('dist/modules/Recruitment/admin/js/'))
+	);
+});
+
+gulp.task('build:js:modules:Recruitment:frontend', () => {
+	const tsProject = ts.createProject('tsconfig.json');
+	return gulp
+		.src(['src/ts/modules/Recruitment/frontend/*.ts', 'src/d.ts/*.d.ts'])
+		.pipe(tsProject())
+		.js.pipe(terser())
+		.pipe(rename({ suffix: '.min' }))
+		.pipe(gulp.dest('dist/modules/Recruitment/frontend/js/'));
+});
+
+gulp.task(
+	'build:js:modules:Recruitment',
+	gulp.parallel(
+		'build:js:modules:Recruitment:admin',
+		'build:js:modules:Recruitment:frontend'
+	)
+);
+
 gulp.task(
 	'build:js:modules',
-	gulp.parallel('build:js:modules:Register', 'build:js:modules:Visibility')
+	gulp.parallel(
+		'build:js:modules:Recruitment',
+		'build:js:modules:Register',
+		'build:js:modules:Visibility'
+	)
 );
 
 gulp.task('build:js:rules:admin', () => {
