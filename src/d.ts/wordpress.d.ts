@@ -10,11 +10,11 @@ interface WPBlockAttributes {
 	height?: number;
 	mapHeight?: number;
 	showAccounts?: boolean;
-	showContacts?: boolean;
-	showMap?: boolean;
 	showChildCards?: boolean;
+	showContacts?: boolean;
 	showFilter?: boolean;
 	showGroups?: boolean;
+	showMap?: boolean;
 	showPeople?: boolean;
 	showSeat?: boolean;
 	showUnits?: boolean;
