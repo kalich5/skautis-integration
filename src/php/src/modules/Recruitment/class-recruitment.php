@@ -29,6 +29,7 @@ final class Recruitment {
 	public function __construct( Skautis_Gateway $skautis_gateway ) {
 		$recruitment_data = new Recruitment_Data( $skautis_gateway );
 		add_action( Recruitment_Data::REFRESH_HOOK, array( $recruitment_data, 'refresh' ) );
+		new Unit_List( $skautis_gateway );
 		// The blocks are needed in all requests, the block editor renders them through the REST API.
 		new Blocks( $recruitment_data );
 		if ( is_admin() ) {
