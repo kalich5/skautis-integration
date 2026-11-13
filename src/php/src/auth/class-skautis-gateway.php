@@ -78,6 +78,13 @@ class Skautis_Gateway {
 	private $last_call_failed = false;
 
 	/**
+	 * The error message of the last failed call, empty when the last call succeeded.
+	 *
+	 * @var string
+	 */
+	private $last_error = '';
+
+	/**
 	 * Constructs the service and saves all dependencies.
 	 *
 	 * TODO: Replace elseif with else and remove useless checks
@@ -142,6 +149,7 @@ class Skautis_Gateway {
 	 */
 	public function call( string $service, string $method, array $args = array() ) {
 		$this->last_call_failed = true;
+		$this->last_error       = '';
 		if ( ! ( $this->skautis instanceof Skautis\Skautis ) ) {
 			return null;
 		}
@@ -151,6 +159,7 @@ class Skautis_Gateway {
 			$this->last_call_failed = false;
 			return $response;
 		} catch ( \Throwable $e ) {
+			$this->last_error = $e->getMessage();
 			self::record_error( $service, $method, $e->getMessage() );
 			return null;
 		}
@@ -161,6 +170,22 @@ class Skautis_Gateway {
 	 */
 	public function last_call_failed(): bool {
 		return $this->last_call_failed;
+	}
+
+	/**
+	 * Returns the error message of the last failed call, an empty string when the last call succeeded.
+	 */
+	public function get_last_error(): string {
+		return $this->last_error;
+	}
+
+	/**
+	 * Checks whether an error message from SkautIS means that the App ID of the site is not allowed to use the method, e.g. "Externí aplikace … nemá oprávnění k akci …".
+	 *
+	 * @param string $message The error message.
+	 */
+	public static function is_missing_permission( string $message ): bool {
+		return 1 === preg_match( '/Extern\S* aplikac\S*.*nemá oprávnění/su', $message );
 	}
 
 	/**
@@ -221,7 +246,7 @@ class Skautis_Gateway {
 		Helpers::log_skautis_response( $service . '->' . $method . ' (error)', $message );
 
 		// Only a missing permission of the App ID can be fixed by the administrator, e.g. "Externí aplikace … nemá oprávnění k akci …".
-		if ( 1 !== preg_match( '/Extern\S* aplikac\S*.*nemá oprávnění/su', $message ) ) {
+		if ( ! self::is_missing_permission( $message ) ) {
 			return;
 		}
 		$missing = self::get_missing_permissions();
@@ -231,6 +256,23 @@ class Skautis_Gateway {
 		}
 		$missing[ $key ] = time();
 		update_option( self::MISSING_PERMISSIONS_OPTION, $missing, false );
+	}
+
+	/**
+	 * Forgets a missing permission of the App ID, after the method was called successfully on the "Status" tab.
+	 *
+	 * @param string $service The web service.
+	 * @param string $method The method.
+	 *
+	 * @return void
+	 */
+	public static function forget_missing_permission( string $service, string $method ) {
+		$missing = self::get_missing_permissions();
+		$key     = $service . ' → ' . $method;
+		if ( isset( $missing[ $key ] ) ) {
+			unset( $missing[ $key ] );
+			update_option( self::MISSING_PERMISSIONS_OPTION, $missing, false );
+		}
 	}
 
 	/**
@@ -286,7 +328,8 @@ class Skautis_Gateway {
 					return true;
 				}
 			}
-		} catch ( \Exception $_ ) {
+		} catch ( \Throwable $_ ) {
+			// E.g. a missing SOAP extension of PHP must not break the settings.
 			return false;
 		}
 

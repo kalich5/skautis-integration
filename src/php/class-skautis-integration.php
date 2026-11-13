@@ -31,6 +31,9 @@ class Skautis_Integration {
 		require __DIR__ . '/src/admin/class-settings-sections.php';
 		require __DIR__ . '/src/admin/class-maps-settings.php';
 		require __DIR__ . '/src/admin/class-skautis-errors.php';
+		require __DIR__ . '/src/admin/class-skautis-methods.php';
+		require __DIR__ . '/src/admin/class-status.php';
+		require __DIR__ . '/src/admin/class-status-checks.php';
 		require __DIR__ . '/src/admin/class-users.php';
 		require __DIR__ . '/src/admin/class-users-management.php';
 

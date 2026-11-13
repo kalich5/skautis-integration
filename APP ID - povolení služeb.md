@@ -114,6 +114,10 @@ Volá se s přihlášeným uživatelem a jen pro jeho vlastní osobu (ID_Person 
 <br>
 7. Profilová fotka: připojte svůj účet ke SkautISu, v profilu (Uživatelé → Profil) v části „Profilová fotka ze SkautISu“ klikněte na „Použít moji fotku ze SkautISu“. Fotka se ukáže jako profilový obrázek. Do logu se zapíše řádek PersonPhoto s názvy polí odpovědi a velikostí fotky (bez samotné fotky).
 
+<b>Kontrola v administraci</b>
+<br>
+V menu SkautIS → Nastavení → záložka „Stav“ plugin zkontroluje verzi WordPressu a PHP, rozšíření PHP a spojení se SkautISem a otestuje všechny metody SkautISu, které používá. Metody jsou rozdělené podle funkcí a podle toho, jestli se volají bez přihlášení (jen s App ID), nebo s přihlášeným uživatelem. Ty druhé se otestují po kliknutí na „Přihlásit se do SkautISu a otestovat je“. Červený křížek znamená, že SkautIS metodu pro App ID odmítl a je potřeba ji nechat povolit.
+
 <b>Jak poznat chybu v logu</b>
 <br>
 Řádek „SkautIS integration – <služba> (error): …“ znamená, že SkautIS volání odmítl:
