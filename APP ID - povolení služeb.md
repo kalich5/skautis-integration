@@ -70,27 +70,27 @@ Pravidlo „Akce“ používá jen služby z předchozích verzí (Events -> Eve
 <br>
 <b>OrganizationUnit -> UnitAll</b> - Načíst seznam jednotek (už ve verzi 1.0; jednotka podle registračního čísla a její oddíly)
 <br>
-<b>OrganizationUnit -> AdvertisingDetail</b> - Načíst detail náboru jednotky (poznámka, vodní oddíl)
+<b>OrganizationUnit -> AdvertisingDetail</b> - Načíst detail náboru jednotky (poznámka, vodní oddíl) – anonymní akce <code>OU_Advertising_DETAIL_Unit</code>
 <br>
-<b>OrganizationUnit -> AdvertisingCategoryAll</b> - Načíst náborové kategorie (věk a pohlaví)
+<b>OrganizationUnit -> AdvertisingCategoryAll</b> - Načíst náborové kategorie (věk a pohlaví) – anonymní akce <code>OU_AdvertisingCategory_ALL_Unit</code>
 <br>
-<b>OrganizationUnit -> MeetingDateAll</b> - Načíst termíny schůzek
+<b>OrganizationUnit -> MeetingDateAll</b> - Načíst termíny schůzek – anonymní akce <code>OU_MeetingDate_ALL_Unit</code>
 <br>
-<b>OrganizationUnit -> OccupationAll</b> - Načíst klubovny jednotky (adresa a GPS pro mapu)
+<b>OrganizationUnit -> OccupationAll</b> - Načíst klubovny jednotky (adresa a GPS pro mapu) – anonymní akce (název ukáže záložka „Stav“, pokud ji SkautIS odmítne)
 <br>
-Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, protože nábor vidí i návštěvníci webu. Data se načtou nejvýš jednou denně (a po uložení nastavení na stránce SkautIS → Nábory).
+Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, protože nábor vidí i návštěvníci webu. <b>Musí být proto povolené jako anonymní akce</b> (SkautIS pak hlásí „nemá oprávnění k anonymni akci …“). Data se načtou nejvýš jednou denně (a po uložení nastavení na stránce SkautIS → Nábory).
 
 <b>Informace o jednotce (blok „Jednotka“)</b>
 <br>
 <b>OrganizationUnit -> UnitAll</b> a <b>UnitDetail</b> - už z verze 1.0 (jednotka podle registračního čísla, sídlo, IČ, podřízené jednotky)
 <br>
-<b>OrganizationUnit -> UnitContactAll</b> - Načíst kontakty jednotky (jen ty označené jako veřejné)
+<b>OrganizationUnit -> UnitContactAll</b> - Načíst kontakty jednotky (jen ty označené jako veřejné) – anonymní akce <code>OU_UnitContact_ALL_Unit</code>
 <br>
-<b>OrganizationUnit -> FunctionAllRegistry</b> - Načíst statutární orgán, zástupce a kontaktní osobu z rejstříku
+<b>OrganizationUnit -> FunctionAllRegistry</b> - Načíst statutární orgán, zástupce a kontaktní osobu z rejstříku – anonymní akce <code>OU_Function_ALL_UnitRegistry</code>
 <br>
-<b>OrganizationUnit -> AccountAll</b> - Načíst bankovní účty jednotky (jen když blok zobrazuje bankovní účet)
+<b>OrganizationUnit -> AccountAll</b> - Načíst bankovní účty jednotky (jen když blok zobrazuje bankovní účet) – anonymní akce <code>OU_Account_ALL_Unit</code>
 <br>
-Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele. Data se načtou nejvýš jednou denně (a po uložení nastavení na stránce SkautIS → Jednotka).
+Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, takže <b>musí být povolené jako anonymní akce</b>. UnitAll a UnitDetail už anonymně fungují. Data se načtou nejvýš jednou denně (a po uložení nastavení na stránce SkautIS → Jednotka).
 
 <b>Profilová fotka ze SkautISu</b>
 <br>
