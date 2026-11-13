@@ -73,6 +73,7 @@ See our [documentation](https://napoveda.skaut.cz/skautis/skautis-integration) (
 * Requires WordPress 7.0 and PHP 8.3 or newer
 * Content visibility rules for individual blocks in the block editor, rules of a whole page in the document sidebar; the shortcode was removed
 * All settings on one page with tabs; the modules were removed: content visibility is always available and registration has its own setting
+* New "Status" tab of the settings checks the versions of WordPress and PHP, the PHP extensions and the connection to SkautIS, and tests all SkautIS methods that the plugin uses
 * New user management page with search and a filter, without DataTables and Thickbox
 * The list of rules shows where each rule is used, the rule editor matches the WordPress administration
 * The registration rules use the whole width of the screen

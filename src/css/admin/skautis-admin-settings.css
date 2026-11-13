@@ -127,3 +127,39 @@
 		padding: 4px 16px 8px;
 	}
 }
+
+/* The "Status" tab */
+.skautis-status-table {
+	margin-bottom: 16px;
+}
+
+.skautis-settings-card .skautis-status-table th {
+	width: 30%;
+	font-weight: 600;
+}
+
+.skautis-settings-card .skautis-status-table td.skautis-status-cell {
+	width: 24px;
+	padding-right: 0;
+}
+
+.skautis-status-icon.is-ok {
+	color: #008a20;
+}
+
+.skautis-status-icon.is-warning {
+	color: #dba617;
+}
+
+.skautis-status-icon.is-error {
+	color: #d63638;
+}
+
+.skautis-status-icon.is-untested {
+	color: #8c8f94;
+}
+
+h2.skautis-status-subtitle {
+	margin-top: 24px;
+	font-size: 1.1em;
+}

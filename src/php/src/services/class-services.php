@@ -23,6 +23,7 @@ use Skautis_Integration\Admin\Admin;
 use Skautis_Integration\Admin\Maps_Settings;
 use Skautis_Integration\Admin\Settings;
 use Skautis_Integration\Admin\Skautis_Errors;
+use Skautis_Integration\Admin\Status;
 use Skautis_Integration\Admin\Users;
 use Skautis_Integration\Modules\Register\Admin\Admin as Register_Admin;
 use Skautis_Integration\Modules\Recruitment\Recruitment;
@@ -477,6 +478,7 @@ class Services {
 			self::get_users_management();
 			new Skautis_Errors();
 			new Maps_Settings();
+			new Status( self::get_skautis_gateway(), self::get_skautis_login(), self::get_wp_login_logout() );
 			self::$admin = new Admin(
 				self::get_wp_login_logout(),
 				self::get_skautis_gateway()
