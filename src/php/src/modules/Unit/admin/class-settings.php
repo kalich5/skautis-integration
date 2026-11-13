@@ -198,7 +198,7 @@ final class Settings {
 		/* translators: %s: The name of the default appearance of the recruitment */
 		echo '<option value="">' . esc_html( sprintf( __( 'Like the recruitment (%s)', 'skautis-integration' ), is_null( $recruitment ) ? '' : $recruitment['name'] ) ) . '</option>';
 		foreach ( Appearances::get_all() as $id => $appearance ) {
-			echo '<option value="' . esc_attr( $id ) . '"' . selected( $id, $selected, false ) . '>' . esc_html( $appearance['name'] ) . '</option>';
+			echo '<option value="' . esc_attr( $id ) . '"' . selected( $selected, $id, false ) . '>' . esc_html( $appearance['name'] ) . '</option>';
 		}
 		echo '</select>';
 		echo '<p class="description">' . esc_html__( 'For the templates of Dobrý skautský web, choose the appearance of your template. A block can have its own appearance in its settings in the editor.', 'skautis-integration' ) . '</p>';
