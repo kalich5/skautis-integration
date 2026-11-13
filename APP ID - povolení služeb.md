@@ -76,9 +76,9 @@ Pravidlo „Akce“ používá jen služby z předchozích verzí (Events -> Eve
 <br>
 <b>OrganizationUnit -> MeetingDateAll</b> - Načíst termíny schůzek – anonymní akce <code>OU_MeetingDate_ALL_Unit</code>
 <br>
-<b>OrganizationUnit -> OccupationAll</b> - Načíst klubovny jednotky (adresa a GPS pro mapu) – anonymní akce (název ukáže záložka „Stav“, pokud ji SkautIS odmítne)
+<b>OrganizationUnit -> OccupationAll</b> - Načíst klubovny jednotky (adresa a GPS pro mapu) – anonymní akce <code>OU_Occupation_ALL</code>
 <br>
-Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, protože nábor vidí i návštěvníci webu. <b>Musí být proto povolené jako anonymní akce</b> (SkautIS pak hlásí „nemá oprávnění k anonymni akci …“). Data se načtou nejvýš jednou denně (a po uložení nastavení na stránce SkautIS → Nábory).
+Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, protože nábor vidí i návštěvníci webu. <b>Musí být proto povolené jako anonymní akce</b>; přihlášený správce je na záložce „Stav“ testuje se svým přihlášením, SkautIS pak hlásí stejné názvy akcí bez slova „anonymni“ (SkautIS pak hlásí „nemá oprávnění k anonymni akci …“). Data se načtou nejvýš jednou denně (a po uložení nastavení na stránce SkautIS → Nábory).
 
 <b>Informace o jednotce (blok „Jednotka“)</b>
 <br>
@@ -94,7 +94,7 @@ Tyto služby se volají jen s App ID webu, bez přihlášeného uživatele, tak�
 
 <b>Profilová fotka ze SkautISu</b>
 <br>
-<b>OrganizationUnit -> PersonPhoto</b> - Načíst fotografii osoby (jen fotka přihlášeného uživatele, jen když si ji sám stáhne v profilu)
+<b>OrganizationUnit -> PersonPhoto</b> - Načíst fotografii osoby (jen fotka přihlášeného uživatele, jen když si ji sám stáhne v profilu) – akce <code>OU_Person_DETAIL_Photo</code>
 <br>
 Volá se s přihlášeným uživatelem a jen pro jeho vlastní osobu (ID_Person z UserDetail).
 

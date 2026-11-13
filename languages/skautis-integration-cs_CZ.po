@@ -318,12 +318,12 @@ msgid ""
 "use it."
 msgstr "SkautIS metodu dříve odmítl: App ID webu ji nemá povolenou."
 
-#: src/admin/class-skautis-methods.php:289
+#: src/admin/class-skautis-methods.php:308
 msgid "The App ID of the site is not allowed to use the method."
 msgstr "App ID webu nemá tuto metodu povolenou."
 
 #. translators: %s: The name of the action in SkautIS
-#: src/admin/class-skautis-methods.php:294
+#: src/admin/class-skautis-methods.php:313
 #, php-format
 msgid ""
 "The App ID of the site is not allowed to use the method without a logged-in "
@@ -333,7 +333,7 @@ msgstr ""
 "povolení anonymní akce %s."
 
 #. translators: %s: The name of the action in SkautIS
-#: src/admin/class-skautis-methods.php:296
+#: src/admin/class-skautis-methods.php:315
 #, php-format
 msgid ""
 "The App ID of the site is not allowed to use the method. Ask for the action "
@@ -341,22 +341,22 @@ msgid ""
 msgstr "App ID webu nemá metodu povolenou. Požádejte o povolení akce %s."
 
 #. translators: %s: The error message
-#: src/admin/class-skautis-methods.php:322
+#: src/admin/class-skautis-methods.php:341
 #, php-format
 msgid "The plugin could not call the method: %s"
 msgstr "Plugin nemohl metodu zavolat: %s"
 
-#: src/admin/class-skautis-methods.php:335
+#: src/admin/class-skautis-methods.php:354
 msgid "SkautIS could not be called."
 msgstr "SkautIS se nepodařilo zavolat."
 
 #. translators: %s: The message from SkautIS
-#: src/admin/class-skautis-methods.php:342
+#: src/admin/class-skautis-methods.php:361
 #, php-format
 msgid "The method is allowed. SkautIS answered the test call: %s"
 msgstr "Metoda je povolená. SkautIS na testovací volání odpověděl: %s"
 
-#: src/admin/class-skautis-methods.php:363
+#: src/admin/class-skautis-methods.php:382
 msgid ""
 "Not tested, because the method changes the role of the user in SkautIS. It "
 "is used when a user switches the role."
@@ -364,11 +364,11 @@ msgstr ""
 "Netestováno, protože metoda mění roli uživatele ve SkautISu. Používá se při "
 "přepnutí role."
 
-#: src/admin/class-skautis-methods.php:390
+#: src/admin/class-skautis-methods.php:409
 msgid "Not tested, the App ID is not set."
 msgstr "Netestováno, App ID není nastavené."
 
-#: src/admin/class-skautis-methods.php:392
+#: src/admin/class-skautis-methods.php:411
 msgid ""
 "Not tested, fill in the registration number of the unit on the "
 "\"Recruitment\" or \"Unit\" page."
@@ -376,7 +376,7 @@ msgstr ""
 "Netestováno, vyplňte registrační číslo jednotky na stránce „Nábory“ nebo "
 "„Jednotka“."
 
-#: src/admin/class-skautis-methods.php:396
+#: src/admin/class-skautis-methods.php:415
 msgid ""
 "Not tested, log in to SkautIS to test the methods that need a logged-in "
 "user."
@@ -384,7 +384,7 @@ msgstr ""
 "Netestováno, pro test metod, které potřebují přihlášeného uživatele, se "
 "přihlaste do SkautISu."
 
-#: src/admin/class-skautis-methods.php:399
+#: src/admin/class-skautis-methods.php:418
 msgid ""
 "Not tested, SkautIS did not return the logged-in user (UserManagement → "
 "UserDetail)."
@@ -618,9 +618,14 @@ msgstr "Bez přihlášeného uživatele"
 #: src/admin/class-status.php:141
 msgid ""
 "Called with the App ID of the site only, e.g. for the blocks shown to all "
-"visitors."
+"visitors. When you are logged in to SkautIS, they are tested with your "
+"login, but the visitors call them without it: in SkautIS, they must be "
+"allowed as anonymous actions."
 msgstr ""
-"Volají se jen s App ID webu, např. pro bloky zobrazené všem návštěvníkům."
+"Volají se jen s App ID webu, např. pro bloky zobrazené všem návštěvníkům. "
+"Když jste přihlášeni do SkautISu, testují se s vaším přihlášením, ale "
+"návštěvníci je volají bez přihlášení: ve SkautISu proto musí být povolené "
+"jako anonymní akce."
 
 #: src/admin/class-status.php:144
 msgid "With a logged-in user"
