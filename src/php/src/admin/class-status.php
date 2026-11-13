@@ -134,7 +134,7 @@ final class Status {
 			echo '<div class="notice notice-info inline"><p>' . esc_html__( 'You are not logged in to SkautIS, so the methods that need a logged-in user cannot be tested. Log in to SkautIS and this tab tests them all.', 'skautis-integration' ) . '</p><p><a class="button button-primary" href="' . esc_url( $login_url ) . '">' . esc_html__( 'Log in to SkautIS and test them', 'skautis-integration' ) . '</a></p></div>';
 		}
 		/* translators: %s: The date and time */
-		echo '<p class="description">' . esc_html( sprintf( __( 'Tested on %s.', 'skautis-integration' ), wp_date( strval( get_option( 'date_format' ) ) . ' ' . strval( get_option( 'time_format' ) ) ) ) ) . '</p>';
+		echo '<p class="description">' . esc_html( sprintf( __( 'Tested on %s.', 'skautis-integration' ), wp_date( strval( get_option( 'date_format' ) ) . ' H:i' ) ) ) . '</p>';
 		echo '<p><a class="button" href="' . esc_url( $tab_url ) . '">' . esc_html__( 'Test the methods again', 'skautis-integration' ) . '</a></p>';
 
 		echo '<h2 class="skautis-status-subtitle">' . esc_html__( 'Without a logged-in user', 'skautis-integration' ) . '</h2>';
