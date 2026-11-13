@@ -59,6 +59,16 @@ final class Recruitment_Data {
 	);
 
 	/**
+	 * The area of the map for OccupationAll, which requires one. The whole world, so that no clubroom is left out.
+	 */
+	const WHOLE_MAP = array(
+		'GpsLatitudeStart'  => -90,
+		'GpsLongitudeStart' => -180,
+		'GpsLatitudeEnd'    => 90,
+		'GpsLongitudeEnd'   => 180,
+	);
+
+	/**
 	 * A link to the Skautis_Gateway service instance.
 	 *
 	 * @var Skautis_Gateway
@@ -232,10 +242,13 @@ final class Recruitment_Data {
 		$places = array();
 		foreach ( $this->call(
 			'OccupationAll',
-			array(
-				'ID_Unit'           => $unit_id,
-				'IncludeChildUnits' => false,
-				'Publish'           => true,
+			array_merge(
+				array(
+					'ID_Unit'           => $unit_id,
+					'IncludeChildUnits' => false,
+					'Publish'           => true,
+				),
+				self::WHOLE_MAP
 			)
 		) ?? array() as $occupation ) {
 			$places[] = self::to_place( $occupation );

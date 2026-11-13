@@ -111,10 +111,13 @@ final class Skautis_Methods {
 					self::method(
 						'OrganizationUnit',
 						'OccupationAll',
-						array(
-							'ID_Unit'           => $unit_id,
-							'IncludeChildUnits' => false,
-							'Publish'           => true,
+						array_merge(
+							array(
+								'ID_Unit'           => $unit_id,
+								'IncludeChildUnits' => false,
+								'Publish'           => true,
+							),
+							Recruitment_Data::WHOLE_MAP
 						)
 					),
 				),
@@ -137,7 +140,17 @@ final class Skautis_Methods {
 							)
 						)
 					),
-					self::method( 'OrganizationUnit', 'AccountAll', array_merge( $unit, array( 'IsValid' => true ) ) ),
+					self::method(
+						'OrganizationUnit',
+						'AccountAll',
+						array_merge(
+							$unit,
+							array(
+								'ShowHistory' => false,
+								'IsValid'     => true,
+							)
+						)
+					),
 				),
 			),
 		);
@@ -265,6 +278,25 @@ final class Skautis_Methods {
 	}
 
 	/**
+	 * Returns the message about a missing permission, with the action of SkautIS that must be allowed for the App ID.
+	 *
+	 * SkautIS names the action in the error, e.g. `nemá oprávnění k anonymni akci "OU_Advertising_DETAIL_Unit"`; an anonymous action is a call without a logged-in user.
+	 *
+	 * @param string $error The error message from SkautIS.
+	 */
+	private static function get_permission_message( string $error ): string {
+		if ( 1 !== preg_match( '/oprávnění k (anonymni |anonymní )?akci\W*([A-Za-z0-9_]+)/u', $error, $matches ) ) {
+			return __( 'The App ID of the site is not allowed to use the method.', 'skautis-integration' );
+		}
+
+		return '' !== $matches[1]
+			/* translators: %s: The name of the action in SkautIS */
+			? sprintf( __( 'The App ID of the site is not allowed to use the method without a logged-in user. Ask for the anonymous action %s.', 'skautis-integration' ), $matches[2] )
+			/* translators: %s: The name of the action in SkautIS */
+			: sprintf( __( 'The App ID of the site is not allowed to use the method. Ask for the action %s.', 'skautis-integration' ), $matches[2] );
+	}
+
+	/**
 	 * Calls a method and returns the result of the test.
 	 *
 	 * @phpstan-param Method $method
@@ -279,7 +311,15 @@ final class Skautis_Methods {
 		if ( Skautis_Gateway::is_missing_permission( $error ) ) {
 			return array(
 				'status'  => self::ERROR,
-				'message' => __( 'The App ID of the site is not allowed to use the method.', 'skautis-integration' ),
+				'message' => self::get_permission_message( $error ),
+			);
+		}
+		// An error of the SOAP client of PHP, e.g. a missing argument: the call did not reach SkautIS.
+		if ( 0 === strpos( $error, 'SOAP-ERROR' ) ) {
+			return array(
+				'status'  => self::ERROR,
+				/* translators: %s: The error message */
+				'message' => sprintf( __( 'The plugin could not call the method: %s', 'skautis-integration' ), wp_strip_all_tags( $error ) ),
 			);
 		}
 		Skautis_Gateway::forget_missing_permission( $method['service'], $method['method'] );
