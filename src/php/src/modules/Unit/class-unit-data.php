@@ -56,6 +56,15 @@ final class Unit_Data {
 	const CONTACT = 'contact';
 
 	/**
+	 * The argument of FunctionAllRegistry that loads the people of a role, in the form `role => argument`.
+	 */
+	const ROLE_ARGUMENTS = array(
+		self::STATUTORY => 'ReturnStatutory',
+		self::ASSISTANT => 'ReturnAssistant',
+		self::CONTACT   => 'ReturnContact',
+	);
+
+	/**
 	 * A link to the Skautis_Gateway service instance.
 	 *
 	 * @var Skautis_Gateway
@@ -267,12 +276,7 @@ final class Unit_Data {
 	 */
 	private function load_people( int $unit_id ): array {
 		$result = array();
-		$roles  = array(
-			self::STATUTORY => 'ReturnStatutory',
-			self::ASSISTANT => 'ReturnAssistant',
-			self::CONTACT   => 'ReturnContact',
-		);
-		foreach ( $roles as $role => $argument ) {
+		foreach ( self::ROLE_ARGUMENTS as $role => $argument ) {
 			$args = array(
 				'ID_Unit'         => $unit_id,
 				'ReturnStatutory' => false,
