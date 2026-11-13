@@ -23,7 +23,7 @@ final class Settings {
 	const HELP_PAGE_URL = 'https://napoveda.skaut.cz/skautis/skautis-integration';
 
 	/**
-	 * The tabs of the settings page in the form `tab => settings page`. Each tab has its own settings group.
+	 * The tabs of the settings page in the form `tab => settings page`. Each tab has its own settings group; a tab without settings has an empty group and is printed by the `skautis-integration_settings_tab_<tab>` action.
 	 *
 	 * @var array<string, string>
 	 */
@@ -33,6 +33,7 @@ final class Settings {
 		'registration' => SKAUTIS_INTEGRATION_NAME . '_modules_register',
 		'visibility'   => SKAUTIS_INTEGRATION_NAME . '_modules_visibility',
 		'maps'         => SKAUTIS_INTEGRATION_NAME . '_maps',
+		'status'       => '',
 	);
 
 	/**
@@ -207,6 +208,7 @@ final class Settings {
 			'registration' => __( 'Registration', 'skautis-integration' ),
 			'visibility'   => __( 'Content visibility', 'skautis-integration' ),
 			'maps'         => __( 'Maps', 'skautis-integration' ),
+			'status'       => __( 'Status', 'skautis-integration' ),
 		);
 	}
 
@@ -322,14 +324,18 @@ final class Settings {
 		self::print_page_header( __( 'SkautIS settings', 'skautis-integration' ), $current_tab );
 		?>
 		<div class="skautis-settings-body">
-			<?php settings_errors(); ?>
-			<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>">
-				<?php
+			<?php
+			if ( '' === self::TABS[ $current_tab ] ) {
+				do_action( SKAUTIS_INTEGRATION_NAME . '_settings_tab_' . $current_tab );
+			} else {
+				settings_errors();
+				echo '<form method="POST" action="' . esc_url( admin_url( 'options.php' ) ) . '">';
 				settings_fields( self::TABS[ $current_tab ] );
 				Settings_Sections::print( self::TABS[ $current_tab ] );
 				submit_button();
-				?>
-			</form>
+				echo '</form>';
+			}
+			?>
 		</div>
 		<?php
 	}
