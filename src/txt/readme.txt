@@ -82,6 +82,7 @@ See our [documentation](https://napoveda.skaut.cz/skautis/skautis-integration) (
 * Appearances of the recruitment and unit blocks for the Dobrý skautský web templates (DSW1, DSW2, DSW3) and custom appearances, chosen for the whole site or for each block
 * The "Recruitment" and "Unit" blocks can turn each of their parts on or off
 * Groups and districts: the recruitment blocks show all units below the unit, grouped by their parent units, with a filter for the visitors by the unit, the age and boys or girls; a block can show another unit or only the chosen units, and the "Unit" block can show the cards of the child units
+* In the settings of the blocks, the unit is chosen from a list of the units below the unit of the site, with their registration numbers and optionally their names
 * The SkautIS login is shown in its own card below the login form
 * Each user can use their photo from SkautIS as their profile picture; it is downloaded only when the user chooses it in their profile
 * Privacy: a suggested privacy policy text, export and erasure of the personal data stored by the plugin, the external services described in the readme

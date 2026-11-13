@@ -63,6 +63,14 @@ function skautis_integration_uninstall_site() {
 		delete_option( 'skautis-integration_recruitment_data_' . md5( strval( $skautis_integration_number ) ) );
 	}
 	delete_option( 'skautis-integration_recruitment_cached_units' );
+	// The lists of the units for the blocks (src/modules/Recruitment/class-unit-list.php).
+	delete_option( 'skautis-integration_recruitment_list_names' );
+	delete_option( 'skautis-integration_unit_list_names' );
+	$skautis_integration_numbers = get_option( 'skautis-integration_unit_list_cached', array() );
+	foreach ( is_array( $skautis_integration_numbers ) ? $skautis_integration_numbers : array() as $skautis_integration_number ) {
+		delete_transient( 'skautis-integration_unit_list_' . md5( strval( $skautis_integration_number ) ) );
+	}
+	delete_option( 'skautis-integration_unit_list_cached' );
 	wp_unschedule_hook( 'skautis-integration_recruitment_refresh' );
 
 	// defined in src/modules/Unit/class-unit-data.php; the data of the units are stored in transients named after the unit.
