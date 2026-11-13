@@ -278,6 +278,25 @@ final class Skautis_Methods {
 	}
 
 	/**
+	 * Returns the important part of an error from SkautIS, without the stack trace of the server.
+	 *
+	 * E.g. "Nemáte oprávnění k akci EV_Event_DETAIL nad záznamem ID=0!" from a long SoapException.
+	 *
+	 * @param string $error The error message from SkautIS.
+	 */
+	private static function get_short_error( string $error ): string {
+		$error = wp_strip_all_tags( $error );
+		if ( 1 === preg_match( '/SqlException:\s*([^\r\n]+)/u', $error, $matches ) ) {
+			$error = $matches[1];
+		} else {
+			$error = strtok( $error, "\r\n" );
+			$error = false !== $error ? $error : '';
+		}
+
+		return mb_strlen( $error ) > 200 ? mb_substr( $error, 0, 200 ) . '…' : $error;
+	}
+
+	/**
 	 * Returns the message about a missing permission, with the action of SkautIS that must be allowed for the App ID.
 	 *
 	 * SkautIS names the action in the error, e.g. `nemá oprávnění k anonymni akci "OU_Advertising_DETAIL_Unit"`; an anonymous action is a call without a logged-in user.
@@ -339,7 +358,7 @@ final class Skautis_Methods {
 		return array(
 			'status'  => self::OK,
 			/* translators: %s: The message from SkautIS */
-			'message' => sprintf( __( 'The method is allowed. SkautIS answered the test call: %s', 'skautis-integration' ), wp_strip_all_tags( $error ) ),
+			'message' => sprintf( __( 'The method is allowed. SkautIS answered the test call: %s', 'skautis-integration' ), self::get_short_error( $error ) ),
 		);
 	}
 
