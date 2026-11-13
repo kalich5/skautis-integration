@@ -12,7 +12,6 @@ namespace Skautis_Integration\Admin;
 use Skautis_Integration\Auth\Skautis_Gateway;
 use Skautis_Integration\Auth\Skautis_Login;
 use Skautis_Integration\Auth\WP_Login_Logout;
-use Skautis_Integration\Utils\Request_Parameter_Helpers;
 
 /**
  * The "Status" tab of the settings page: the check of the environment of the site and the test of the SkautIS methods that the plugin uses.
@@ -20,16 +19,6 @@ use Skautis_Integration\Utils\Request_Parameter_Helpers;
  * @phan-constructor-used-for-side-effects
  */
 final class Status {
-
-	/**
-	 * The prefix of the transients with the results of the test of the methods, followed by the ID of the user.
-	 */
-	const RESULTS_TRANSIENT = SKAUTIS_INTEGRATION_NAME . '_method_status_';
-
-	/**
-	 * The nonce action of the button that tests the methods again.
-	 */
-	const TEST_ACTION = SKAUTIS_INTEGRATION_NAME . '_test_methods';
 
 	/**
 	 * A link to the Skautis_Gateway service instance.
@@ -101,28 +90,6 @@ final class Status {
 	}
 
 	/**
-	 * Returns the results of the test of the methods: from the last test of the current user if it is less than an hour old, otherwise from a new test.
-	 *
-	 * @param bool $again Whether to test the methods again.
-	 *
-	 * @return array{tested: int, groups: array<array<string, mixed>>}
-	 */
-	private function get_results( bool $again ): array {
-		$key    = self::RESULTS_TRANSIENT . get_current_user_id();
-		$cached = get_transient( $key );
-		if ( ! $again && is_array( $cached ) && isset( $cached['tested'], $cached['groups'] ) && is_int( $cached['tested'] ) && is_array( $cached['groups'] ) ) {
-			return $cached;
-		}
-		$results = array(
-			'tested' => time(),
-			'groups' => ( new Skautis_Methods( $this->skautis_gateway ) )->test( $this->skautis_login->is_user_logged_in_skautis() ),
-		);
-		set_transient( $key, $results, intdiv( DAY_IN_SECONDS, 24 ) );
-
-		return $results;
-	}
-
-	/**
 	 * Prints the groups of the methods.
 	 *
 	 * @param array<array<string, mixed>> $groups The tested groups.
@@ -155,27 +122,31 @@ final class Status {
 		self::print_checks( __( 'Server and WordPress', 'skautis-integration' ), Status_Checks::get_server_checks() );
 		self::print_checks( __( 'Plugin and SkautIS', 'skautis-integration' ), Status_Checks::get_plugin_checks( $this->skautis_gateway ) );
 
-		$again     = false !== wp_verify_nonce( Request_Parameter_Helpers::get_string_variable( '_wpnonce' ), self::TEST_ACTION );
-		$results   = $this->get_results( $again );
+		// The methods are tested every time the tab is opened, so it always shows the current state.
 		$logged_in = $this->skautis_login->is_user_logged_in_skautis();
+		$groups    = ( new Skautis_Methods( $this->skautis_gateway ) )->test( $logged_in );
 		$tab_url   = Settings::get_tab_url( 'status' );
+		$login_url = $this->wp_login_logout->get_login_url( add_query_arg( 'noWpLogin', '1', $tab_url ) );
 
 		echo '<div class="skautis-settings-card"><h2>' . esc_html__( 'SkautIS methods', 'skautis-integration' ) . '</h2>';
-		echo '<p>' . esc_html__( 'The methods of SkautIS that the plugin uses, by the features that need them. The App ID of the site must be allowed to use them in SkautIS. A method with a red cross is refused by SkautIS: ask the administrators of SkautIS to allow it for the App ID, see the file "APP ID - povolení služeb.md" of the plugin.', 'skautis-integration' ) . '</p>';
+		echo '<p>' . esc_html__( 'The methods of SkautIS that the plugin uses, by the features that need them. They are called every time this tab is opened. The App ID of the site must be allowed to use them in SkautIS. A method with a red cross is refused by SkautIS: ask the administrators of SkautIS to allow it for the App ID, see the file "APP ID - povolení služeb.md" of the plugin.', 'skautis-integration' ) . '</p>';
+		if ( ! $logged_in && $this->skautis_gateway->is_initialized() ) {
+			echo '<div class="notice notice-info inline"><p>' . esc_html__( 'You are not logged in to SkautIS, so the methods that need a logged-in user cannot be tested. Log in to SkautIS and this tab tests them all.', 'skautis-integration' ) . '</p><p><a class="button button-primary" href="' . esc_url( $login_url ) . '">' . esc_html__( 'Log in to SkautIS and test them', 'skautis-integration' ) . '</a></p></div>';
+		}
 		/* translators: %s: The date and time */
-		echo '<p class="description">' . esc_html( sprintf( __( 'Tested on %s.', 'skautis-integration' ), wp_date( strval( get_option( 'date_format' ) ) . ' ' . strval( get_option( 'time_format' ) ), $results['tested'] ) ) ) . '</p>';
-		echo '<p><a class="button" href="' . esc_url( wp_nonce_url( $tab_url, self::TEST_ACTION ) ) . '">' . esc_html__( 'Test the methods again', 'skautis-integration' ) . '</a></p>';
+		echo '<p class="description">' . esc_html( sprintf( __( 'Tested on %s.', 'skautis-integration' ), wp_date( strval( get_option( 'date_format' ) ) . ' ' . strval( get_option( 'time_format' ) ) ) ) ) . '</p>';
+		echo '<p><a class="button" href="' . esc_url( $tab_url ) . '">' . esc_html__( 'Test the methods again', 'skautis-integration' ) . '</a></p>';
 
 		echo '<h2 class="skautis-status-subtitle">' . esc_html__( 'Without a logged-in user', 'skautis-integration' ) . '</h2>';
 		echo '<p class="description">' . esc_html__( 'Called with the App ID of the site only, e.g. for the blocks shown to all visitors.', 'skautis-integration' ) . '</p>';
-		self::print_groups( $results['groups'], false );
+		self::print_groups( $groups, false );
 
 		echo '<h2 class="skautis-status-subtitle">' . esc_html__( 'With a logged-in user', 'skautis-integration' ) . '</h2>';
 		echo '<p class="description">' . esc_html__( 'Called with the login of the user, e.g. for the login, the registration, the rules and the user management. They are tested with your login to SkautIS.', 'skautis-integration' ) . '</p>';
 		if ( ! $logged_in && $this->skautis_gateway->is_initialized() ) {
-			echo '<p><a class="button button-primary" href="' . esc_url( $this->wp_login_logout->get_login_url( add_query_arg( 'noWpLogin', '1', wp_nonce_url( $tab_url, self::TEST_ACTION ) ) ) ) . '">' . esc_html__( 'Log in to SkautIS and test them', 'skautis-integration' ) . '</a></p>';
+			echo '<p><a class="button button-primary" href="' . esc_url( $login_url ) . '">' . esc_html__( 'Log in to SkautIS and test them', 'skautis-integration' ) . '</a></p>';
 		}
-		self::print_groups( $results['groups'], true );
+		self::print_groups( $groups, true );
 		echo '</div>';
 	}
 }

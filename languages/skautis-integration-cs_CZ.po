@@ -376,13 +376,21 @@ msgstr ""
 "Netestováno, vyplňte registrační číslo jednotky na stránce „Nábory“ nebo "
 "„Jednotka“."
 
-#: src/admin/class-skautis-methods.php:394
+#: src/admin/class-skautis-methods.php:396
 msgid ""
 "Not tested, log in to SkautIS to test the methods that need a logged-in "
 "user."
 msgstr ""
 "Netestováno, pro test metod, které potřebují přihlášeného uživatele, se "
 "přihlaste do SkautISu."
+
+#: src/admin/class-skautis-methods.php:399
+msgid ""
+"Not tested, SkautIS did not return the logged-in user (UserManagement → "
+"UserDetail)."
+msgstr ""
+"Netestováno, SkautIS nevrátil přihlášeného uživatele (UserManagement → "
+"UserDetail)."
 
 #: src/admin/class-status-checks.php:62
 msgid "Plugin version"
@@ -538,83 +546,93 @@ msgstr ""
 msgid "Off"
 msgstr "Vypnutý"
 
-#: src/admin/class-status.php:76
+#: src/admin/class-status.php:65
 msgid "OK"
 msgstr "V pořádku"
 
-#: src/admin/class-status.php:77
+#: src/admin/class-status.php:66
 msgid "Needs attention"
 msgstr "Vyžaduje pozornost"
 
-#: src/admin/class-status.php:78
+#: src/admin/class-status.php:67
 msgid "Error"
 msgstr "Chyba"
 
-#: src/admin/class-status.php:79
+#: src/admin/class-status.php:68
 msgid "Not tested"
 msgstr "Netestováno"
 
-#: src/admin/class-status.php:155
+#: src/admin/class-status.php:122
 msgid "Server and WordPress"
 msgstr "Server a WordPress"
 
-#: src/admin/class-status.php:156
+#: src/admin/class-status.php:123
 msgid "Plugin and SkautIS"
 msgstr "Plugin a SkautIS"
 
-#: src/admin/class-status.php:163
+#: src/admin/class-status.php:131
 msgid "SkautIS methods"
 msgstr "Metody SkautISu"
 
-#: src/admin/class-status.php:164
+#: src/admin/class-status.php:132
 msgid ""
 "The methods of SkautIS that the plugin uses, by the features that need them."
-" The App ID of the site must be allowed to use them in SkautIS. A method "
-"with a red cross is refused by SkautIS: ask the administrators of SkautIS to"
-" allow it for the App ID, see the file \"APP ID - povolení služeb.md\" of "
-"the plugin."
+" They are called every time this tab is opened. The App ID of the site must "
+"be allowed to use them in SkautIS. A method with a red cross is refused by "
+"SkautIS: ask the administrators of SkautIS to allow it for the App ID, see "
+"the file \"APP ID - povolení služeb.md\" of the plugin."
 msgstr ""
 "Metody SkautISu, které plugin používá, rozdělené podle funkcí, které je "
-"potřebují. App ID webu je musí mít ve SkautISu povolené. Metodu s červeným "
-"křížkem SkautIS odmítá: požádejte správce SkautISu o její povolení pro App "
-"ID, viz soubor „APP ID - povolení služeb.md“ v pluginu."
+"potřebují. Volají se při každém otevření této záložky. App ID webu je musí "
+"mít ve SkautISu povolené. Metodu s červeným křížkem SkautIS odmítá: "
+"požádejte správce SkautISu o její povolení pro App ID, viz soubor „APP ID - "
+"povolení služeb.md“ v pluginu."
+
+#: src/admin/class-status.php:134
+msgid ""
+"You are not logged in to SkautIS, so the methods that need a logged-in user "
+"cannot be tested. Log in to SkautIS and this tab tests them all."
+msgstr ""
+"Nejste přihlášeni do SkautISu, takže metody, které potřebují přihlášeného "
+"uživatele, nejde otestovat. Přihlaste se do SkautISu a tato záložka je "
+"otestuje všechny."
+
+#: src/admin/class-status.php:134 src/admin/class-status.php:147
+msgid "Log in to SkautIS and test them"
+msgstr "Přihlásit se do SkautISu a otestovat je"
 
 #. translators: %s: The date and time
-#: src/admin/class-status.php:166
+#: src/admin/class-status.php:137
 #, php-format
 msgid "Tested on %s."
 msgstr "Otestováno %s."
 
-#: src/admin/class-status.php:167
+#: src/admin/class-status.php:138
 msgid "Test the methods again"
 msgstr "Otestovat metody znovu"
 
-#: src/admin/class-status.php:169
+#: src/admin/class-status.php:140
 msgid "Without a logged-in user"
 msgstr "Bez přihlášeného uživatele"
 
-#: src/admin/class-status.php:170
+#: src/admin/class-status.php:141
 msgid ""
 "Called with the App ID of the site only, e.g. for the blocks shown to all "
 "visitors."
 msgstr ""
 "Volají se jen s App ID webu, např. pro bloky zobrazené všem návštěvníkům."
 
-#: src/admin/class-status.php:173
+#: src/admin/class-status.php:144
 msgid "With a logged-in user"
 msgstr "S přihlášeným uživatelem"
 
-#: src/admin/class-status.php:174
+#: src/admin/class-status.php:145
 msgid ""
 "Called with the login of the user, e.g. for the login, the registration, the"
 " rules and the user management. They are tested with your login to SkautIS."
 msgstr ""
 "Volají se s přihlášením uživatele, např. pro přihlášení, registraci, "
 "pravidla a správu uživatelů. Testují se s vaším přihlášením do SkautISu."
-
-#: src/admin/class-status.php:176
-msgid "Log in to SkautIS and test them"
-msgstr "Přihlásit se do SkautISu a otestovat je"
 
 #: src/admin/class-users-management.php:181
 msgid "SkautIS is not set up"
