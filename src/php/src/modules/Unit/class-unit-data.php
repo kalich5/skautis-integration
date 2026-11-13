@@ -21,7 +21,7 @@ use Skautis_Integration\Utils\Helpers;
  * Only public data are loaded: the details from the register of the units, the contacts marked as published in SkautIS and the functions from the register. They are loaded with the App ID only, without a logged-in user, and kept for a day.
  *
  * @phpstan-type Contact array{type: string, value: string, note: string}
- * @phpstan-type Person array{function: string, name: string}
+ * @phpstan-type Person array{role: string, function: string, name: string}
  * @phpstan-type Account array{name: string, number: string}
  * @phpstan-type Child array{name: string, registration_number: string}
  * @phpstan-type UnitInfo array{id: int, name: string, registration_number: string, ic: string, address: string, lat: float, lng: float, contacts: array<Contact>, people: array<Person>, accounts: array<Account>, units: array<Child>}
@@ -39,6 +39,30 @@ final class Unit_Data {
 	 * The prefix of the transients with the loaded data, followed by the hash of the registration number.
 	 */
 	const CACHE_PREFIX = SKAUTIS_INTEGRATION_NAME . '_unit_data_';
+
+	/**
+	 * The role of a member of the statutory body.
+	 */
+	const STATUTORY = 'statutory';
+
+	/**
+	 * The role of the assistant of the statutory body.
+	 */
+	const ASSISTANT = 'assistant';
+
+	/**
+	 * The role of the contact person.
+	 */
+	const CONTACT = 'contact';
+
+	/**
+	 * The argument of FunctionAllRegistry that loads the people of a role, in the form `role => argument`.
+	 */
+	const ROLE_ARGUMENTS = array(
+		self::STATUTORY => 'ReturnStatutory',
+		self::ASSISTANT => 'ReturnAssistant',
+		self::CONTACT   => 'ReturnContact',
+	);
 
 	/**
 	 * A link to the Skautis_Gateway service instance.
@@ -81,7 +105,7 @@ final class Unit_Data {
 	 * @return void
 	 */
 	public static function clear_cache( string $number ) {
-		delete_transient( self::CACHE_PREFIX . md5( $number ) );
+		delete_transient( self::get_cache_key( $number ) );
 	}
 
 	/**
@@ -94,7 +118,7 @@ final class Unit_Data {
 	 */
 	public function get_data( string $number = '' ): array {
 		$number = '' !== trim( $number ) ? trim( $number ) : self::get_unit_number();
-		$cached = get_transient( self::CACHE_PREFIX . md5( $number ) );
+		$cached = get_transient( self::get_cache_key( $number ) );
 		if ( is_array( $cached ) && array_key_exists( 'unit', $cached ) && isset( $cached['errors'], $cached['loaded'] ) ) {
 			/**
 			 * The data stored by this class.
@@ -111,9 +135,20 @@ final class Unit_Data {
 			'loaded' => time(),
 		);
 		// Without the unit, try again sooner, e.g. after the App ID is allowed to use the SkautIS methods.
-		set_transient( self::CACHE_PREFIX . md5( $number ), $data, is_null( $data['unit'] ) ? intdiv( DAY_IN_SECONDS, 24 ) : DAY_IN_SECONDS );
+		set_transient( self::get_cache_key( $number ), $data, is_null( $data['unit'] ) ? intdiv( DAY_IN_SECONDS, 24 ) : DAY_IN_SECONDS );
 
 		return $data;
+	}
+
+	/**
+	 * Returns the name of the transient with the data of a unit.
+	 *
+	 * The version in the hash makes the plugin load the data again when their structure changes.
+	 *
+	 * @param string $number The registration number of the unit.
+	 */
+	private static function get_cache_key( string $number ): string {
+		return self::CACHE_PREFIX . md5( '2:' . $number );
 	}
 
 	/**
@@ -128,6 +163,7 @@ final class Unit_Data {
 		$response = $this->skautis_gateway->call_list( 'OrganizationUnit', $method, $args );
 		if ( $this->skautis_gateway->last_call_failed() ) {
 			$this->errors[] = $method;
+			$this->errors   = array_values( array_unique( $this->errors ) );
 		} else {
 			Helpers::log_skautis_response( $method, $response );
 		}
@@ -231,6 +267,8 @@ final class Unit_Data {
 	/**
 	 * Loads the statutory body, its assistant and the contact person of a unit from the register.
 	 *
+	 * Each group is loaded separately, so that the block can show them separately.
+	 *
 	 * @param int $unit_id The ID of the unit.
 	 *
 	 * @phpstan-return array<Person>
@@ -238,21 +276,26 @@ final class Unit_Data {
 	 */
 	private function load_people( int $unit_id ): array {
 		$result = array();
-		$args   = array(
-			'ID_Unit'         => $unit_id,
-			'ReturnStatutory' => true,
-			'ReturnAssistant' => true,
-			'ReturnContact'   => true,
-		);
-		foreach ( $this->call( 'FunctionAllRegistry', $args ) as $function ) {
-			$name = self::get_string( $function, array( 'Person', 'PersonDisplayName', 'DisplayName' ) );
-			if ( '' === $name ) {
-				continue;
-			}
-			$result[] = array(
-				'function' => self::get_string( $function, array( 'FunctionType', 'Function', 'DisplayName' ) ),
-				'name'     => $name,
+		foreach ( self::ROLE_ARGUMENTS as $role => $argument ) {
+			$args = array(
+				'ID_Unit'         => $unit_id,
+				'ReturnStatutory' => false,
+				'ReturnAssistant' => false,
+				'ReturnContact'   => false,
 			);
+
+			$args[ $argument ] = true;
+			foreach ( $this->call( 'FunctionAllRegistry', $args ) as $function ) {
+				$name = self::get_string( $function, array( 'Person', 'PersonDisplayName', 'DisplayName' ) );
+				if ( '' === $name ) {
+					continue;
+				}
+				$result[] = array(
+					'role'     => $role,
+					'function' => self::get_string( $function, array( 'FunctionType', 'Function', 'DisplayName' ) ),
+					'name'     => $name,
+				);
+			}
 		}
 
 		return $result;

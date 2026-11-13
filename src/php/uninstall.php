@@ -60,6 +60,7 @@ function skautis_integration_uninstall_site() {
 
 	// defined in src/modules/Unit/class-unit-data.php; the data of the units are stored in transients named after the unit.
 	delete_option( 'skautis-integration_unit' );
+	delete_option( 'skautis-integration_unit_default_appearance' );
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s", $wpdb->esc_like( '_transient_skautis-integration_unit_data_' ) . '%', $wpdb->esc_like( '_transient_timeout_skautis-integration_unit_data_' ) . '%' ) );
 

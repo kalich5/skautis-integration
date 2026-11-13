@@ -30,6 +30,21 @@ final class Appearances {
 	const DEFAULT_OPTION = SKAUTIS_INTEGRATION_NAME . '_recruitment_default_appearance';
 
 	/**
+	 * The option with the ID of the appearance of "Unit" blocks without their own appearance. Empty means the default appearance of the recruitment.
+	 */
+	const UNIT_DEFAULT_OPTION = SKAUTIS_INTEGRATION_NAME . '_unit_default_appearance';
+
+	/**
+	 * The context of the recruitment blocks ("Recruitment" and "Map of the units").
+	 */
+	const RECRUITMENT = 'recruitment';
+
+	/**
+	 * The context of the "Unit" block.
+	 */
+	const UNIT = 'unit';
+
+	/**
 	 * The appearance that takes everything from the theme of the site.
 	 */
 	const THEME = 'theme';
@@ -209,8 +224,16 @@ final class Appearances {
 
 	/**
 	 * Returns the ID of the appearance of blocks without their own appearance.
+	 *
+	 * @param string $context The blocks: Appearances::RECRUITMENT or Appearances::UNIT. The "Unit" block uses the default appearance of the recruitment unless it has its own.
 	 */
-	public static function get_default_id(): string {
+	public static function get_default_id( string $context = self::RECRUITMENT ): string {
+		if ( self::UNIT === $context ) {
+			$appearance_id = get_option( self::UNIT_DEFAULT_OPTION, '' );
+			if ( is_string( $appearance_id ) && '' !== $appearance_id && ! is_null( self::get( $appearance_id ) ) ) {
+				return $appearance_id;
+			}
+		}
 		$appearance_id = get_option( self::DEFAULT_OPTION, self::THEME );
 
 		return is_string( $appearance_id ) && ! is_null( self::get( $appearance_id ) ) ? $appearance_id : self::THEME;
@@ -275,6 +298,9 @@ final class Appearances {
 		if ( get_option( self::DEFAULT_OPTION ) === $appearance_id ) {
 			update_option( self::DEFAULT_OPTION, self::THEME );
 		}
+		if ( get_option( self::UNIT_DEFAULT_OPTION ) === $appearance_id ) {
+			update_option( self::UNIT_DEFAULT_OPTION, '' );
+		}
 	}
 
 	/**
@@ -305,9 +331,10 @@ final class Appearances {
 	 * Returns the inline style with the CSS custom properties of an appearance.
 	 *
 	 * @param string $appearance_id The ID of the appearance, an empty string for the default appearance.
+	 * @param string $context The blocks, for the default appearance: Appearances::RECRUITMENT or Appearances::UNIT.
 	 */
-	public static function get_style( string $appearance_id ): string {
-		$appearance = self::get( '' !== $appearance_id ? $appearance_id : self::get_default_id() ) ?? self::get( self::THEME );
+	public static function get_style( string $appearance_id, string $context = self::RECRUITMENT ): string {
+		$appearance = self::get( '' !== $appearance_id ? $appearance_id : self::get_default_id( $context ) ) ?? self::get( self::THEME );
 		if ( is_null( $appearance ) ) {
 			return '';
 		}

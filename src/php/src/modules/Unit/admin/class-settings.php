@@ -11,6 +11,8 @@ namespace Skautis_Integration\Modules\Unit\Admin;
 
 use Skautis_Integration\Admin\Settings as Admin_Settings;
 use Skautis_Integration\Admin\Settings_Sections;
+use Skautis_Integration\Modules\Recruitment\Admin\Appearances_Page;
+use Skautis_Integration\Modules\Recruitment\Appearances;
 use Skautis_Integration\Modules\Recruitment\Recruitment_Data;
 use Skautis_Integration\Modules\Unit\Unit_Data;
 use Skautis_Integration\Utils\Helpers;
@@ -83,6 +85,10 @@ final class Settings {
 	public static function enqueue_styles( $hook_suffix ) {
 		if ( '' !== self::$hook_suffix && self::$hook_suffix === $hook_suffix ) {
 			Helpers::enqueue_style( 'admin_settings', 'admin/css/skautis-admin-settings.min.css' );
+			// The previews of the appearances use the styles of the blocks.
+			wp_enqueue_style( SKAUTIS_INTEGRATION_NAME . '_modules_recruitment' );
+			Helpers::enqueue_style( 'modules_recruitment_admin', 'modules/Recruitment/admin/css/skautis-modules-recruitment-admin.min.css' );
+			Helpers::enqueue_script( 'modules_recruitment_appearance', 'modules/Recruitment/admin/js/skautis-modules-recruitment-appearance.min.js', array( 'wp-dom-ready' ) );
 		}
 	}
 
@@ -98,12 +104,16 @@ final class Settings {
 
 		Admin_Settings::print_page_header( _x( 'Unit', 'admin page', 'skautis-integration' ) );
 		echo '<div class="skautis-settings-body">';
-		settings_errors();
-		echo '<form method="POST" action="' . esc_url( admin_url( 'options.php' ) ) . '">';
-		settings_fields( self::PAGE );
-		Settings_Sections::print( self::PAGE );
-		submit_button();
-		echo '</form></div>';
+		if ( ! Appearances_Page::maybe_print_editor( Appearances::UNIT ) ) {
+			settings_errors();
+			echo '<form method="POST" action="' . esc_url( admin_url( 'options.php' ) ) . '">';
+			settings_fields( self::PAGE );
+			Settings_Sections::print( self::PAGE );
+			submit_button();
+			echo '</form>';
+			Appearances_Page::print_list( Appearances::UNIT );
+		}
+		echo '</div>';
 	}
 
 	/**
@@ -130,6 +140,15 @@ final class Settings {
 			array( 'label_for' => Unit_Data::UNIT_OPTION )
 		);
 
+		add_settings_field(
+			Appearances::UNIT_DEFAULT_OPTION,
+			__( 'Default appearance of the block', 'skautis-integration' ),
+			array( self::class, 'field_default_appearance' ),
+			self::PAGE,
+			self::PAGE,
+			array( 'label_for' => Appearances::UNIT_DEFAULT_OPTION )
+		);
+
 		add_settings_section(
 			self::PAGE . '_status',
 			__( 'Data from SkautIS', 'skautis-integration' ),
@@ -152,6 +171,37 @@ final class Settings {
 				},
 			)
 		);
+
+		register_setting(
+			self::PAGE,
+			Appearances::UNIT_DEFAULT_OPTION,
+			array(
+				'type'              => 'string',
+				'show_in_rest'      => false,
+				'sanitize_callback' => static function ( $value ) {
+					return is_string( $value ) && ! is_null( Appearances::get( $value ) ) ? $value : '';
+				},
+			)
+		);
+	}
+
+	/**
+	 * Prints the field for the default appearance of the block.
+	 *
+	 * @return void
+	 */
+	public static function field_default_appearance() {
+		$selected    = get_option( Appearances::UNIT_DEFAULT_OPTION, '' );
+		$selected    = is_string( $selected ) ? $selected : '';
+		$recruitment = Appearances::get( Appearances::get_default_id() );
+		echo '<select id="' . esc_attr( Appearances::UNIT_DEFAULT_OPTION ) . '" name="' . esc_attr( Appearances::UNIT_DEFAULT_OPTION ) . '">';
+		/* translators: %s: The name of the default appearance of the recruitment */
+		echo '<option value="">' . esc_html( sprintf( __( 'Like the recruitment (%s)', 'skautis-integration' ), is_null( $recruitment ) ? '' : $recruitment['name'] ) ) . '</option>';
+		foreach ( Appearances::get_all() as $id => $appearance ) {
+			echo '<option value="' . esc_attr( $id ) . '"' . selected( $selected, $id, false ) . '>' . esc_html( $appearance['name'] ) . '</option>';
+		}
+		echo '</select>';
+		echo '<p class="description">' . esc_html__( 'For the templates of Dobrý skautský web, choose the appearance of your template. A block can have its own appearance in its settings in the editor.', 'skautis-integration' ) . '</p>';
 	}
 
 	/**
@@ -186,7 +236,7 @@ final class Settings {
 				__( 'Seat', 'skautis-integration' )        => $unit['address'],
 				__( 'Seat on the map', 'skautis-integration' ) => 0.0 !== $unit['lat'] ? __( 'Yes', 'skautis-integration' ) : __( 'No', 'skautis-integration' ),
 				__( 'Public contacts', 'skautis-integration' ) => (string) count( $unit['contacts'] ),
-				__( 'Statutory body and assistant', 'skautis-integration' ) => (string) count( $unit['people'] ),
+				__( 'Statutory body, assistant and contact person', 'skautis-integration' ) => (string) count( $unit['people'] ),
 				__( 'Bank accounts', 'skautis-integration' ) => (string) count( $unit['accounts'] ),
 				__( 'Child units', 'skautis-integration' ) => (string) count( $unit['units'] ),
 			);
