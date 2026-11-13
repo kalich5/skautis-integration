@@ -13,6 +13,7 @@ use Skautis_Integration\Admin\Settings as Admin_Settings;
 use Skautis_Integration\Admin\Settings_Sections;
 use Skautis_Integration\Modules\Recruitment\Appearances;
 use Skautis_Integration\Modules\Recruitment\Recruitment_Data;
+use Skautis_Integration\Modules\Recruitment\Unit_List;
 use Skautis_Integration\Modules\Recruitment\Unit_Tree;
 use Skautis_Integration\Utils\Helpers;
 
@@ -152,6 +153,8 @@ final class Settings {
 			array( 'label_for' => Appearances::DEFAULT_OPTION )
 		);
 
+		Unit_List::add_names_setting( self::PAGE, Unit_List::RECRUITMENT_NAMES_OPTION );
+
 		add_settings_section(
 			self::PAGE . '_status',
 			__( 'Data from SkautIS', 'skautis-integration' ),
@@ -168,6 +171,7 @@ final class Settings {
 				'sanitize_callback' => static function ( $value ) {
 					// Saving the settings loads the data from SkautIS again.
 					Recruitment_Data::clear_cache();
+					Unit_List::clear_cache();
 
 					return Recruitment_Data::sanitize_number( $value );
 				},

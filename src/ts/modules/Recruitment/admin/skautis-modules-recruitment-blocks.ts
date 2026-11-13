@@ -16,6 +16,14 @@ interface SkautisRecruitmentUnit {
 	registration_number: string;
 }
 
+/**
+ * The list of the units below the unit of the site, from the REST route of the plugin.
+ */
+interface SkautisUnitList {
+	unit: string;
+	units: Array<{ label: string; value: string }>;
+}
+
 function skautisRecruitmentAppearanceControl(
 	props: WPBlockEditProps,
 	unit = false
@@ -60,30 +68,6 @@ function skautisRecruitmentToggle(
 		onChange: (checked: boolean): void => {
 			props.setAttributes({ [item]: checked });
 		},
-	});
-}
-
-/**
- * The field for the registration number of the unit of a block.
- *
- * @param props - The properties of the block.
- */
-function skautisRecruitmentUnitControl(props: WPBlockEditProps): WPElement {
-	return skautisRecruitmentEl(wp.components.TextControl, {
-		help: wp.i18n.__(
-			'Leave empty for the unit set on the "Recruitment" page in the SkautIS menu. For a group or a district, the units below it are shown too.',
-			'skautis-integration'
-		),
-		label: wp.i18n.__(
-			'Registration number of the unit',
-			'skautis-integration'
-		),
-		onChange: (unit: string): void => {
-			// The chosen units belong to the previous unit.
-			props.setAttributes({ unit, units: [] });
-		},
-		placeholder: '112.31',
-		value: props.attributes.unit ?? '',
 	});
 }
 
@@ -193,6 +177,113 @@ function SkautisRecruitmentUnitsPanel({
 	);
 }
 
+/**
+ * The choice of the unit of a block: a list of the units below the unit set on the page of the module, or a field for the registration number when the list cannot be loaded.
+ *
+ * @param root0            - The properties of the component.
+ * @param root0.blockProps - The properties of the block.
+ * @param root0.module     - The module whose unit is used: "recruitment" or "unit".
+ */
+function SkautisUnitControl({
+	blockProps,
+	module,
+}: {
+	blockProps: WPBlockEditProps;
+	module: 'recruitment' | 'unit';
+}): WPElement {
+	const [list, setList] = wp.element.useState<SkautisUnitList | null>(null);
+	const [failed, setFailed] = wp.element.useState(false);
+	wp.element.useEffect(() => {
+		let active = true;
+		wp.apiFetch<SkautisUnitList>({
+			path: wp.url.addQueryArgs('/skautis-integration/v1/unit-list', {
+				module,
+			}),
+		})
+			.then((result) => {
+				if (active) {
+					setList(result);
+				}
+			})
+			.catch(() => {
+				if (active) {
+					setFailed(true);
+				}
+			});
+		return (): void => {
+			active = false;
+		};
+	}, [module]);
+
+	const value = blockProps.attributes.unit ?? '';
+	const onChange = (unit: string): void => {
+		// The chosen units of the recruitment belong to the previous unit.
+		blockProps.setAttributes(
+			module === 'recruitment' ? { unit, units: [] } : { unit }
+		);
+	};
+	if (list === null && !failed) {
+		return skautisRecruitmentEl(
+			'p',
+			null,
+			wp.i18n.__('Loading the units…', 'skautis-integration')
+		);
+	}
+	if (list === null || list.units.length === 0) {
+		return skautisRecruitmentEl(wp.components.TextControl, {
+			help: wp.i18n.__(
+				'Fill in the registration number, or leave it empty for the unit set on the page of the module in the SkautIS menu.',
+				'skautis-integration'
+			),
+			label: wp.i18n.__(
+				'Registration number of the unit',
+				'skautis-integration'
+			),
+			onChange,
+			placeholder: '112.31',
+			value,
+		});
+	}
+
+	const options = [
+		{
+			label: wp.i18n.sprintf(
+				/* Translators: %s: The registration number of the unit set on the page of the module */
+				wp.i18n.__(
+					'The unit from the settings (%s)',
+					'skautis-integration'
+				),
+				list.unit
+			),
+			value: '',
+		},
+		...list.units,
+	];
+	// A unit set before, which is not in the list any more, stays in the list, so that it is not lost.
+	if (value !== '' && !list.units.some((item) => item.value === value)) {
+		options.push({ label: value, value });
+	}
+	const label = wp.i18n.__('Unit', 'skautis-integration');
+	const help =
+		module === 'recruitment'
+			? wp.i18n.__(
+					'The units below the unit set on the "Recruitment" page in the SkautIS menu. For a group or a district, the units below it are shown too.',
+					'skautis-integration'
+				)
+			: wp.i18n.__(
+					'The units below the unit set on the "Unit" page in the SkautIS menu.',
+					'skautis-integration'
+				);
+
+	return skautisRecruitmentEl(wp.components.SelectControl, {
+		help,
+		label,
+		onChange,
+		options,
+		value,
+	});
+}
+
 wp.blocks.registerBlockType('skautis-integration/recruitment', {
 	apiVersion: 3,
 	edit: (props: WPBlockEditProps): WPElement =>
@@ -207,7 +298,10 @@ wp.blocks.registerBlockType('skautis-integration/recruitment', {
 					{
 						title: wp.i18n.__('Settings', 'skautis-integration'),
 					},
-					skautisRecruitmentUnitControl(props),
+					skautisRecruitmentEl(SkautisUnitControl, {
+						blockProps: props,
+						module: 'recruitment',
+					}),
 					skautisRecruitmentAppearanceControl(props)
 				),
 				skautisRecruitmentEl(SkautisRecruitmentUnitsPanel, {
@@ -311,7 +405,10 @@ wp.blocks.registerBlockType('skautis-integration/unit-map', {
 					{
 						title: wp.i18n.__('Settings', 'skautis-integration'),
 					},
-					skautisRecruitmentUnitControl(props),
+					skautisRecruitmentEl(SkautisUnitControl, {
+						blockProps: props,
+						module: 'recruitment',
+					}),
 					skautisRecruitmentAppearanceControl(props),
 					skautisRecruitmentEl(wp.components.RangeControl, {
 						label: wp.i18n.__(
@@ -412,20 +509,9 @@ wp.blocks.registerBlockType('skautis-integration/unit', {
 					{
 						title: wp.i18n.__('Settings', 'skautis-integration'),
 					},
-					skautisRecruitmentEl(wp.components.TextControl, {
-						help: wp.i18n.__(
-							'Leave empty for the unit set on the "Unit" page in the SkautIS menu.',
-							'skautis-integration'
-						),
-						label: wp.i18n.__(
-							'Registration number of the unit',
-							'skautis-integration'
-						),
-						onChange: (unit: string): void => {
-							props.setAttributes({ unit });
-						},
-						placeholder: '112.31',
-						value: props.attributes.unit ?? '',
+					skautisRecruitmentEl(SkautisUnitControl, {
+						blockProps: props,
+						module: 'unit',
 					}),
 					skautisRecruitmentAppearanceControl(props, true)
 				),
