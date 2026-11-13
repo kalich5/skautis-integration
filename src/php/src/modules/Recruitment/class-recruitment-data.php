@@ -15,15 +15,17 @@ use Skautis_Integration\Auth\Skautis_Gateway;
 use Skautis_Integration\Utils\Helpers;
 
 /**
- * Loads the recruitment information of a unit and its child units from SkautIS.
+ * Loads the recruitment information of a unit and all units below it from SkautIS, e.g. of a district (okres), its groups (střediska) and their troops (oddíly).
  *
  * The data are what the units fill in on the "Jednotka: Nábory" tab in SkautIS, the same data that are shown on the map on skaut.cz. They are loaded with the App ID of the site only, without a logged-in user, and kept for a day, because SkautIS updates them once a day anyway.
  *
  * @phpstan-type Category array{age_from: int, age_to: int, sex: string, note: string, meeting: int}
  * @phpstan-type Meeting array{id: int, day: string, day_order: int, time_from: string, time_to: string, periodicity: string, place: int, place_name: string}
  * @phpstan-type Place array{id: int, name: string, address: string, lat: float, lng: float}
- * @phpstan-type Unit array{id: int, name: string, registration_number: string, is_water: bool, note: string, categories: array<Category>, meetings: array<Meeting>, places: array<Place>}
- * @phpstan-type Data array{units: array<Unit>, errors: array<string>, loaded: int}
+ * @phpstan-type Unit array{id: int, name: string, registration_number: string, is_water: bool, note: string, categories: array<Category>, meetings: array<Meeting>, places: array<Place>, group_id: int, group_name: string}
+ * @phpstan-type Data array{units: array<Unit>, errors: array<string>, loaded: int, truncated: bool}
+ * @phpstan-type Node array{id: int, name: string, number: string, parent_id: int, parent_name: string, depth: int}
+ * @phpstan-type State array{nodes: array<Node>|null, next: int, units: array<Unit>, errors: array<string>, tree_truncated: bool, complete: bool}
  */
 #[SuppressWarnings( ExcessiveClassComplexity::class )]
 final class Recruitment_Data {
@@ -34,9 +36,29 @@ final class Recruitment_Data {
 	const UNIT_OPTION = SKAUTIS_INTEGRATION_NAME . '_recruitment_unit';
 
 	/**
-	 * The transient with the loaded data.
+	 * The prefix of the options with the loaded data, followed by the hash of the registration number. The transient of this name holds the data of the versions before.
 	 */
 	const CACHE = SKAUTIS_INTEGRATION_NAME . '_recruitment_data';
+
+	/**
+	 * The most seconds spent loading the units in one run in the background.
+	 */
+	const TIME_LIMIT = 20;
+
+	/**
+	 * The most seconds spent loading the units when a visitor or a manager opens a page and nothing is stored yet; the rest is loaded in the background.
+	 */
+	const FIRST_TIME_LIMIT = 8;
+
+	/**
+	 * The WP-Cron hook that loads the data of a unit in the background.
+	 */
+	const REFRESH_HOOK = SKAUTIS_INTEGRATION_NAME . '_recruitment_refresh';
+
+	/**
+	 * The option with the registration numbers of the units whose data are stored.
+	 */
+	const CACHED_NUMBERS_OPTION = SKAUTIS_INTEGRATION_NAME . '_recruitment_cached_units';
 
 	/**
 	 * The order of the days of the week by their SkautIS ID or name.
@@ -76,12 +98,12 @@ final class Recruitment_Data {
 	private $skautis_gateway;
 
 	/**
-	 * The data loaded in this request.
+	 * The data loaded in this request, by the registration number.
 	 *
-	 * @phpstan-var Data|null
-	 * @var array<string, mixed>|null
+	 * @phpstan-var array<string, Data>
+	 * @var array<string, array<string, mixed>>
 	 */
-	private $data = null;
+	private $data = array();
 
 	/**
 	 * The errors of the SkautIS calls in this request.
@@ -109,54 +131,213 @@ final class Recruitment_Data {
 	}
 
 	/**
-	 * Deletes the stored data, so that they are loaded again from SkautIS.
+	 * Returns a registration number from the user, e.g. from the settings of a block, without other characters.
+	 *
+	 * @param mixed $number The registration number.
+	 */
+	public static function sanitize_number( $number ): string {
+		return is_string( $number ) ? (string) preg_replace( '/[^0-9.\-]/u', '', $number ) : '';
+	}
+
+	/**
+	 * Deletes the stored data of all units, so that they are loaded again from SkautIS.
 	 *
 	 * @return void
 	 */
 	public static function clear_cache() {
+		$numbers = get_option( self::CACHED_NUMBERS_OPTION, array() );
+		foreach ( is_array( $numbers ) ? $numbers : array() as $number ) {
+			delete_option( self::get_store_key( strval( $number ) ) );
+		}
+		delete_option( self::CACHED_NUMBERS_OPTION );
+		// The transient of the versions before the data were stored per unit.
 		delete_transient( self::CACHE );
 	}
 
 	/**
-	 * Returns the recruitment data, from the cache or from SkautIS.
+	 * Returns the name of the option with the stored data of a unit.
+	 *
+	 * @param string $number The registration number of the unit.
+	 */
+	private static function get_store_key( string $number ): string {
+		return self::CACHE . '_' . md5( $number );
+	}
+
+	/**
+	 * Returns the stored data of a unit: the data shown on the site and the state of the loading that is in progress.
+	 *
+	 * @param string $number The registration number of the unit.
+	 *
+	 * @phpstan-return array{data: Data|null, state: State|null}
+	 * @return array{data: array<string, mixed>|null, state: array<string, mixed>|null}
+	 */
+	private static function get_record( string $number ): array {
+		$record = get_option( self::get_store_key( $number ), array() );
+		$data   = is_array( $record ) && isset( $record['data']['units'], $record['data']['errors'], $record['data']['loaded'], $record['data']['truncated'] ) ? $record['data'] : null;
+		$state  = is_array( $record ) && isset( $record['state']['next'], $record['state']['units'], $record['state']['errors'] ) && array_key_exists( 'nodes', $record['state'] ) ? $record['state'] : null;
+
+		/**
+		 * The record stored by save_record().
+		 *
+		 * @phpstan-var array{data: Data|null, state: State|null} $result
+		 */
+		$result = array(
+			'data'  => $data,
+			'state' => $state,
+		);
+
+		return $result;
+	}
+
+	/**
+	 * Stores the data of a unit.
+	 *
+	 * @param string                                                                   $number The registration number of the unit.
+	 * @param array{data: array<string, mixed>|null, state: array<string, mixed>|null} $record The record.
+	 *
+	 * @return void
+	 */
+	private static function save_record( string $number, array $record ) {
+		update_option( self::get_store_key( $number ), $record, false );
+		$numbers = get_option( self::CACHED_NUMBERS_OPTION, array() );
+		$numbers = is_array( $numbers ) ? $numbers : array();
+		if ( ! in_array( $number, $numbers, true ) ) {
+			$numbers[] = $number;
+			update_option( self::CACHED_NUMBERS_OPTION, $numbers, false );
+		}
+	}
+
+	/**
+	 * Plans the loading of the data of a unit in the background, by WP-Cron.
+	 *
+	 * @param string $number The registration number of the unit.
+	 *
+	 * @return void
+	 */
+	private static function schedule_refresh( string $number ) {
+		if ( false === wp_next_scheduled( self::REFRESH_HOOK, array( $number ) ) ) {
+			wp_schedule_single_event( time(), self::REFRESH_HOOK, array( $number ) );
+		}
+	}
+
+	/**
+	 * Checks whether the data shown on the site should be loaded again: once a day, or once an hour when they are empty or incomplete.
+	 *
+	 * @phpstan-param Data $data
+	 * @param array<string, mixed> $data The data.
+	 */
+	private static function is_stale( array $data ): bool {
+		$age = count( $data['units'] ) > 0 && true !== $data['truncated'] ? DAY_IN_SECONDS : intdiv( DAY_IN_SECONDS, 24 );
+
+		return intval( $data['loaded'] ) < time() - $age;
+	}
+
+	/**
+	 * Returns the recruitment data of a unit and the units below it.
+	 *
+	 * The stored data are returned right away and loaded again in the background when they are old, so that the visitors never wait for SkautIS. Only the first time, a part of the data is loaded in the request and the rest in the background.
+	 *
+	 * @param string $number The registration number of the unit, or an empty string for the unit of the site.
 	 *
 	 * @phpstan-return Data
 	 * @return array<string, mixed>
 	 */
-	public function get_data(): array {
-		if ( ! is_null( $this->data ) ) {
-			return $this->data;
-		}
-		$cached = get_transient( self::CACHE );
-		if ( is_array( $cached ) && isset( $cached['units'], $cached['errors'], $cached['loaded'] ) ) {
-			/**
-			 * The data stored by this class.
-			 *
-			 * @phpstan-var Data $cached
-			 */
-			$this->data = $cached;
-			return $this->data;
+	public function get_data( string $number = '' ): array {
+		$number = '' !== $number ? $number : self::get_unit_number();
+		if ( isset( $this->data[ $number ] ) ) {
+			return $this->data[ $number ];
 		}
 
-		$this->data = array(
-			'units'  => $this->load_units(),
-			'errors' => array_values( array_unique( $this->errors ) ),
-			'loaded' => time(),
-		);
-		// Without any unit, try again sooner, e.g. after the App ID is allowed to use the SkautIS methods.
-		set_transient( self::CACHE, $this->data, count( $this->data['units'] ) > 0 ? DAY_IN_SECONDS : intdiv( DAY_IN_SECONDS, 24 ) );
+		$record = self::get_record( $number );
+		if ( ! is_null( $record['data'] ) ) {
+			if ( ! is_null( $record['state'] ) || self::is_stale( $record['data'] ) ) {
+				self::schedule_refresh( $number );
+			}
+			$this->data[ $number ] = $record['data'];
+			return $record['data'];
+		}
 
-		return $this->data;
+		$state           = $this->process( $number, $record['state'] ?? self::new_state(), self::FIRST_TIME_LIMIT );
+		$record['data']  = self::to_data( $state );
+		$record['state'] = true === $state['complete'] ? null : $state;
+		if ( ! is_null( $record['state'] ) ) {
+			self::schedule_refresh( $number );
+		}
+		self::save_record( $number, $record );
+		$this->data[ $number ] = $record['data'];
+
+		return $record['data'];
+	}
+
+	/**
+	 * Loads the data of a unit in the background, by WP-Cron. The data on the site are replaced when all units are loaded; until then, the loading continues in the next runs.
+	 *
+	 * @param string $number The registration number of the unit.
+	 *
+	 * @return void
+	 */
+	public function refresh( $number ) {
+		$number     = strval( $number );
+		$record     = self::get_record( $number );
+		$state      = $this->process( $number, $record['state'] ?? self::new_state(), self::TIME_LIMIT );
+		$shown      = $record['data'];
+		$incomplete = is_array( $shown ) ? true === $shown['truncated'] : true;
+		if ( true === $state['complete'] || $incomplete ) {
+			// Complete data, or more of the data that were not complete yet.
+			$record['data'] = self::to_data( $state );
+		}
+		$record['state'] = true === $state['complete'] ? null : $state;
+		self::save_record( $number, $record );
+		if ( ! is_null( $record['state'] ) ) {
+			wp_schedule_single_event( time() + MINUTE_IN_SECONDS, self::REFRESH_HOOK, array( $number ) );
+		}
 	}
 
 	/**
 	 * Returns the units with recruitment information.
 	 *
+	 * @param string $number The registration number of the unit, or an empty string for the unit of the site.
+	 *
 	 * @phpstan-return array<Unit>
 	 * @return array<array<string, mixed>>
 	 */
-	public function get_units(): array {
-		return $this->get_data()['units'];
+	public function get_units( string $number = '' ): array {
+		return $this->get_data( $number )['units'];
+	}
+
+	/**
+	 * Returns the state of a new loading.
+	 *
+	 * @phpstan-return State
+	 * @return array<string, mixed>
+	 */
+	private static function new_state(): array {
+		return array(
+			'nodes'          => null,
+			'next'           => 0,
+			'units'          => array(),
+			'errors'         => array(),
+			'tree_truncated' => false,
+			'complete'       => false,
+		);
+	}
+
+	/**
+	 * Returns the data shown on the site from the state of a loading.
+	 *
+	 * @phpstan-param State $state
+	 * @param array<string, mixed> $state The state.
+	 *
+	 * @phpstan-return Data
+	 * @return array<string, mixed>
+	 */
+	private static function to_data( array $state ): array {
+		return array(
+			'units'     => $state['units'],
+			'errors'    => array_values( array_unique( $state['errors'] ) ),
+			'loaded'    => time(),
+			'truncated' => true !== $state['complete'] || true === $state['tree_truncated'],
+		);
 	}
 
 	/**
@@ -182,48 +363,68 @@ final class Recruitment_Data {
 
 
 	/**
-	 * Loads the unit of the site, its child units and their recruitment information from SkautIS.
+	 * Loads a unit, all units below it and their recruitment information from SkautIS, as many as it can in the time limit.
 	 *
-	 * @phpstan-return array<Unit>
-	 * @return array<array<string, mixed>>
+	 * Each card is in the group of its parent unit, the unit itself in its own group, so that e.g. the troops of a district are grouped by their groups (střediska).
+	 *
+	 * @param string               $number The registration number of the unit.
+	 * @param array<string, mixed> $state The state of the loading, see new_state().
+	 * @param int                  $limit The time limit in seconds.
+	 *
+	 * @phpstan-param State $state
+	 * @phpstan-return State
+	 * @return array<string, mixed> The new state of the loading.
 	 */
-	private function load_units(): array {
-		$number = self::get_unit_number();
+	private function process( string $number, array $state, int $limit ): array {
+		$this->errors = array();
 		if ( '' === $number || ! $this->skautis_gateway->is_initialized() ) {
-			return array();
+			$state['complete'] = true;
+			return $state;
 		}
 
-		$unit = null;
-		foreach ( $this->call( 'UnitAll', array( 'RegistrationNumber' => $number ) ) ?? array() as $found ) {
-			if ( self::get_string( $found, array( 'RegistrationNumber' ) ) === $number ) {
-				$unit = $found;
-				break;
+		$start = microtime( true );
+		if ( is_null( $state['nodes'] ) ) {
+			$tree           = new Unit_Tree( $this->skautis_gateway );
+			$state['nodes'] = array();
+			foreach ( $tree->load( $number ) as $node ) {
+				$state['nodes'][] = array(
+					'id'          => Unit_Tree::get_id( $node['unit'] ),
+					'name'        => Unit_Tree::get_string( $node['unit'], 'DisplayName' ),
+					'number'      => Unit_Tree::get_string( $node['unit'], 'RegistrationNumber' ),
+					'parent_id'   => $node['parent_id'],
+					'parent_name' => $node['parent_name'],
+					'depth'       => $node['depth'],
+				);
 			}
-		}
-		if ( is_null( $unit ) ) {
-			$this->errors[] = 'UnitAll';
-			return array();
-		}
-
-		$units    = array( $unit );
-		$children = $this->call( 'UnitAll', array( 'ID_UnitParent' => self::get_int( $unit, array( 'ID' ) ) ) ) ?? array();
-		usort(
-			$children,
-			static function ( object $first, object $second ): int {
-				return strnatcmp( self::get_string( $first, array( 'RegistrationNumber' ) ), self::get_string( $second, array( 'RegistrationNumber' ) ) );
-			}
-		);
-		$units = array_merge( $units, $children );
-
-		$result = array();
-		foreach ( $units as $found ) {
-			$loaded = $this->load_unit( $found );
-			if ( count( $loaded['categories'] ) > 0 || count( $loaded['meetings'] ) > 0 || '' !== $loaded['note'] ) {
-				$result[] = $loaded;
+			$state['tree_truncated'] = $tree->is_truncated();
+			if ( count( $state['nodes'] ) === 0 ) {
+				$this->errors[] = 'UnitAll';
 			}
 		}
 
-		return $result;
+		$count = count( $state['nodes'] );
+		while ( $state['next'] < $count && microtime( true ) - $start < $limit ) {
+			$node = $state['nodes'][ $state['next'] ];
+			++$state['next'];
+			$loaded = $this->load_unit(
+				(object) array(
+					'ID'                 => $node['id'],
+					'DisplayName'        => $node['name'],
+					'RegistrationNumber' => $node['number'],
+				)
+			);
+			if ( count( $loaded['categories'] ) === 0 && count( $loaded['meetings'] ) === 0 && '' === $loaded['note'] ) {
+				continue;
+			}
+			$root                 = 0 === $node['depth'];
+			$loaded['group_id']   = $root ? $loaded['id'] : $node['parent_id'];
+			$loaded['group_name'] = $root ? $loaded['name'] : $node['parent_name'];
+			$state['units'][]     = $loaded;
+		}
+		$state['errors']   = array_values( array_unique( array_merge( $state['errors'], $this->errors ) ) );
+		$state['complete'] = $state['next'] >= $count;
+
+		return $state;
 	}
 
 	/**
@@ -291,6 +492,8 @@ final class Recruitment_Data {
 			'categories'          => $categories,
 			'meetings'            => $meetings,
 			'places'              => $places,
+			'group_id'            => 0,
+			'group_name'          => '',
 		);
 	}
 

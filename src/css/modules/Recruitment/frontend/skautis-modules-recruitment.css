@@ -160,3 +160,54 @@
 .skautis-unit-seat-map {
 	margin-top: 1em;
 }
+
+/* The units grouped by their parent units and the filter for the visitors. */
+.skautis-recruitment-group-title {
+	margin: 1.25em 0 0.6em;
+	color: var(--skautis-rec-heading, inherit);
+}
+
+.skautis-recruitment-group:first-child .skautis-recruitment-group-title,
+.skautis-recruitment-filter + .skautis-recruitment-no-match + .skautis-recruitment-group .skautis-recruitment-group-title {
+	margin-top: 0;
+}
+
+.skautis-recruitment-filter {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	margin: 0 0 1.25em;
+	padding: 0.75em 1em;
+	background: var(--skautis-rec-card-bg, transparent);
+	border: 1px solid var(--skautis-rec-border, rgb(0, 0, 0, 15%));
+	border-radius: var(--skautis-rec-radius, 6px);
+}
+
+.skautis-recruitment-filter label {
+	display: flex;
+	flex-direction: column;
+	margin: 0.25em 1em 0.25em 0;
+	font-size: 0.9em;
+	font-weight: 600;
+}
+
+.skautis-recruitment-filter select,
+.skautis-recruitment-filter input {
+	margin-top: 0.25em;
+	font-weight: 400;
+}
+
+.skautis-recruitment-filter input {
+	width: 6em;
+}
+
+.skautis-recruitment-no-match {
+	font-style: italic;
+}
+
+.skautis-recruitment-filter[hidden],
+.skautis-recruitment-no-match[hidden],
+.skautis-recruitment-group[hidden],
+.skautis-recruitment-unit[hidden] {
+	display: none;
+}

@@ -13,6 +13,7 @@ use Skautis_Integration\Admin\Settings as Admin_Settings;
 use Skautis_Integration\Admin\Settings_Sections;
 use Skautis_Integration\Modules\Recruitment\Appearances;
 use Skautis_Integration\Modules\Recruitment\Recruitment_Data;
+use Skautis_Integration\Modules\Recruitment\Unit_Tree;
 use Skautis_Integration\Utils\Helpers;
 
 /**
@@ -168,7 +169,7 @@ final class Settings {
 					// Saving the settings loads the data from SkautIS again.
 					Recruitment_Data::clear_cache();
 
-					return is_string( $value ) ? preg_replace( '/[^0-9.]/u', '', $value ) : '';
+					return Recruitment_Data::sanitize_number( $value );
 				},
 			)
 		);
@@ -193,7 +194,7 @@ final class Settings {
 	 */
 	public static function field_unit() {
 		echo '<input type="text" class="regular-text" id="' . esc_attr( Recruitment_Data::UNIT_OPTION ) . '" name="' . esc_attr( Recruitment_Data::UNIT_OPTION ) . '" value="' . esc_attr( Recruitment_Data::get_unit_number() ) . '" placeholder="112.31" inputmode="decimal" />';
-		echo '<p class="description">' . esc_html__( 'The registration number of the group (středisko) or the troop (oddíl), e.g. 112.31. For a group, the recruitment of all its troops is shown.', 'skautis-integration' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'The registration number of the troop (oddíl), the group (středisko) or the district (okres), e.g. 112.31. For a group or a district, the recruitment of all units below it is shown, grouped by their parent units. A block can show another unit, set in its settings.', 'skautis-integration' ) . '</p>';
 	}
 
 	/**
@@ -250,6 +251,10 @@ final class Settings {
 			echo '</tbody></table>';
 		}
 
+		if ( true === $data['truncated'] ) {
+			/* translators: %d: The most units that are loaded */
+			echo '<div class="notice notice-info inline"><p>' . esc_html( sprintf( __( 'Not all units below the unit are loaded yet. The rest is being loaded in the background, reload the page in a few minutes. At most %d units are loaded.', 'skautis-integration' ), Unit_Tree::MAX_UNITS ) ) . '</p></div>';
+		}
 		if ( count( $data['errors'] ) > 0 ) {
 			echo '<p>' . esc_html__( 'These SkautIS methods could not be called:', 'skautis-integration' ) . ' <code>' . esc_html( implode( ', ', $data['errors'] ) ) . '</code></p>';
 		}

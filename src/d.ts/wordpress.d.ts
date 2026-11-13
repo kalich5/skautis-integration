@@ -12,12 +12,16 @@ interface WPBlockAttributes {
 	showAccounts?: boolean;
 	showContacts?: boolean;
 	showMap?: boolean;
+	showChildCards?: boolean;
+	showFilter?: boolean;
+	showGroups?: boolean;
 	showPeople?: boolean;
 	showSeat?: boolean;
 	showUnits?: boolean;
 	skautisRules?: Array<number>;
 	skautisVisibilityMode?: string;
 	unit?: string;
+	units?: Array<number>;
 }
 
 interface WPBlockEditProps {
@@ -68,6 +72,7 @@ declare const wp: {
 			ariaLive?: 'assertive' | 'polite'
 		): void;
 	};
+	apiFetch<T>(this: void, options: { path: string }): Promise<T>;
 	blockEditor: {
 		InspectorControls: WPComponent;
 		useBlockProps(this: void): Record<string, unknown>;
@@ -127,6 +132,12 @@ declare const wp: {
 		): WPElement;
 		Fragment: WPComponent;
 		memo<P>(this: void, component: WPComponent<P>): WPComponent<P>;
+		useEffect(
+			this: void,
+			effect: () => (() => void) | undefined,
+			deps: Array<unknown>
+		): void;
+		useState<T>(this: void, initial: T): [T, (value: T) => void];
 	};
 	hooks: {
 		addFilter<T>(
@@ -159,4 +170,11 @@ declare const wp: {
 		): void;
 	};
 	serverSideRender: WPComponent;
+	url: {
+		addQueryArgs(
+			this: void,
+			url: string,
+			args: Record<string, string>
+		): string;
+	};
 };
