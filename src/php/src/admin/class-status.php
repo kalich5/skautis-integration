@@ -138,7 +138,7 @@ final class Status {
 		echo '<p><a class="button" href="' . esc_url( $tab_url ) . '">' . esc_html__( 'Test the methods again', 'skautis-integration' ) . '</a></p>';
 
 		echo '<h2 class="skautis-status-subtitle">' . esc_html__( 'Without a logged-in user', 'skautis-integration' ) . '</h2>';
-		echo '<p class="description">' . esc_html__( 'Called with the App ID of the site only, e.g. for the blocks shown to all visitors.', 'skautis-integration' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Called with the App ID of the site only, e.g. for the blocks shown to all visitors. When you are logged in to SkautIS, they are tested with your login, but the visitors call them without it: in SkautIS, they must be allowed as anonymous actions.', 'skautis-integration' ) . '</p>';
 		self::print_groups( $groups, false );
 
 		echo '<h2 class="skautis-status-subtitle">' . esc_html__( 'With a logged-in user', 'skautis-integration' ) . '</h2>';
