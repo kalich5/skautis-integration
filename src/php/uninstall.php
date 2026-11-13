@@ -80,7 +80,7 @@ function skautis_integration_uninstall_site() {
 	delete_post_meta_by_key( 'skautis-integration_rules_visibilityMode' );
 	delete_post_meta_by_key( 'skautis-integration_rules_data' );
 
-	// The results of the test of the SkautIS methods on the "Status" tab (src/admin/class-status.php), per user.
+	// The results of the test of the SkautIS methods on the "Status" tab (older versions of src/admin/class-status.php kept them per user).
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s", $wpdb->esc_like( '_transient_skautis-integration_method_status_' ) . '%', $wpdb->esc_like( '_transient_timeout_skautis-integration_method_status_' ) . '%' ) );
 
