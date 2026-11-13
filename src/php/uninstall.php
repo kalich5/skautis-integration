@@ -57,6 +57,13 @@ function skautis_integration_uninstall_site() {
 	delete_option( 'skautis-integration_recruitment_appearances' );
 	delete_option( 'skautis-integration_recruitment_default_appearance' );
 	delete_transient( 'skautis-integration_recruitment_data' );
+	// The data of each unit of the recruitment blocks are in their own option, loaded again in the background by WP-Cron.
+	$skautis_integration_numbers = get_option( 'skautis-integration_recruitment_cached_units', array() );
+	foreach ( is_array( $skautis_integration_numbers ) ? $skautis_integration_numbers : array() as $skautis_integration_number ) {
+		delete_option( 'skautis-integration_recruitment_data_' . md5( strval( $skautis_integration_number ) ) );
+	}
+	delete_option( 'skautis-integration_recruitment_cached_units' );
+	wp_unschedule_hook( 'skautis-integration_recruitment_refresh' );
 
 	// defined in src/modules/Unit/class-unit-data.php; the data of the units are stored in transients named after the unit.
 	delete_option( 'skautis-integration_unit' );

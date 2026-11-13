@@ -349,3 +349,41 @@ function wp_add_privacy_policy_content( $plugin_name, $policy_text ): void {
  */
 function wp_get_attachment_url( $attachment_id = 0 ) {
 }
+
+/**
+ * @param string               $route_namespace
+ * @param string               $route
+ * @param array<string, mixed> $args
+ * @param bool                 $override
+ */
+function register_rest_route( $route_namespace, $route, $args = array(), $override = false ): bool {
+}
+
+/**
+ * @param string            $hook
+ * @param array<int, mixed> $args
+ *
+ * @return int|false
+ */
+function wp_next_scheduled( $hook, $args = array() ) {
+}
+
+/**
+ * @param int               $timestamp
+ * @param string            $hook
+ * @param array<int, mixed> $args
+ * @param bool              $wp_error
+ *
+ * @return bool|WP_Error
+ */
+function wp_schedule_single_event( $timestamp, $hook, $args = array(), $wp_error = false ) {
+}
+
+/**
+ * @param string $hook
+ * @param bool   $wp_error
+ *
+ * @return int|false|WP_Error
+ */
+function wp_unschedule_hook( $hook, $wp_error = false ) {
+}

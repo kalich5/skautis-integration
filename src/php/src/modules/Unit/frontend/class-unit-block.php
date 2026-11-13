@@ -11,6 +11,7 @@ namespace Skautis_Integration\Modules\Unit\Frontend;
 
 use Skautis_Integration\Modules\Recruitment\Appearances;
 use Skautis_Integration\Modules\Recruitment\Frontend\Blocks;
+use Skautis_Integration\Modules\Recruitment\Recruitment_Data;
 use Skautis_Integration\Modules\Unit\Unit_Data;
 
 /**
@@ -72,6 +73,10 @@ final class Unit_Block {
 			);
 		}
 		// Kept without a default, so that the blocks from the first version keep what they showed.
+		$attributes['showChildCards'] = array(
+			'type'    => 'boolean',
+			'default' => false,
+		);
 		foreach ( array_unique( Unit_Card::LEGACY_ITEMS ) as $legacy ) {
 			$attributes[ $legacy ] = array( 'type' => 'boolean' );
 		}
@@ -134,7 +139,7 @@ final class Unit_Block {
 	 * @return string The HTML code of the block.
 	 */
 	public function render( array $attributes ): string {
-		$number = isset( $attributes['unit'] ) && is_string( $attributes['unit'] ) ? (string) preg_replace( '/[^0-9.]/u', '', $attributes['unit'] ) : '';
+		$number = isset( $attributes['unit'] ) ? Recruitment_Data::sanitize_number( $attributes['unit'] ) : '';
 		$unit   = $this->unit_data->get_data( $number )['unit'];
 		if ( is_null( $unit ) ) {
 			return Blocks::is_editor_preview() ? '<p class="skautis-recruitment-empty">' . esc_html__( 'The unit could not be loaded from SkautIS. Fill in its registration number on the "Unit" page in the SkautIS menu or in the settings of the block.', 'skautis-integration' ) . '</p>' : '';
@@ -145,6 +150,37 @@ final class Unit_Block {
 				'class' => 'skautis-unit-info',
 				'style' => Blocks::get_appearance_style( $attributes, Appearances::UNIT ),
 			)
-		) . '>' . Unit_Card::render( $unit, $attributes, self::get_map( $unit, $attributes ) ) . '</div>';
+		) . '>' . Unit_Card::render( $unit, $attributes, self::get_map( $unit, $attributes ) ) . $this->get_child_cards( $unit, $attributes ) . '</div>';
+	}
+
+	/**
+	 * Returns the HTML code of the cards of the child units, e.g. of the groups (střediska) of a district, with the same items as the card of the unit, without the maps.
+	 *
+	 * @param array{units: array<array{name: string, registration_number: string}>} $unit The unit.
+	 * @param array<string, mixed>                                                  $attributes The attributes of the block.
+	 */
+	private function get_child_cards( array $unit, array $attributes ): string {
+		if ( ! isset( $attributes['showChildCards'] ) || true !== $attributes['showChildCards'] ) {
+			return '';
+		}
+		$child_attributes = array_merge(
+			$attributes,
+			array(
+				'showMap'   => false,
+				'showUnits' => false,
+			)
+		);
+		$html             = '';
+		foreach ( $unit['units'] as $child ) {
+			if ( '' === $child['registration_number'] ) {
+				continue;
+			}
+			$child_unit = $this->unit_data->get_data( $child['registration_number'] )['unit'];
+			if ( ! is_null( $child_unit ) ) {
+				$html .= Unit_Card::render( $child_unit, $child_attributes );
+			}
+		}
+
+		return '' !== $html ? '<div class="skautis-unit-children"><h2 class="skautis-recruitment-group-title">' . esc_html__( 'Units', 'skautis-integration' ) . '</h2>' . $html . '</div>' : '';
 	}
 }

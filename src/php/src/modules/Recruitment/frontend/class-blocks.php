@@ -42,6 +42,21 @@ final class Blocks {
 	const MAP_BLOCK = 'skautis-integration/unit-map';
 
 	/**
+	 * The attributes of the recruitment blocks with the unit of the block (empty for the unit of the site) and the chosen units below it (empty for all).
+	 */
+	const UNIT_ATTRIBUTES = array(
+		'unit'  => array(
+			'type'    => 'string',
+			'default' => '',
+		),
+		'units' => array(
+			'type'    => 'array',
+			'items'   => array( 'type' => 'integer' ),
+			'default' => array(),
+		),
+	);
+
+	/**
 	 * The parts of the cards of the "Recruitment" block in the form `attribute => shown by default`.
 	 */
 	const RECRUITMENT_ITEMS = array(
@@ -69,6 +84,7 @@ final class Blocks {
 	public function __construct( Recruitment_Data $recruitment_data ) {
 		$this->recruitment_data = $recruitment_data;
 		add_action( 'init', array( $this, 'register_blocks' ) );
+		add_action( 'rest_api_init', array( $this, 'register_rest_route' ) );
 		add_filter( 'block_categories_all', array( self::class, 'add_block_category' ) );
 	}
 
@@ -90,6 +106,52 @@ final class Blocks {
 	}
 
 	/**
+	 * Registers the REST route with the units of the recruitment, for the choice of the units in the settings of the blocks.
+	 *
+	 * @return void
+	 */
+	public function register_rest_route() {
+		register_rest_route(
+			SKAUTIS_INTEGRATION_NAME . '/v1',
+			'/recruitment-units',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_rest_units' ),
+				'permission_callback' => static function (): bool {
+					return current_user_can( 'edit_posts' );
+				},
+				'args'                => array(
+					'unit' => array(
+						'type'    => 'string',
+						'default' => '',
+					),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Returns the units with recruitment information of a unit, for the REST route.
+	 *
+	 * @param \WP_REST_Request $request The request.
+	 *
+	 * @return array<array{id: int, name: string, registration_number: string, group: string}>
+	 */
+	public function get_rest_units( $request ): array {
+		$units = array();
+		foreach ( $this->recruitment_data->get_units( Recruitment_Data::sanitize_number( $request->get_param( 'unit' ) ) ) as $unit ) {
+			$units[] = array(
+				'id'                  => $unit['id'],
+				'name'                => $unit['name'],
+				'registration_number' => $unit['registration_number'],
+				'group'               => $unit['group_name'],
+			);
+		}
+
+		return $units;
+	}
+
+	/**
 	 * Registers the scripts, the styles and the blocks.
 	 *
 	 * @return void
@@ -98,16 +160,28 @@ final class Blocks {
 		Helpers::register_script( 'leaflet', 'bundled/leaflet/leaflet.js' );
 		Helpers::register_style( 'leaflet', 'bundled/leaflet/leaflet.css' );
 		Helpers::register_script( 'modules_recruitment_map', 'modules/Recruitment/frontend/js/skautis-modules-recruitment-map.min.js', array( SKAUTIS_INTEGRATION_NAME . '_leaflet', 'wp-dom-ready' ) );
+		Helpers::register_script( 'modules_recruitment_filter', 'modules/Recruitment/frontend/js/skautis-modules-recruitment-filter.min.js', array( 'wp-dom-ready' ) );
 		Helpers::register_style( 'modules_recruitment', 'modules/Recruitment/frontend/css/skautis-modules-recruitment.min.css' );
-		Helpers::register_script( 'modules_recruitment_blocks', 'modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.min.js', array( 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-server-side-render' ) );
+		Helpers::register_script( 'modules_recruitment_blocks', 'modules/Recruitment/admin/js/skautis-modules-recruitment-blocks.min.js', array( 'wp-api-fetch', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-server-side-render', 'wp-url' ) );
 		wp_set_script_translations( SKAUTIS_INTEGRATION_NAME . '_modules_recruitment_blocks', 'skautis-integration' );
 		wp_add_inline_script( SKAUTIS_INTEGRATION_NAME . '_modules_recruitment_blocks', 'var skautisRecruitmentAppearances = ' . wp_json_encode( self::get_appearance_options( Appearances::RECRUITMENT ) ) . ', skautisUnitAppearances = ' . wp_json_encode( self::get_appearance_options( Appearances::UNIT ) ) . ';', 'before' );
 
-		$recruitment_attributes = array(
-			'appearance' => array(
-				'type'    => 'string',
-				'default' => '',
-			),
+		$recruitment_attributes = array_merge(
+			self::UNIT_ATTRIBUTES,
+			array(
+				'appearance' => array(
+					'type'    => 'string',
+					'default' => '',
+				),
+				'showGroups' => array(
+					'type'    => 'boolean',
+					'default' => true,
+				),
+				'showFilter' => array(
+					'type'    => 'boolean',
+					'default' => false,
+				),
+			)
 		);
 		foreach ( self::RECRUITMENT_ITEMS as $item => $default ) {
 			$recruitment_attributes[ $item ] = array(
@@ -130,6 +204,7 @@ final class Blocks {
 					'html'  => false,
 				),
 				'editor_script_handles' => array( SKAUTIS_INTEGRATION_NAME . '_modules_recruitment_blocks' ),
+				'view_script_handles'   => array( SKAUTIS_INTEGRATION_NAME . '_modules_recruitment_filter' ),
 				'style_handles'         => array( SKAUTIS_INTEGRATION_NAME . '_modules_recruitment' ),
 				'render_callback'       => array( $this, 'render_recruitment' ),
 			)
@@ -143,15 +218,18 @@ final class Blocks {
 				'description'           => __( 'A map with the clubrooms of the units from SkautIS and their recruitment information.', 'skautis-integration' ),
 				'category'              => self::CATEGORY,
 				'icon'                  => 'location-alt',
-				'attributes'            => array(
-					'height'     => array(
-						'type'    => 'number',
-						'default' => 400,
-					),
-					'appearance' => array(
-						'type'    => 'string',
-						'default' => '',
-					),
+				'attributes'            => array_merge(
+					self::UNIT_ATTRIBUTES,
+					array(
+						'height'     => array(
+							'type'    => 'number',
+							'default' => 400,
+						),
+						'appearance' => array(
+							'type'    => 'string',
+							'default' => '',
+						),
+					)
 				),
 				'supports'              => array(
 					'align' => array( 'wide', 'full' ),
@@ -210,12 +288,14 @@ final class Blocks {
 
 	/**
 	 * Returns the notice shown in the block editor when there is nothing to show.
+	 *
+	 * @param string $number The registration number of the unit of the block, or an empty string for the unit of the site.
 	 */
-	private static function get_empty_notice(): string {
+	private static function get_empty_notice( string $number = '' ): string {
 		if ( ! self::is_editor_preview() ) {
 			return '';
 		}
-		$message = '' === Recruitment_Data::get_unit_number()
+		$message = '' === $number && '' === Recruitment_Data::get_unit_number()
 			? __( 'Fill in the registration number of the unit on the "Recruitment" page in the SkautIS menu.', 'skautis-integration' )
 			: __( 'No recruitment information could be loaded from SkautIS. See the "Recruitment" page in the SkautIS menu.', 'skautis-integration' );
 
@@ -327,9 +407,10 @@ final class Blocks {
 	 * @return string The HTML code of the block.
 	 */
 	public function render_recruitment( array $attributes ): string {
-		$units = $this->recruitment_data->get_units();
+		$number = Recruitment_List::get_number( $attributes );
+		$units  = Recruitment_List::select( $this->recruitment_data->get_units( $number ), $attributes );
 		if ( count( $units ) === 0 ) {
-			return self::get_empty_notice();
+			return self::get_empty_notice( $number );
 		}
 
 		return '<div ' . get_block_wrapper_attributes(
@@ -337,7 +418,7 @@ final class Blocks {
 				'class' => 'skautis-recruitment',
 				'style' => self::get_appearance_style( $attributes ),
 			)
-		) . '>' . self::render_units( $units, $attributes ) . '</div>';
+		) . '>' . Recruitment_List::render( $units, $attributes ) . '</div>';
 	}
 
 	/**
@@ -349,7 +430,12 @@ final class Blocks {
 	public static function render_units( array $units, array $attributes = array() ): string {
 		$html = '';
 		foreach ( $units as $unit ) {
-			$html .= '<section class="skautis-recruitment-unit" id="skautis-unit-' . esc_attr( (string) $unit['id'] ) . '">';
+			// The categories in the form "7-11-male", for the filter of the visitors.
+			$categories = array();
+			foreach ( $unit['categories'] as $category ) {
+				$categories[] = $category['age_from'] . '-' . $category['age_to'] . '-' . ( '' !== $category['sex'] ? $category['sex'] : 'any' );
+			}
+			$html .= '<section class="skautis-recruitment-unit" id="skautis-unit-' . esc_attr( (string) $unit['id'] ) . '" data-skautis-categories="' . esc_attr( implode( ' ', $categories ) ) . '">';
 			$name  = self::shows( $attributes, 'showName' ) ? $unit['name'] : '';
 			if ( self::shows( $attributes, 'showRegistrationNumber' ) && '' !== $unit['registration_number'] ) {
 				$name = '' !== $name ? $name . ' (' . $unit['registration_number'] . ')' : $unit['registration_number'];
@@ -411,12 +497,14 @@ final class Blocks {
 	/**
 	 * Returns the markers of the map. Units sharing a clubroom share its marker.
 	 *
+	 * @param array<string, mixed> $attributes The attributes of the block, which choose the unit and the units below it.
+	 *
 	 * @return array<array{lat: float, lng: float, water: bool, popup: string}>
 	 */
-	private function get_markers(): array {
+	private function get_markers( array $attributes ): array {
 		$link    = has_block( self::RECRUITMENT_BLOCK );
 		$markers = array();
-		foreach ( $this->recruitment_data->get_units() as $unit ) {
+		foreach ( Recruitment_List::select( $this->recruitment_data->get_units( Recruitment_List::get_number( $attributes ) ), $attributes ) as $unit ) {
 			foreach ( $unit['places'] as $place ) {
 				if ( 0.0 === $place['lat'] || 0.0 === $place['lng'] ) {
 					continue;
@@ -461,9 +549,9 @@ final class Blocks {
 	 * @return string The HTML code of the block.
 	 */
 	public function render_map( array $attributes ): string {
-		$markers = $this->get_markers();
+		$markers = $this->get_markers( $attributes );
 		if ( count( $markers ) === 0 ) {
-			return self::get_empty_notice();
+			return self::get_empty_notice( Recruitment_List::get_number( $attributes ) );
 		}
 		$height = isset( $attributes['height'] ) && is_numeric( $attributes['height'] ) ? max( 200, min( 1000, intval( $attributes['height'] ) ) ) : 400;
 

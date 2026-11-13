@@ -91,6 +91,13 @@ final class Geocoder {
 	 * @return array{lat: float, lng: float}
 	 */
 	private static function geocode_nominatim( string $address ): array {
+		// The usage policy of Nominatim allows at most one request per second, e.g. for the child units of a district.
+		static $last = 0.0;
+		$wait        = 1.0 - ( microtime( true ) - $last );
+		if ( $wait > 0 ) {
+			usleep( intval( $wait * 1000000 ) );
+		}
+		$last  = microtime( true );
 		$data  = self::get_json(
 			add_query_arg(
 				array(
