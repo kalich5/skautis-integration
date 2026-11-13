@@ -391,7 +391,13 @@ final class Skautis_Methods {
 		} elseif ( 0 === $unit_id ) {
 			$public_reason = __( 'Not tested, fill in the registration number of the unit on the "Recruitment" or "Unit" page.', 'skautis-integration' );
 		}
-		$login_reason = is_null( $detail ) ? __( 'Not tested, log in to SkautIS to test the methods that need a logged-in user.', 'skautis-integration' ) : '';
+		$login_reason = '';
+		if ( ! $logged_in ) {
+			$login_reason = __( 'Not tested, log in to SkautIS to test the methods that need a logged-in user.', 'skautis-integration' );
+		} elseif ( is_null( $detail ) ) {
+			// The other methods need the user from UserDetail, which is tested below to show its error.
+			$login_reason = __( 'Not tested, SkautIS did not return the logged-in user (UserManagement → UserDetail).', 'skautis-integration' );
+		}
 
 		$results = array();
 		foreach ( self::get_public_groups( $unit_id ) as $group ) {
@@ -401,9 +407,13 @@ final class Skautis_Methods {
 			);
 		}
 		foreach ( self::get_login_groups( $user_id, $person_id ) as $group ) {
+			$tested = $this->test_group( $group, $login_reason );
+			if ( $logged_in && is_null( $detail ) && isset( $tested['UserManagement → UserDetail'] ) ) {
+				$tested['UserManagement → UserDetail'] = $this->test_method( self::method( 'UserManagement', 'UserDetail' ) );
+			}
 			$results[] = array(
 				'group'   => $group,
-				'results' => $this->test_group( $group, $login_reason ),
+				'results' => $tested,
 			);
 		}
 
