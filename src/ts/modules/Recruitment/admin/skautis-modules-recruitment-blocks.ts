@@ -6,6 +6,16 @@
 
 const skautisRecruitmentEl = wp.element.createElement;
 
+/**
+ * A unit with recruitment information, from the REST route of the plugin.
+ */
+interface SkautisRecruitmentUnit {
+	group: string;
+	id: number;
+	name: string;
+	registration_number: string;
+}
+
 function skautisRecruitmentAppearanceControl(
 	props: WPBlockEditProps,
 	unit = false
@@ -53,6 +63,136 @@ function skautisRecruitmentToggle(
 	});
 }
 
+/**
+ * The field for the registration number of the unit of a block.
+ *
+ * @param props - The properties of the block.
+ */
+function skautisRecruitmentUnitControl(props: WPBlockEditProps): WPElement {
+	return skautisRecruitmentEl(wp.components.TextControl, {
+		help: wp.i18n.__(
+			'Leave empty for the unit set on the "Recruitment" page in the SkautIS menu. For a group or a district, the units below it are shown too.',
+			'skautis-integration'
+		),
+		label: wp.i18n.__(
+			'Registration number of the unit',
+			'skautis-integration'
+		),
+		onChange: (unit: string): void => {
+			// The chosen units belong to the previous unit.
+			props.setAttributes({ unit, units: [] });
+		},
+		placeholder: '112.31',
+		value: props.attributes.unit ?? '',
+	});
+}
+
+/**
+ * The panel with the choice of the units shown by a block. No chosen unit means all units.
+ *
+ * @param root0            - The properties of the component.
+ * @param root0.blockProps - The properties of the block.
+ */
+function SkautisRecruitmentUnitsPanel({
+	blockProps,
+}: {
+	blockProps: WPBlockEditProps;
+}): WPElement {
+	const [units, setUnits] =
+		wp.element.useState<Array<SkautisRecruitmentUnit> | null>(null);
+	const unit = blockProps.attributes.unit ?? '';
+	wp.element.useEffect(() => {
+		let active = true;
+		setUnits(null);
+		// Wait until the registration number is typed.
+		const timer = setTimeout(() => {
+			wp.apiFetch<Array<SkautisRecruitmentUnit>>({
+				path: wp.url.addQueryArgs(
+					'/skautis-integration/v1/recruitment-units',
+					{ unit }
+				),
+			})
+				.then((list) => {
+					if (active) {
+						setUnits(list);
+					}
+				})
+				.catch(() => {
+					if (active) {
+						setUnits([]);
+					}
+				});
+		}, 500);
+		return (): void => {
+			active = false;
+			clearTimeout(timer);
+		};
+	}, [unit]);
+
+	const chosen = blockProps.attributes.units ?? [];
+	let content: Array<WPElement>;
+	if (units === null) {
+		content = [
+			skautisRecruitmentEl(
+				'p',
+				null,
+				wp.i18n.__('Loading the units…', 'skautis-integration')
+			),
+		];
+	} else if (units.length === 0) {
+		content = [
+			skautisRecruitmentEl(
+				'p',
+				null,
+				wp.i18n.__(
+					'No units with recruitment information were found.',
+					'skautis-integration'
+				)
+			),
+		];
+	} else {
+		content = [
+			skautisRecruitmentEl(
+				'p',
+				{ className: 'components-base-control__help' },
+				wp.i18n.__(
+					'Choose the units to show. When none is chosen, all units are shown.',
+					'skautis-integration'
+				)
+			),
+		];
+		let group = '';
+		for (const item of units) {
+			if (item.group !== group) {
+				group = item.group;
+				content.push(skautisRecruitmentEl('strong', null, group));
+			}
+			content.push(
+				skautisRecruitmentEl(wp.components.CheckboxControl, {
+					checked: chosen.includes(item.id),
+					key: item.id,
+					label: item.name,
+					onChange: (checked: boolean): void => {
+						blockProps.setAttributes({
+							units: checked
+								? [...chosen, item.id]
+								: chosen.filter((id) => id !== item.id),
+						});
+					},
+				})
+			);
+		}
+	}
+	return skautisRecruitmentEl(
+		wp.components.PanelBody,
+		{
+			initialOpen: false,
+			title: wp.i18n.__('Units', 'skautis-integration'),
+		},
+		...content
+	);
+}
+
 wp.blocks.registerBlockType('skautis-integration/recruitment', {
 	apiVersion: 3,
 	edit: (props: WPBlockEditProps): WPElement =>
@@ -67,8 +207,12 @@ wp.blocks.registerBlockType('skautis-integration/recruitment', {
 					{
 						title: wp.i18n.__('Settings', 'skautis-integration'),
 					},
+					skautisRecruitmentUnitControl(props),
 					skautisRecruitmentAppearanceControl(props)
 				),
+				skautisRecruitmentEl(SkautisRecruitmentUnitsPanel, {
+					blockProps: props,
+				}),
 				skautisRecruitmentEl(
 					wp.components.PanelBody,
 					{
@@ -77,6 +221,24 @@ wp.blocks.registerBlockType('skautis-integration/recruitment', {
 							'skautis-integration'
 						),
 					},
+					skautisRecruitmentToggle(
+						props,
+						'showGroups',
+						wp.i18n.__(
+							'Group the units by their parent units',
+							'skautis-integration'
+						),
+						true
+					),
+					skautisRecruitmentToggle(
+						props,
+						'showFilter',
+						wp.i18n.__(
+							'Filter for the visitors (unit, age, boys or girls)',
+							'skautis-integration'
+						),
+						false
+					),
 					skautisRecruitmentToggle(
 						props,
 						'showName',
@@ -149,6 +311,7 @@ wp.blocks.registerBlockType('skautis-integration/unit-map', {
 					{
 						title: wp.i18n.__('Settings', 'skautis-integration'),
 					},
+					skautisRecruitmentUnitControl(props),
 					skautisRecruitmentAppearanceControl(props),
 					skautisRecruitmentEl(wp.components.RangeControl, {
 						label: wp.i18n.__(
@@ -163,7 +326,10 @@ wp.blocks.registerBlockType('skautis-integration/unit-map', {
 						step: 10,
 						value: props.attributes.height,
 					})
-				)
+				),
+				skautisRecruitmentEl(SkautisRecruitmentUnitsPanel, {
+					blockProps: props,
+				})
 			),
 			skautisRecruitmentEl(wp.serverSideRender, {
 				attributes: props.attributes,
@@ -362,6 +528,15 @@ wp.blocks.registerBlockType('skautis-integration/unit', {
 						props,
 						'showUnits',
 						wp.i18n.__('Child units', 'skautis-integration'),
+						false
+					),
+					skautisUnitToggle(
+						props,
+						'showChildCards',
+						wp.i18n.__(
+							'Cards of the child units (e.g. the groups of a district)',
+							'skautis-integration'
+						),
 						false
 					),
 					props.attributes.showMap === false

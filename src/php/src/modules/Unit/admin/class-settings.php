@@ -163,7 +163,7 @@ final class Settings {
 				'type'              => 'string',
 				'show_in_rest'      => false,
 				'sanitize_callback' => static function ( $value ) {
-					$number = is_string( $value ) ? (string) preg_replace( '/[^0-9.]/u', '', $value ) : '';
+					$number = Recruitment_Data::sanitize_number( $value );
 					// Saving the settings loads the data from SkautIS again.
 					Unit_Data::clear_cache( '' !== $number ? $number : Recruitment_Data::get_unit_number() );
 

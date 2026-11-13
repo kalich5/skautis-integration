@@ -58,8 +58,10 @@ class Skautis_Integration {
 		require __DIR__ . '/src/modules/Recruitment/admin/class-appearances-page.php';
 		require __DIR__ . '/src/modules/Recruitment/admin/class-settings.php';
 		require __DIR__ . '/src/modules/Recruitment/frontend/class-blocks.php';
+		require __DIR__ . '/src/modules/Recruitment/frontend/class-recruitment-list.php';
 		require __DIR__ . '/src/modules/Recruitment/class-appearances.php';
 		require __DIR__ . '/src/modules/Recruitment/class-recruitment-data.php';
+		require __DIR__ . '/src/modules/Recruitment/class-unit-tree.php';
 		require __DIR__ . '/src/modules/Recruitment/class-recruitment.php';
 		require __DIR__ . '/src/modules/Unit/admin/class-settings.php';
 		require __DIR__ . '/src/modules/Unit/frontend/class-unit-block.php';
