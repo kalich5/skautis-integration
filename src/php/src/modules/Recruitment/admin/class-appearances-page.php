@@ -14,7 +14,7 @@ use PHPMD\Rule\Design\ExitExpression;
 use Skautis_Integration\Modules\Recruitment\Appearances;
 use Skautis_Integration\Modules\Recruitment\Frontend\Blocks;
 use Skautis_Integration\Modules\Unit\Admin\Settings as Unit_Settings;
-use Skautis_Integration\Modules\Unit\Frontend\Unit_Block;
+use Skautis_Integration\Modules\Unit\Frontend\Unit_Card;
 use Skautis_Integration\Modules\Unit\Unit_Data;
 use Skautis_Integration\Utils\Helpers;
 use Skautis_Integration\Utils\Request_Parameter_Helpers;
@@ -299,7 +299,7 @@ final class Appearances_Page {
 	private static function get_preview( string $appearance, bool $full, string $context ): string {
 		if ( Appearances::UNIT === $context ) {
 			return '<div class="skautis-unit-info skautis-appearance-preview" style="' . esc_attr( Appearances::get_style( $appearance ) ) . '" aria-hidden="true">'
-				. Unit_Block::render_card( self::get_sample_unit(), array() )
+				. Unit_Card::render( self::get_sample_unit(), array() )
 				. '<div class="skautis-appearance-markers"><span class="skautis-unit-map-marker"><span></span></span></div>'
 				. '</div>';
 		}
