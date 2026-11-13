@@ -314,8 +314,9 @@ final class Unit_Data {
 		foreach ( $this->call(
 			'AccountAll',
 			array(
-				'ID_Unit' => $unit_id,
-				'IsValid' => true,
+				'ID_Unit'     => $unit_id,
+				'ShowHistory' => false,
+				'IsValid'     => true,
 			)
 		) as $account ) {
 			$number = self::get_string( $account, array( 'DisplayName', 'AccountNumber' ) );
