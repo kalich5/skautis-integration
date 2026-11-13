@@ -254,6 +254,6 @@ final class Settings {
 			echo '<p>' . esc_html__( 'These SkautIS methods could not be called:', 'skautis-integration' ) . ' <code>' . esc_html( implode( ', ', $data['errors'] ) ) . '</code></p>';
 		}
 		/* translators: %s: The date and time */
-		echo '<p class="description">' . esc_html( sprintf( __( 'Loaded on %s. The data are loaded again once a day and after saving the settings.', 'skautis-integration' ), wp_date( strval( get_option( 'date_format' ) ) . ' ' . strval( get_option( 'time_format' ) ), $data['loaded'] ) ) ) . '</p>';
+		echo '<p class="description">' . esc_html( sprintf( __( 'Loaded on %s. The data are loaded again once a day and after saving the settings.', 'skautis-integration' ), wp_date( strval( get_option( 'date_format' ) ) . ' H:i', $data['loaded'] ) ) ) . '</p>';
 	}
 }
