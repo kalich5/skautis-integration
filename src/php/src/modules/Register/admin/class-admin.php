@@ -44,22 +44,9 @@ final class Admin {
 	 * @return void
 	 */
 	private function init_hooks() {
-		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue_styles' ) );
 		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue_scripts' ) );
 		add_action( 'admin_footer', array( $this, 'init_rules_options' ) );
 		add_action( 'admin_footer', array( self::class, 'init_rules_data' ) );
-	}
-
-	/**
-	 * Enqueues all styles needed for the user registration admin page.
-	 *
-	 * @return void
-	 */
-	public static function enqueue_styles() {
-		if ( ! Main_Settings::is_settings_tab( 'registration' ) ) {
-			return;
-		}
-		Helpers::enqueue_style( 'modules_register', 'modules/Register/admin/css/skautis-modules-register-admin.min.css' );
 	}
 
 	/**
