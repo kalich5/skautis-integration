@@ -37,17 +37,121 @@ msgstr "Junák - český skaut"
 msgid "https://github.com/skaut"
 msgstr "https://github.com/skaut"
 
-#: class-skautis-integration.php:207 class-skautis-integration.php:291
+#: class-skautis-integration.php:209 class-skautis-integration.php:293
 msgid "The SkautIS integration plugin requires WordPress 7.0 or newer!"
 msgstr "Plugin SkautIS integrace vyžaduje verzi WordPress 7.0 nebo vyšší!"
 
-#: class-skautis-integration.php:212 class-skautis-integration.php:298
+#: class-skautis-integration.php:214 class-skautis-integration.php:300
 msgid "The SkautIS integration plugin requires PHP 8.3 or newer!"
 msgstr "Plugin SkautIS integrace vyžaduje verzi PHP 8.3 nebo vyšší!"
 
 #: src/admin/class-admin.php:129 src/frontend/class-frontend.php:156
 msgid "Log out (also from SkautIS)"
 msgstr "Odhlásit se (i ze SkautISu)"
+
+#: src/admin/class-login-redirect-settings.php:71
+msgid "Redirect after login"
+msgstr "Přesměrování po přihlášení"
+
+#: src/admin/class-login-redirect-settings.php:74
+msgid ""
+"Users who log in with SkautIS on a page of the site return to that page. "
+"Users who log in on the login screen of WordPress or on the login page above"
+" would land on the dashboard; choose where they go instead."
+msgstr ""
+"Kdo se přihlásí přes SkautIS na některé stránce webu, vrátí se na ni. Kdo se"
+" přihlásí na přihlašovací obrazovce WordPressu nebo na přihlašovací stránce "
+"výše, skončil by na nástěnce administrace; vyberte, kam místo toho půjde."
+
+#: src/admin/class-login-redirect-settings.php:82
+msgid "Default page"
+msgstr "Výchozí stránka"
+
+#: src/admin/class-login-redirect-settings.php:119
+msgid ""
+"For the users who pass none of the rules. Only published pages are offered; "
+"when the page is deleted or no longer published, the users go to the "
+"dashboard."
+msgstr ""
+"Pro uživatele, kteří nesplní žádné z pravidel. Nabízejí se jen publikované "
+"stránky; když stránku smažete nebo zrušíte její publikování, uživatelé "
+"půjdou na nástěnku."
+
+#. translators: 1: Start of a link to the rules 2: End of the link to the
+#. rules
+#: src/admin/class-login-redirect-settings.php:134
+#, php-format
+msgid ""
+"To send different users to different pages, first create rules in %1$sManage"
+" rules%2$s."
+msgstr ""
+"Chcete-li posílat různé uživatele na různé stránky, nejdřív vytvořte "
+"pravidla ve %1$sSprávě pravidel%2$s."
+
+#: src/admin/class-login-redirect-settings.php:138
+msgid ""
+"Users who pass a rule go to its page. The rules are evaluated from top to "
+"bottom and the first rule the user passes is used."
+msgstr ""
+"Kdo splní pravidlo, půjde na jeho stránku. Pravidla se vyhodnocují shora "
+"dolů a použije se první pravidlo, které uživatel splní."
+
+#: src/admin/class-login-redirect-settings.php:139
+msgid "If the rule is passed"
+msgstr "Když splní pravidlo"
+
+#: src/admin/class-login-redirect-settings.php:139
+msgid "Go to"
+msgstr "Přejde na"
+
+#: src/admin/class-login-redirect-settings.php:139
+#: src/admin/class-users-management.php:313
+msgid "Actions"
+msgstr "Akce"
+
+#: src/admin/class-login-redirect-settings.php:151
+#: src/modules/Register/admin/class-settings.php:270
+#: src/rules/class-rules-init.php:61
+msgid "Add rule"
+msgstr "Přidat pravidlo"
+
+#: src/admin/class-login-redirect-settings.php:164
+msgid "Rule"
+msgstr "Pravidlo"
+
+#: src/admin/class-login-redirect-settings.php:164
+msgid "— Choose a rule —"
+msgstr "— Vyberte pravidlo —"
+
+#: src/admin/class-login-redirect-settings.php:170
+msgid "Move up"
+msgstr "Posunout nahoru"
+
+#: src/admin/class-login-redirect-settings.php:171
+msgid "Move down"
+msgstr "Posunout dolů"
+
+#: src/admin/class-login-redirect-settings.php:172
+#: src/modules/Register/admin/class-settings.php:267
+#: src/modules/Visibility/admin/class-metabox.php:191
+msgid "Remove"
+msgstr "Odstranit"
+
+#: src/admin/class-login-redirect-settings.php:185
+msgid "Page"
+msgstr "Stránka"
+
+#: src/admin/class-login-redirect-settings.php:186
+msgid "Dashboard (default)"
+msgstr "Nástěnka (výchozí)"
+
+#: src/admin/class-login-redirect-settings.php:187
+msgid "Home page of the site"
+msgstr "Úvodní stránka webu"
+
+#: src/admin/class-login-redirect-settings.php:195
+msgid "Pages"
+msgstr "Stránky"
 
 #: src/admin/class-maps-settings.php:62 src/admin/class-settings.php:210
 #: src/admin/class-status-checks.php:124
@@ -744,10 +848,6 @@ msgstr "SkautIS ID uživatele"
 msgid "WordPress account"
 msgstr "Účet ve WordPressu"
 
-#: src/admin/class-users-management.php:313
-msgid "Actions"
-msgstr "Akce"
-
 #: src/admin/class-users-management.php:323
 msgid "No users found."
 msgstr "Žádní uživatelé nenalezeni."
@@ -881,7 +981,7 @@ msgstr "Přihlášení přes SkautIS se nepodařilo"
 msgid "Do you have a SkautIS account?"
 msgstr "Máte účet ve SkautISu?"
 
-#: src/frontend/class-login-form.php:90 src/frontend/public/views/login.php:19
+#: src/frontend/class-login-form.php:90 src/frontendublic/views/login.php:19
 #: src/modules/Visibility/frontend/class-frontend.php:106
 msgid "Log in with SkautIS"
 msgstr "Přihlásit se přes SkautIS"
@@ -893,11 +993,11 @@ msgstr ""
 "Přihlašovací jméno a heslo do SkautISu zadáte až na přihlašovací stránce "
 "SkautISu."
 
-#: src/frontend/public/views/login.php:26
+#: src/frontendublic/views/login.php:26
 msgid "You are logged in to SkautIS"
 msgstr "Jste přihlášeni ve SkautISu"
 
-#: src/frontend/public/views/login.php:29
+#: src/frontendublic/views/login.php:29
 msgid "Log out of SkautIS"
 msgstr "Odhlásit se ze SkautISu"
 
@@ -1689,16 +1789,6 @@ msgstr "Při splnění pravidla:"
 #: src/modules/Register/admin/class-settings.php:261
 msgid "Assign the user the role:"
 msgstr "Přiřadit uživateli úroveň:"
-
-#: src/modules/Register/admin/class-settings.php:267
-#: src/modules/Visibility/admin/class-metabox.php:191
-msgid "Remove"
-msgstr "Odstranit"
-
-#: src/modules/Register/admin/class-settings.php:270
-#: src/rules/class-rules-init.php:61
-msgid "Add rule"
-msgstr "Přidat pravidlo"
 
 #. translators: 1: Start of the link back 2: End of the link back
 #: src/modules/Register/class-register.php:221

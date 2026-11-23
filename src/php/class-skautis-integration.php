@@ -29,6 +29,7 @@ class Skautis_Integration {
 		require __DIR__ . '/src/admin/class-admin.php';
 		require __DIR__ . '/src/admin/class-settings.php';
 		require __DIR__ . '/src/admin/class-settings-sections.php';
+		require __DIR__ . '/src/admin/class-login-redirect-settings.php';
 		require __DIR__ . '/src/admin/class-maps-settings.php';
 		require __DIR__ . '/src/admin/class-skautis-errors.php';
 		require __DIR__ . '/src/admin/class-skautis-methods.php';
@@ -42,6 +43,7 @@ class Skautis_Integration {
 		require __DIR__ . '/src/auth/class-skautis-gateway.php';
 		require __DIR__ . '/src/auth/class-skautis-login.php';
 		require __DIR__ . '/src/auth/class-wp-login-logout.php';
+		require __DIR__ . '/src/auth/class-login-redirect.php';
 
 		require __DIR__ . '/src/frontend/class-frontend.php';
 		require __DIR__ . '/src/frontend/class-login-form.php';
