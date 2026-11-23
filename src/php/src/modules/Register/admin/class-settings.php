@@ -243,11 +243,11 @@ final class Settings {
 	 */
 	public function field_rules() {
 		?>
-		<div id="repeater" class="skautis-register-rules">
+		<div id="repeater" class="skautis-rule-rows">
 			<div data-repeater-list="<?php echo esc_attr( SKAUTIS_INTEGRATION_NAME ); ?>_modules_register_rules">
-				<div data-repeater-item class="skautis-register-rule">
+				<div data-repeater-item class="skautis-rule-row">
 					<span class="dashicons dashicons-move handle" aria-hidden="true"></span>
-					<label class="skautis-register-rule-field">
+					<label class="skautis-rule-field">
 						<span><?php esc_html_e( 'If the rule is passed:', 'skautis-integration' ); ?></span>
 						<select name="rule" class="rule select2">
 							<?php
@@ -257,13 +257,13 @@ final class Settings {
 							?>
 						</select>
 					</label>
-					<label class="skautis-register-rule-field">
+					<label class="skautis-rule-field">
 						<span><?php esc_html_e( 'Assign the user the role:', 'skautis-integration' ); ?></span>
 						<select name="role">
 							<?php wp_dropdown_roles( get_option( SKAUTIS_INTEGRATION_NAME . '_modules_register_defaultwpRole' ) ); ?>
 						</select>
 					</label>
-					<input data-repeater-delete type="button" class="button"
+					<input data-repeater-delete type="button" class="button skautis-rule-remove"
 						value="<?php esc_attr_e( 'Remove', 'skautis-integration' ); ?>"/>
 				</div>
 			</div>
