@@ -387,3 +387,33 @@ function wp_schedule_single_event( $timestamp, $hook, $args = array(), $wp_error
  */
 function wp_unschedule_hook( $hook, $wp_error = false ) {
 }
+
+/**
+ * @param string $value
+ */
+function untrailingslashit( $value ): string {
+}
+
+/**
+ * @param int|WP_Post|null $post
+ *
+ * @return string|false
+ */
+function get_post_status( $post = null ) {
+}
+
+/**
+ * @param array<string, mixed>|string $args
+ *
+ * @return array<WP_Post>|false
+ */
+function get_pages( $args = array() ) {
+}
+
+/**
+ * @param array<WP_Post>       $pages
+ * @param int                  $depth
+ * @param array<string, mixed> $args
+ */
+function walk_page_dropdown_tree( $pages, $depth, $args ): string {
+}

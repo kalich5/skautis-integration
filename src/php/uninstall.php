@@ -30,6 +30,8 @@ function skautis_integration_uninstall_site() {
 	delete_option( 'skautis_integration_login_page_url' );
 	delete_option( 'skautis-integration_login_page_url' );
 	delete_option( 'skautis-integration_allowUsersDisconnectFromSkautis' );
+	delete_option( 'skautis-integration_login_redirect' );
+	delete_option( 'skautis-integration_login_redirect_rules' );
 	delete_option( 'skautis-integration_checkUserPrivilegesIfLoginBySkautis' );
 
 	// defined in src/modules/Register/admin/class-settings.php.

@@ -84,6 +84,7 @@ See our [documentation](https://napoveda.skaut.cz/skautis/skautis-integration) (
 * Groups and districts: the recruitment blocks show all units below the unit, grouped by their parent units, with a filter for the visitors by the unit, the age and boys or girls; a block can show another unit or only the chosen units, and the "Unit" block can show the cards of the child units
 * In the settings of the blocks, the unit is chosen from a list of the units below the unit of the site, with their registration numbers and optionally their names
 * The SkautIS login is shown in its own card below the login form
+* Redirect after login: users who log in on the login screen can go to a chosen page instead of the dashboard, or to different pages by the rules they pass; the core login_redirect filter now works with the SkautIS login too
 * Each user can use their photo from SkautIS as their profile picture; it is downloaded only when the user chooses it in their profile
 * Privacy: a suggested privacy policy text, export and erasure of the personal data stored by the plugin, the external services described in the readme
 * A SkautIS method that the App ID is not allowed to use no longer breaks the site; the administration shows which methods to allow

@@ -65,7 +65,7 @@ final class WP_Login_Logout {
 
 			if ( ! empty( $users )
 				&& isset( $users[0] )
-				&& isset( $users[0]->ID )
+				&& $users[0] instanceof \WP_User
 				&& $users[0]->ID > 0
 			) {
 				$wp_user = $users[0];
@@ -82,7 +82,7 @@ final class WP_Login_Logout {
 				}
 
 				if ( is_user_logged_in() && get_current_user_id() === $wp_user->ID ) {
-					wp_safe_redirect( $return_url, 302 );
+					wp_safe_redirect( Login_Redirect::get_url( $return_url, $wp_user ), 302 );
 					exit();
 				}
 
@@ -94,7 +94,7 @@ final class WP_Login_Logout {
 				// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 				do_action( 'wp_login', $wp_user->user_login, $wp_user );
 
-				wp_safe_redirect( $return_url, 302 );
+				wp_safe_redirect( Login_Redirect::get_url( $return_url, $wp_user ), 302 );
 				exit();
 			}
 		}
