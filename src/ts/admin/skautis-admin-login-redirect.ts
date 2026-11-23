@@ -1,11 +1,11 @@
 /**
- * The redirect rules on the Login tab of the settings: adds, removes and moves the rows.
+ * The redirect rules on the Login tab of the settings: adds and removes the rows and orders them by dragging, like the registration rules.
  *
- * The rows are saved in their order in the table; the indexes in the names only keep the fields of a row together.
+ * The rows are saved in their order on the page; the indexes in the names only keep the fields of a row together.
  */
 
 function skautisLoginRedirectRules(): void {
-	const table = document.querySelector<HTMLTableElement>(
+	const list = document.querySelector<HTMLElement>(
 		'.skautis-login-redirect-rules'
 	);
 	const template = document.querySelector<HTMLTemplateElement>(
@@ -14,29 +14,33 @@ function skautisLoginRedirectRules(): void {
 	const add = document.querySelector<HTMLButtonElement>(
 		'#skautis-login-redirect-add'
 	);
-	const body = table?.tBodies[0];
-	if (!body || !template || !add) {
+	if (!list || !template || !add) {
 		return;
 	}
-	let next = body.rows.length;
+	const initSelect = (row: Element): void => {
+		jQuery(row).find('select.select2').select2({ width: '100%' });
+	};
+	jQuery(list)
+		.children()
+		.each((_, row) => {
+			initSelect(row);
+		});
+	jQuery(list).sortable({ handle: '.handle' });
+
+	let next = list.children.length;
 	add.addEventListener('click', () => {
 		const html = template.innerHTML.replace(/__index__/gu, String(next++));
-		body.insertAdjacentHTML('beforeend', html);
-		body.lastElementChild?.querySelector('select')?.focus();
+		list.insertAdjacentHTML('beforeend', html);
+		const row = list.lastElementChild;
+		if (row) {
+			initSelect(row);
+		}
 	});
-	body.addEventListener('click', (event) => {
-		const button = (event.target as HTMLElement).closest('button');
-		const row = button?.closest('tr');
-		if (!button || !row) {
-			return;
-		}
-		if (button.hasAttribute('data-skautis-remove')) {
-			row.remove();
-		} else if (button.dataset['skautisMove'] === '-1') {
-			row.previousElementSibling?.before(row);
-		} else if (button.dataset['skautisMove'] === '1') {
-			row.nextElementSibling?.after(row);
-		}
+	list.addEventListener('click', (event) => {
+		const button = (event.target as HTMLElement).closest(
+			'[data-skautis-remove]'
+		);
+		button?.closest('.skautis-rule-row')?.remove();
 	});
 	add.hidden = false;
 }

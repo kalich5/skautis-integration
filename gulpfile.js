@@ -42,19 +42,6 @@ gulp.task('build:css:frontend', () =>
 		.pipe(gulp.dest('dist/frontend/css/'))
 );
 
-gulp.task('build:css:modules:Register:admin', () =>
-	gulp
-		.src(['src/css/modules/Register/admin/*.css'])
-		.pipe(lightningCSS())
-		.pipe(rename({ suffix: '.min' }))
-		.pipe(gulp.dest('dist/modules/Register/admin/css/'))
-);
-
-gulp.task(
-	'build:css:modules:Register',
-	gulp.parallel('build:css:modules:Register:admin')
-);
-
 gulp.task('build:css:modules:Visibility:admin', () =>
 	gulp
 		.src(['src/css/modules/Visibility/admin/*.css'])
@@ -96,7 +83,6 @@ gulp.task(
 	'build:css:modules',
 	gulp.parallel(
 		'build:css:modules:Recruitment',
-		'build:css:modules:Register',
 		'build:css:modules:Visibility'
 	)
 );

@@ -56,7 +56,8 @@ final class Login_Redirect_Settings {
 	 */
 	public static function enqueue_scripts() {
 		if ( Settings::is_settings_tab( 'login' ) ) {
-			Helpers::enqueue_script( 'admin_login_redirect', 'admin/js/skautis-admin-login-redirect.min.js' );
+			wp_enqueue_script( 'jquery-ui-sortable' );
+			Helpers::enqueue_script( 'admin_login_redirect', 'admin/js/skautis-admin-login-redirect.min.js', array( 'jquery-ui-sortable', SKAUTIS_INTEGRATION_NAME . '_select2' ) );
 		}
 	}
 
@@ -136,7 +137,8 @@ final class Login_Redirect_Settings {
 		}
 
 		echo '<p>' . esc_html__( 'Users who pass a rule go to its page. The rules are evaluated from top to bottom and the first rule the user passes is used.', 'skautis-integration' ) . '</p>';
-		echo '<table class="widefat striped skautis-login-redirect-rules"><thead><tr><th scope="col">' . esc_html__( 'If the rule is passed', 'skautis-integration' ) . '</th><th scope="col">' . esc_html__( 'Go to', 'skautis-integration' ) . '</th><th scope="col"><span class="screen-reader-text">' . esc_html__( 'Actions', 'skautis-integration' ) . '</span></th></tr></thead><tbody>';
+		// The rules look like the registration rules: one rule per line, ordered by dragging.
+		echo '<div class="skautis-rule-rows skautis-login-redirect-rules">';
 		foreach ( Login_Redirect::get_rules() as $index => $rule ) {
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo self::get_rule_row( (string) $index, $rules, $rule['rule'], $rule['target'] );
@@ -144,7 +146,7 @@ final class Login_Redirect_Settings {
 		// An empty row for a new rule; rows without a rule are not saved.
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo self::get_rule_row( (string) count( Login_Redirect::get_rules() ), $rules, 0, Login_Redirect::DASHBOARD );
-		echo '</tbody></table>';
+		echo '</div>';
 		// The script adds more rows from the template.
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo '<template id="skautis-login-redirect-rule">' . self::get_rule_row( '__index__', $rules, 0, Login_Redirect::DASHBOARD ) . '</template>';
@@ -161,15 +163,15 @@ final class Login_Redirect_Settings {
 	 */
 	private static function get_rule_row( string $index, array $rules, int $rule, int $target ): string {
 		$name = Login_Redirect::RULES_OPTION . '[' . $index . ']';
-		$html = '<tr><td><select name="' . esc_attr( $name . '[rule]' ) . '" aria-label="' . esc_attr__( 'Rule', 'skautis-integration' ) . '"><option value="0">' . esc_html__( '— Choose a rule —', 'skautis-integration' ) . '</option>';
+		$html = '<div class="skautis-rule-row"><span class="dashicons dashicons-move handle" aria-hidden="true"></span>'
+			. '<label class="skautis-rule-field"><span>' . esc_html__( 'If the rule is passed:', 'skautis-integration' ) . '</span>'
+			. '<select name="' . esc_attr( $name . '[rule]' ) . '" class="select2"><option value="0">' . esc_html__( '— Choose a rule —', 'skautis-integration' ) . '</option>';
 		foreach ( $rules as $rule_id => $title ) {
 			$html .= '<option value="' . esc_attr( (string) $rule_id ) . '"' . selected( $rule, $rule_id, false ) . '>' . esc_html( '' !== $title ? $title : '#' . $rule_id ) . '</option>';
 		}
-		$html .= '</select></td><td>' . self::get_target_select( $name . '[target]', '', $target ) . '</td>';
-		$html .= '<td class="skautis-login-redirect-actions">'
-			. '<button type="button" class="button" data-skautis-move="-1" aria-label="' . esc_attr__( 'Move up', 'skautis-integration' ) . '">↑</button> '
-			. '<button type="button" class="button" data-skautis-move="1" aria-label="' . esc_attr__( 'Move down', 'skautis-integration' ) . '">↓</button> '
-			. '<button type="button" class="button-link button-link-delete" data-skautis-remove>' . esc_html__( 'Remove', 'skautis-integration' ) . '</button></td></tr>';
+		$html .= '</select></label>'
+			. '<label class="skautis-rule-field"><span>' . esc_html__( 'Go to:', 'skautis-integration' ) . '</span>' . self::get_target_select( $name . '[target]', '', $target ) . '</label>'
+			. '<button type="button" class="button skautis-rule-remove" data-skautis-remove>' . esc_html__( 'Remove', 'skautis-integration' ) . '</button></div>';
 
 		return $html;
 	}
@@ -182,7 +184,7 @@ final class Login_Redirect_Settings {
 	 * @param int    $selected The selected target.
 	 */
 	private static function get_target_select( string $name, string $field_id, int $selected ): string {
-		$html  = '<select name="' . esc_attr( $name ) . '"' . ( '' !== $field_id ? ' id="' . esc_attr( $field_id ) . '"' : ' aria-label="' . esc_attr__( 'Page', 'skautis-integration' ) . '"' ) . '>';
+		$html  = '<select name="' . esc_attr( $name ) . '"' . ( '' !== $field_id ? ' id="' . esc_attr( $field_id ) . '"' : '' ) . '>';
 		$html .= '<option value="' . esc_attr( (string) Login_Redirect::DASHBOARD ) . '"' . selected( $selected, Login_Redirect::DASHBOARD, false ) . '>' . esc_html__( 'Dashboard (default)', 'skautis-integration' ) . '</option>';
 		$html .= '<option value="' . esc_attr( (string) Login_Redirect::HOME ) . '"' . selected( $selected, Login_Redirect::HOME, false ) . '>' . esc_html__( 'Home page of the site', 'skautis-integration' ) . '</option>';
 		$pages = get_pages(

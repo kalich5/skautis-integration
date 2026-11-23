@@ -164,15 +164,122 @@ h2.skautis-status-subtitle {
 	font-size: 1.1em;
 }
 
-.skautis-login-redirect-rules td {
-	vertical-align: middle;
+/*
+ * The rules of the registration and of the redirect after login use the whole
+ * width of the card, one rule per line.
+ */
+.skautis-rule-row {
+	display: grid;
+	grid-template-columns: auto 3fr 2fr auto;
+	align-items: center;
+	padding: 8px 0;
+	border-bottom: 1px solid #f0f0f1;
 }
 
-.skautis-login-redirect-rules select {
+.skautis-rule-row > * + * {
+	margin-left: 16px;
+}
+
+/* The WordPress button styles reset the margin. */
+.skautis-rule-row .skautis-rule-remove {
+	margin-left: 16px;
+}
+
+/* The default Select2 placeholder does not have enough contrast. */
+/* stylelint-disable-next-line selector-class-pattern -- A Select2 class. */
+.skautis-rule-row .select2-container .select2-selection .select2-selection__placeholder {
+	color: #646970;
+}
+
+.skautis-rule-row .handle {
+	color: #646970;
+	cursor: move;
+}
+
+.skautis-rule-field {
+	display: flex;
+	align-items: center;
+	min-width: 0;
+}
+
+.skautis-rule-field > span:first-child {
+	flex: none;
+	margin-right: 8px;
+	white-space: nowrap;
+}
+
+.skautis-rule-field select,
+.skautis-rule-field .select2-container {
+	flex: 1 1 auto;
+	min-width: 0;
 	max-width: 100%;
 }
 
-.skautis-login-redirect-rules .skautis-login-redirect-actions {
-	white-space: nowrap;
-	width: 1%;
+/* On narrower screens, the labels are above the fields. */
+@media screen and (width <= 1280px) {
+
+	.skautis-rule-field {
+		display: block;
+	}
+
+	.skautis-rule-field > span:first-child {
+		display: block;
+		margin: 0 0 4px;
+		white-space: normal;
+	}
+
+	.skautis-rule-field select {
+		width: 100%;
+	}
+
+	.skautis-rule-row .skautis-rule-remove {
+		align-self: end;
+	}
 }
+
+@media screen and (width <= 782px) {
+
+	.skautis-rule-row {
+		grid-template-columns: auto 1fr;
+	}
+
+	.skautis-rule-row > * + * {
+		margin-left: 12px;
+	}
+
+	.skautis-rule-row > * + * + * {
+		margin-top: 8px;
+	}
+
+	.skautis-rule-row .skautis-rule-remove {
+		margin-left: 12px;
+	}
+
+	.skautis-rule-field,
+	.skautis-rule-row .skautis-rule-remove {
+		grid-column: 2;
+		justify-self: start;
+	}
+
+	.skautis-rule-field {
+		justify-self: stretch;
+	}
+}
+
+/* The rule field has the same height as the WordPress select next to it. */
+/* stylelint-disable selector-class-pattern -- Select2 classes. */
+.skautis-rule-row .select2-container .select2-selection--single {
+	height: 40px;
+	border-color: #8c8f94;
+	border-radius: 4px;
+}
+
+.skautis-rule-row .select2-container .select2-selection--single .select2-selection__rendered {
+	padding-left: 12px;
+	line-height: 38px;
+}
+
+.skautis-rule-row .select2-container .select2-selection--single .select2-selection__arrow {
+	height: 38px;
+}
+/* stylelint-enable selector-class-pattern */
